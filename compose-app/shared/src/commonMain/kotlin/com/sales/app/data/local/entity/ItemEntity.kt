@@ -13,6 +13,7 @@ data class ItemEntity(
     val uqc: Int,
     val hsn: Int?,
     val accountId: Int,
+    val taxId: Int? = null,
     val createdAt: String,
     val updatedAt: String,
     val deletedAt: String?

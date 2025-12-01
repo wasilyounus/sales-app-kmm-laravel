@@ -10,6 +10,7 @@ data class SaleEntity(
     val date: String,
     val invoiceNo: String,
     val accountId: Int,
+    val taxId: Int? = null,
     val createdAt: String,
     val updatedAt: String,
     val deletedAt: String?

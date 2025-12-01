@@ -126,7 +126,14 @@ private fun AccountSettingsContent(
                 InfoRow(label = "Name", value = account.name)
                 InfoRow(label = "Formatted Name", value = account.nameFormatted)
                 account.desc?.let { InfoRow(label = "Description", value = it) }
-                account.gst?.let { InfoRow(label = "GST", value = it) }
+                
+                HorizontalDivider()
+                
+                InfoRow(label = "Country", value = account.country ?: "India")
+                account.state?.let { InfoRow(label = "State", value = it) }
+                account.taxNumber?.let { 
+                    InfoRow(label = if (account.country == "India") "GST Number" else "Tax Number", value = it) 
+                }
             }
         }
         

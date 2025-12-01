@@ -39,4 +39,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun purchaseDao(): PurchaseDao
     abstract fun addressDao(): AddressDao
     abstract fun syncDao(): SyncDao
+    abstract fun taxDao(): TaxDao
 }

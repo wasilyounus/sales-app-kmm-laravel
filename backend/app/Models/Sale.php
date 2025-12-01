@@ -17,7 +17,13 @@ class Sale extends Model
         'invoice_no',
         'account_id',
         'log_id',
+        'tax_id',
     ];
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
 
     protected $casts = [
         'date' => 'date',

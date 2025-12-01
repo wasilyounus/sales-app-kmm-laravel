@@ -34,17 +34,22 @@ data class ItemFormState(
     
     // Data
     val uqcs: List<Uqc> = emptyList(),
+    val taxes: List<Tax> = emptyList(),
     
     // Validation
     val isNameValid: Boolean = true,
-    val isHsnValid: Boolean = true
+    val isHsnValid: Boolean = true,
+    
+    // Tax Selection
+    val selectedTaxId: Int? = null
 )
 
 class ItemFormViewModel(
     private val createItemUseCase: CreateItemUseCase,
     private val updateItemUseCase: UpdateItemUseCase,
     private val getItemByIdUseCase: GetItemByIdUseCase,
-    private val getUqcsUseCase: GetUqcsUseCase
+    private val getUqcsUseCase: GetUqcsUseCase,
+    private val getTaxesUseCase: GetTaxesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ItemFormState())
@@ -54,6 +59,7 @@ class ItemFormViewModel(
 
     init {
         loadUqcs()
+        loadTaxes()
     }
 
     private fun loadUqcs() {
@@ -64,6 +70,14 @@ class ItemFormViewModel(
                     uqcs = uqcs,
                     uqcId = uqcs.firstOrNull()?.id ?: 0
                 ) 
+            }
+        }
+    }
+    
+    private fun loadTaxes() {
+        viewModelScope.launch {
+            getTaxesUseCase().collect { taxes ->
+                _uiState.update { it.copy(taxes = taxes) }
             }
         }
     }
@@ -82,7 +96,8 @@ class ItemFormViewModel(
                         brand = item.brand ?: "",
                         size = item.size ?: "",
                         hsn = item.hsn?.toString() ?: "",
-                        uqcId = item.uqc
+                        uqcId = item.uqc,
+                        selectedTaxId = item.taxId
                     )
                 }
             } else {
@@ -120,6 +135,10 @@ class ItemFormViewModel(
     fun onUqcChange(uqcId: Int) {
         _uiState.update { it.copy(uqcId = uqcId) }
     }
+    
+    fun onTaxChange(taxId: Int?) {
+        _uiState.update { it.copy(selectedTaxId = taxId) }
+    }
 
     fun saveItem(accountId: Int, onSuccess: () -> Unit) {
         if (!validateForm()) return
@@ -135,7 +154,8 @@ class ItemFormViewModel(
                     brand = _uiState.value.brand.ifBlank { null },
                     size = _uiState.value.size.ifBlank { null },
                     uqc = _uiState.value.uqcId,
-                    hsn = _uiState.value.hsn.toIntOrNull()
+                    hsn = _uiState.value.hsn.toIntOrNull(),
+                    taxId = _uiState.value.selectedTaxId
                 )
             } else {
                 currentItemId?.let { id ->
@@ -147,7 +167,8 @@ class ItemFormViewModel(
                         size = _uiState.value.size.ifBlank { null },
                         uqc = _uiState.value.uqcId,
                         hsn = _uiState.value.hsn.toIntOrNull(),
-                        accountId = accountId
+                        accountId = accountId,
+                        taxId = _uiState.value.selectedTaxId
                     )
                 } ?: Result.Error("Item ID not found")
             }

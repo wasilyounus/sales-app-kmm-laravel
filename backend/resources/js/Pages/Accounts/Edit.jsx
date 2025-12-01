@@ -14,6 +14,9 @@ export default function Edit({ account }) {
         footer_content: account.footer_content || '',
         signature: account.signature || false,
         financial_year_start: account.financial_year_start || '',
+        country: account.country || 'India',
+        state: account.state || '',
+        tax_number: account.tax_number || '',
     });
 
     const handleSubmit = (e) => {
@@ -170,14 +173,65 @@ export default function Edit({ account }) {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        GST Number
+                                        Country *
+                                    </label>
+                                    <select
+                                        value={data.country}
+                                        onChange={e => {
+                                            setData(data => ({
+                                                ...data,
+                                                country: e.target.value,
+                                                state: e.target.value === 'India' ? data.state : '',
+                                                tax_number: ''
+                                            }));
+                                        }}
+                                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                        required
+                                    >
+                                        <option value="India">India</option>
+                                        <option value="Saudi Arabia">Saudi Arabia</option>
+                                        <option value="Qatar">Qatar</option>
+                                        <option value="UAE">UAE</option>
+                                    </select>
+                                </div>
+
+                                {data.country === 'India' && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            State *
+                                        </label>
+                                        <select
+                                            value={data.state}
+                                            onChange={e => setData('state', e.target.value)}
+                                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                            required
+                                        >
+                                            <option value="">Select State</option>
+                                            {[
+                                                "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", 
+                                                "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", 
+                                                "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
+                                                "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", 
+                                                "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", 
+                                                "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh", 
+                                                "Lakshadweep", "Puducherry"
+                                            ].map(state => (
+                                                <option key={state} value={state}>{state}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        {data.country === 'India' ? 'GST Number' : 'VAT Number'}
                                     </label>
                                     <input
                                         type="text"
-                                        value={data.gst}
-                                        onChange={e => setData('gst', e.target.value)}
+                                        value={data.tax_number}
+                                        onChange={e => setData('tax_number', e.target.value)}
                                         className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                                        placeholder="Enter GST number"
+                                        placeholder={`Enter ${data.country === 'India' ? 'GST' : 'VAT'} number`}
                                     />
                                 </div>
                             </div>

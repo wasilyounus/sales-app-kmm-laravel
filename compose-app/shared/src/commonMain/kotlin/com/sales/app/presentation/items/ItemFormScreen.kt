@@ -216,6 +216,64 @@ fun ItemFormScreen(
                         }
                     }
                     
+                    Spacer(modifier = Modifier.height(24.dp))
+                    
+                    // Tax Selector
+                    Text(
+                        text = "Tax Scheme (Optional)",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // None option
+                        val isNoneSelected = uiState.selectedTaxId == null
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(
+                                    if (isNoneSelected) MaterialTheme.colorScheme.primaryContainer 
+                                    else MaterialTheme.colorScheme.surfaceVariant
+                                )
+                                .clickable { viewModel.onTaxChange(null) }
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "None",
+                                color = if (isNoneSelected) MaterialTheme.colorScheme.onPrimaryContainer 
+                                       else MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
+                        }
+                        
+                        uiState.taxes.forEach { tax ->
+                            val isSelected = tax.id == uiState.selectedTaxId
+                            val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                            val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                            
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(backgroundColor)
+                                    .clickable { viewModel.onTaxChange(tax.id) }
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = tax.name,
+                                    color = contentColor,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        }
+                    }
+                    
                     Spacer(modifier = Modifier.height(32.dp))
                     
                     // Action Buttons

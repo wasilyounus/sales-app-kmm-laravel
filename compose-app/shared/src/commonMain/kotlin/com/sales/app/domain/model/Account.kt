@@ -13,5 +13,9 @@ data class Account(
     val whatsapp: String?,
     val footerContent: String?,
     val signature: String?,
-    val financialYearStart: String?
+    val financialYearStart: String?,
+    val country: String? = "India",
+    val state: String? = null,
+    val taxNumber: String? = null,
+    val defaultTaxId: Int? = null
 )

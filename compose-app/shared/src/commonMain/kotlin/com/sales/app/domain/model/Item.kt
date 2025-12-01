@@ -8,7 +8,8 @@ data class Item(
     val size: String?,
     val uqc: Int,
     val hsn: Int?,
-    val accountId: Int
+    val accountId: Int,
+    val taxId: Int? = null
 )
 
 data class Uqc(

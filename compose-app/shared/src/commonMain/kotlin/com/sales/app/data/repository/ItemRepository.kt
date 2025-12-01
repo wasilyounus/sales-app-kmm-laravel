@@ -63,10 +63,11 @@ class ItemRepository(
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int
+        accountId: Int,
+        taxId: Int? = null
     ): Result<Item> {
         return try {
-            val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId)
+            val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId, taxId)
             val response = apiService.createItem(request)
             
             if (response.success) {
@@ -79,6 +80,7 @@ class ItemRepository(
                     uqc = response.data.uqc,
                     hsn = response.data.hsn,
                     accountId = response.data.account_id,
+                    taxId = response.data.tax_id,
                     createdAt = response.data.created_at,
                     updatedAt = response.data.updated_at,
                     deletedAt = response.data.deleted_at
@@ -101,10 +103,11 @@ class ItemRepository(
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int
+        accountId: Int,
+        taxId: Int? = null
     ): Result<Item> {
         return try {
-            val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId)
+            val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId, taxId)
             val response = apiService.updateItem(id, request)
             
             if (response.success) {
@@ -117,6 +120,7 @@ class ItemRepository(
                     uqc = response.data.uqc,
                     hsn = response.data.hsn,
                     accountId = response.data.account_id,
+                    taxId = response.data.tax_id,
                     createdAt = response.data.created_at,
                     updatedAt = response.data.updated_at,
                     deletedAt = response.data.deleted_at
@@ -153,7 +157,8 @@ class ItemRepository(
                     size = response.data.size,
                     uqc = response.data.uqc,
                     hsn = response.data.hsn,
-                    accountId = response.data.account_id
+                    accountId = response.data.account_id,
+                    taxId = response.data.tax_id
                 )
             } else {
                 null
@@ -195,6 +200,7 @@ class ItemRepository(
         size = size,
         uqc = uqc,
         hsn = hsn,
-        accountId = accountId
+        accountId = accountId,
+        taxId = taxId
     )
 }

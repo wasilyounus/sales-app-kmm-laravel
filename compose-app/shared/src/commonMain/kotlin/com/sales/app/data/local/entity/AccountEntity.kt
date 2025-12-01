@@ -18,6 +18,10 @@ data class AccountEntity(
     val footerContent: String?,
     val signature: String?,
     val financialYearStart: String?,
+    val country: String? = "India",
+    val state: String? = null,
+    val taxNumber: String? = null,
+    val defaultTaxId: Int? = null,
     val createdAt: String,
     val updatedAt: String
 )

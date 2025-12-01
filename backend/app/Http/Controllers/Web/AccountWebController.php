@@ -47,6 +47,9 @@ class AccountWebController extends Controller
             'footer_content' => 'nullable|string',
             'signature' => 'sometimes|boolean',
             'financial_year_start' => 'nullable|date_format:Y-m-d H:i:s',
+            'country' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'tax_number' => 'nullable|string|max:50',
         ]);
 
         // Create log entry
@@ -98,6 +101,9 @@ class AccountWebController extends Controller
             'footer_content' => 'nullable|string',
             'signature' => 'sometimes|boolean',
             'financial_year_start' => 'nullable|date_format:Y-m-d H:i:s',
+            'country' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'tax_number' => 'nullable|string|max:50',
         ]);
 
         $validated['signature'] = $request->boolean('signature');

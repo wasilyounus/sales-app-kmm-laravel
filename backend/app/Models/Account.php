@@ -25,7 +25,16 @@ class Account extends Model
         'signature',
         'log_id',
         'financial_year_start',
+        'country',
+        'state',
+        'tax_number',
+        'default_tax_id',
     ];
+
+    public function defaultTax()
+    {
+        return $this->belongsTo(Tax::class, 'default_tax_id');
+    }
 
     protected $casts = [
         'signature' => 'boolean',

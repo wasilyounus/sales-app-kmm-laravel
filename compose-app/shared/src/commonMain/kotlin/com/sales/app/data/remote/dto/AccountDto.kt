@@ -18,6 +18,10 @@ data class AccountDto(
     @SerialName("footer_content") val footerContent: String?,
     val signature: Boolean?,
     @SerialName("financial_year_start") val financialYearStart: String? = null,
+    val country: String? = "India",
+    val state: String? = null,
+    @SerialName("tax_number") val taxNumber: String? = null,
+    @SerialName("default_tax_id") val defaultTaxId: Int? = null,
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("updated_at") val updatedAt: String? = null
 )

@@ -12,6 +12,7 @@ data class ItemDto(
     val uqc: Int,
     val hsn: Int? = null,
     val account_id: Int,
+    val tax_id: Int? = null,
     val created_at: String,
     val updated_at: String,
     val deleted_at: String? = null
@@ -26,6 +27,7 @@ data class ItemRequest(
     val uqc: Int,
     val hsn: Int? = null,
     val account_id: Int,
+    val tax_id: Int? = null,
     val log_id: Int = 0 // Default to 0 or handle in repository
 )
 

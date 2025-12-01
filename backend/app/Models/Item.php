@@ -20,7 +20,13 @@ class Item extends Model
         'hsn',
         'account_id',
         'log_id',
+        'tax_id',
     ];
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
 
     public function account()
     {
