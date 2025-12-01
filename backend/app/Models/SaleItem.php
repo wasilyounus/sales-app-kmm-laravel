@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class SaleItem extends Model
+{
+    use SoftDeletes, \App\Traits\HasLog;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'sale_id',
+        'item_id',
+        'price',
+        'qty',
+        'tax_id',
+        'account_id',
+        'log_id',
+    ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+        'qty' => 'decimal:3',
+    ];
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class);
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+}

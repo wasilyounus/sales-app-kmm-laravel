@@ -1,0 +1,29 @@
+﻿
+Install tasks
+androidApp:installDebug - Installs the Debug build.
+androidApp:installDebugAndroidTest - Installs the android (on 
+device) tests for the Debug build.
+shared:installDebugAndroidTest - Installs the android (on 
+device) tests for the Debug build.
+androidApp:uninstallAll - Uninstall all applications.
+shared:uninstallAll - Uninstall all applications.
+androidApp:uninstallDebug - Uninstalls the Debug build.
+androidApp:uninstallDebugAndroidTest - Uninstalls the android 
+(on device) tests for the Debug build.
+shared:uninstallDebugAndroidTest - Uninstalls the android (on 
+device) tests for the Debug build.
+androidApp:uninstallRelease - Uninstalls the Release build.
+androidApp:connectedAndroidTest - Installs and runs 
+instrumentation tests for all flavors on connected devices.
+shared:connectedAndroidTest - Installs and runs instrumentation 
+tests for all flavors on connected devices.
+androidApp:connectedDebugAndroidTest - Installs and runs the 
+tests for debug on connected devices.
+shared:connectedDebugAndroidTest - Installs and runs the tests 
+for debug on connected devices.
+androidApp:deviceAndroidTest - Installs and runs 
+instrumentation tests using all Device Providers.
+shared:deviceAndroidTest - Installs and runs instrumentation 
+tests using all Device Providers.
+
+

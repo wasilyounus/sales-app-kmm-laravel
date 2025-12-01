@@ -1,0 +1,390 @@
+openapi: 3.0.0
+info:
+  title: Sales Application API
+  description: RESTful API for Sales Management Application
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@salesapp.com
+
+servers:
+  - url: http://192.168.1.174:8000/api
+    description: Development server
+  - url: https://api.salesapp.com/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: Accounts
+    description: Account management
+  - name: Items
+    description: Product/Service management
+  - name: Parties
+    description: Customer/Vendor management
+  - name: Quotes
+    description: Price quotations
+  - name: Orders
+    description: Customer orders
+  - name: Sales
+    description: Sales invoices
+  - name: Purchases
+    description: Vendor purchases
+  - name: Resources
+    description: Supporting resources (taxes, uqcs, stocks, etc.)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        name_formatted:
+          type: string
+        desc:
+          type: string
+        taxation_type:
+          type: integer
+        default_tax:
+          type: integer
+        gst:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        call:
+          type: string
+          nullable: true
+        whatsapp:
+          type: string
+          nullable: true
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        alt_name:
+          type: string
+          nullable: true
+        brand:
+          type: string
+          nullable: true
+        size:
+          type: string
+          nullable: true
+        uqc:
+          type: integer
+        hsn:
+          type: integer
+          nullable: true
+        account_id:
+          type: integer
+
+    Party:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        gst:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        account_id:
+          type: integer
+
+    Quote:
+      type: object
+      properties:
+        id:
+          type: integer
+        party_id:
+          type: integer
+        date:
+          type: string
+          format: date
+        account_id:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteItem'
+
+    QuoteItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        quote_id:
+          type: integer
+        item_id:
+          type: integer
+        price:
+          type: number
+          format: float
+        qty:
+          type: number
+          format: float
+
+paths:
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                password_confirmation:
+                  type: string
+                  format: password
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+
+  /items:
+    get:
+      tags:
+        - Items
+      summary: List all items
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: account_id
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+
+    post:
+      tags:
+        - Items
+      summary: Create a new item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - uqc
+                - account_id
+                - log_id
+              properties:
+                name:
+                  type: string
+                alt_name:
+                  type: string
+                brand:
+                  type: string
+                size:
+                  type: string
+                uqc:
+                  type: integer
+                hsn:
+                  type: integer
+                account_id:
+                  type: integer
+                log_id:
+                  type: integer
+      responses:
+        '201':
+          description: Item created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Item'
+
+  /items/{id}:
+    get:
+      tags:
+        - Items
+      summary: Get item by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Item'
+
+    put:
+      tags:
+        - Items
+      summary: Update item
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          description: Item updated successfully
+
+    delete:
+      tags:
+        - Items
+      summary: Delete item
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item deleted successfully

@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Account extends Model
+{
+    use SoftDeletes, \App\Traits\HasLog;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'name',
+        'name_formatted',
+        'desc',
+        'taxation_type',
+        'default_tax',
+        'gst',
+        'address',
+        'call',
+        'whatsapp',
+        'footer_content',
+        'signature',
+        'log_id',
+        'financial_year_start',
+    ];
+
+    protected $casts = [
+        'signature' => 'boolean',
+    ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_account_permissions')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function parties()
+    {
+        return $this->hasMany(Party::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+}
