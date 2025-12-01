@@ -7,7 +7,7 @@ import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Badge } from "@/Components/ui/badge";
 import { Search, Plus, ShoppingCart, Calendar, DollarSign, FileText, Filter, ArrowUpRight } from 'lucide-react';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 
 export default function Index({ sales, filters }) {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
@@ -200,7 +200,7 @@ export default function Index({ sales, filters }) {
                                             {sale.status}
                                         </Badge>
                                     </div>
-                                    
+
                                     <div className="flex justify-between items-center mb-3">
                                         <div>
                                             <span className="text-xs font-medium text-gray-500">Customer</span>

@@ -10,11 +10,12 @@ use Tests\TestCase;
 class AccountManagementTest extends TestCase
 {
     use RefreshDatabase;
+    protected $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create and authenticate a user
         $this->user = User::factory()->create();
         $this->actingAs($this->user);
@@ -26,15 +27,15 @@ class AccountManagementTest extends TestCase
         $response = $this->post('/admin/accounts', [
             'name' => 'Test Company',
             'name_formatted' => 'TEST COMPANY',
+            'desc' => 'Test Description',
             'taxation_type' => 2,
-            'tax_rate' => 18,
             'country' => 'India',
             'state' => 'Maharashtra',
             'tax_number' => '27AAAAA0000A1Z5'
         ]);
 
         $response->assertRedirect('/admin/accounts');
-        
+
         $this->assertDatabaseHas('accounts', [
             'name' => 'Test Company',
             'country' => 'India',
@@ -49,8 +50,8 @@ class AccountManagementTest extends TestCase
         $response = $this->post('/admin/accounts', [
             'name' => 'Test Company',
             'name_formatted' => 'TEST COMPANY',
+            'desc' => 'Test Description',
             'taxation_type' => 2,
-            'tax_rate' => 18,
             // country is missing
             'state' => 'Maharashtra',
             'tax_number' => '27AAAAA0000A1Z5'
@@ -70,15 +71,15 @@ class AccountManagementTest extends TestCase
         $response = $this->put("/admin/accounts/{$account->id}", [
             'name' => $account->name,
             'name_formatted' => $account->name_formatted,
+            'desc' => $account->desc,
             'taxation_type' => 2,
-            'tax_rate' => 18,
             'country' => 'Saudi Arabia',
             'state' => null,
             'tax_number' => 'VAT123456'
         ]);
 
         $response->assertRedirect('/admin/accounts');
-        
+
         $this->assertDatabaseHas('accounts', [
             'id' => $account->id,
             'country' => 'Saudi Arabia',
@@ -93,15 +94,15 @@ class AccountManagementTest extends TestCase
         $response = $this->post('/admin/accounts', [
             'name' => 'Saudi Company',
             'name_formatted' => 'SAUDI COMPANY',
+            'desc' => 'Saudi Company Description',
             'taxation_type' => 2,
-            'tax_rate' => 15,
             'country' => 'Saudi Arabia',
             'state' => null, // no states for Saudi Arabia
             'tax_number' => 'VAT123456'
         ]);
 
         $response->assertRedirect('/admin/accounts');
-        
+
         $this->assertDatabaseHas('accounts', [
             'name' => 'Saudi Company',
             'country' => 'Saudi Arabia',

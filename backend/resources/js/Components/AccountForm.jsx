@@ -8,13 +8,12 @@ import { Checkbox } from "@/Components/ui/checkbox"
 
 export default function AccountForm({ account = null, onSuccess, onCancel }) {
     const isEditing = !!account;
-    
+
     const { data, setData, post, put, processing, errors, reset } = useForm({
         name: account?.name || '',
         name_formatted: account?.name_formatted || '',
         desc: account?.desc || '',
         taxation_type: account?.taxation_type || 1,
-        tax_rate: account?.tax_rate || 0,
         gst: account?.gst || '',
         address: account?.address || '',
         call: account?.call || '',
@@ -31,7 +30,6 @@ export default function AccountForm({ account = null, onSuccess, onCancel }) {
                 name_formatted: account.name_formatted || '',
                 desc: account.desc || '',
                 taxation_type: account.taxation_type || 1,
-                tax_rate: account.tax_rate || 0,
                 gst: account.gst || '',
                 address: account.address || '',
                 call: account.call || '',
@@ -47,7 +45,7 @@ export default function AccountForm({ account = null, onSuccess, onCancel }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (isEditing) {
             put(`/admin/accounts/${account.id}`, {
                 onSuccess: () => {
@@ -119,11 +117,10 @@ export default function AccountForm({ account = null, onSuccess, onCancel }) {
                             ].map((option) => (
                                 <label
                                     key={option.value}
-                                    className={`relative flex flex-col p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                                        data.taxation_type === option.value
+                                    className={`relative flex flex-col p-3 border-2 rounded-lg cursor-pointer transition-all ${data.taxation_type === option.value
                                             ? 'border-primary bg-primary/5'
                                             : 'border-input hover:border-primary/50 bg-background'
-                                    }`}
+                                        }`}
                                 >
                                     <input
                                         type="radio"
@@ -139,22 +136,6 @@ export default function AccountForm({ account = null, onSuccess, onCancel }) {
                             ))}
                         </div>
                     </div>
-
-                    {data.taxation_type !== 1 && (
-                        <div className="space-y-2">
-                            <Label htmlFor="tax_rate">Default Tax Percentage (%)</Label>
-                            <Input
-                                id="tax_rate"
-                                type="number"
-                                min="0"
-                                max="100"
-                                value={data.tax_rate}
-                                onChange={e => setData('tax_rate', parseInt(e.target.value))}
-                                className="w-full md:w-48"
-                            />
-                            {errors.tax_rate && <p className="text-sm text-red-600">{errors.tax_rate}</p>}
-                        </div>
-                    )}
 
                     <div className="space-y-2">
                         <Label htmlFor="gst">GST Number</Label>

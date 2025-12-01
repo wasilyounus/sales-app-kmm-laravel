@@ -14,7 +14,7 @@ class AccountController extends Controller
     public function index()
     {
         $accounts = Account::all();
-        
+
         return response()->json([
             'success' => true,
             'data' => $accounts,
@@ -31,7 +31,6 @@ class AccountController extends Controller
             'name_formatted' => 'required|string|max:255',
             'desc' => 'required|string|max:255',
             'taxation_type' => 'sometimes|integer',
-            'tax_rate' => 'sometimes|integer',
             'gst' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'call' => 'nullable|string|max:255',
@@ -57,7 +56,7 @@ class AccountController extends Controller
     public function show($id)
     {
         $account = Account::findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $account,
@@ -70,13 +69,12 @@ class AccountController extends Controller
     public function update(Request $request, $id)
     {
         $account = Account::findOrFail($id);
-        
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'name_formatted' => 'sometimes|required|string|max:255',
             'desc' => 'sometimes|required|string|max:255',
             'taxation_type' => 'sometimes|integer',
-            'tax_rate' => 'sometimes|integer',
             'gst' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'call' => 'nullable|string|max:255',

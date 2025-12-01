@@ -103,8 +103,8 @@ export default function Index({ accounts }) {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredAccounts.map((account) => (
-                        <Card 
-                            key={account.id} 
+                        <Card
+                            key={account.id}
                             className={`group hover:shadow-xl hover:shadow-lime-500/5 transition-all duration-300 hover:-translate-y-1 border-gray-100 border-t-4 ${getTaxTypeBorderColor(account.taxation_type)} overflow-hidden bg-white`}
                         >
                             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3 bg-gradient-to-br from-transparent to-lime-500/5">
@@ -130,13 +130,6 @@ export default function Index({ accounts }) {
                                             <FileText className="w-4 h-4 mr-2.5 text-gray-400 shrink-0" />
                                             <span className="text-gray-500 w-12 shrink-0">GST:</span>
                                             <span className="font-medium text-gray-900 truncate">{account.gst}</span>
-                                        </div>
-                                    )}
-                                    {account.taxation_type !== 1 && (
-                                        <div className="flex items-center text-sm p-2 rounded-lg bg-gray-50 group-hover:bg-lime-50/50 transition-colors">
-                                            <Calculator className="w-4 h-4 mr-2.5 text-gray-400 shrink-0" />
-                                            <span className="text-gray-500 w-12 shrink-0">Tax:</span>
-                                            <span className="font-medium text-gray-900">{account.tax_rate}%</span>
                                         </div>
                                     )}
                                 </div>

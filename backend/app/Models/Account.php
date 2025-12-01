@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model
 {
-    use SoftDeletes, \App\Traits\HasLog;
+    use SoftDeletes, \App\Traits\HasLog, \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     public $timestamps = false;
 
@@ -16,7 +16,6 @@ class Account extends Model
         'name_formatted',
         'desc',
         'taxation_type',
-        'default_tax',
         'gst',
         'address',
         'call',

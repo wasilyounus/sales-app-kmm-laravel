@@ -20,16 +20,15 @@ class ApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->token = $this->user->createToken('test')->plainTextToken;
-        
+
         $this->account = Account::create([
             'name' => 'Test Account',
             'name_formatted' => 'TEST ACCOUNT',
             'desc' => 'Test',
             'taxation_type' => 1,
-            'default_tax' => 0,
             'log_id' => 1,
         ]);
     }

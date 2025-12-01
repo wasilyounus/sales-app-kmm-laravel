@@ -1,13 +1,13 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 
-export default function Create() {
+export default function Create({ taxes }) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         name_formatted: '',
         desc: '',
         taxation_type: 1,
-        tax_rate: 0,
+        default_tax_id: null,
         gst: '',
         address: '',
         call: '',
@@ -108,11 +108,10 @@ export default function Create() {
                                 ].map((option) => (
                                     <label
                                         key={option.value}
-                                        className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                                            data.taxation_type === option.value
-                                                ? 'border-indigo-500 bg-indigo-50'
-                                                : 'border-gray-200 hover:border-gray-300'
-                                        }`}
+                                        className={`relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${data.taxation_type === option.value
+                                            ? 'border-indigo-500 bg-indigo-50'
+                                            : 'border-gray-200 hover:border-gray-300'
+                                            }`}
                                     >
                                         <input
                                             type="radio"
@@ -132,17 +131,37 @@ export default function Create() {
                         {data.taxation_type !== 1 && (
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Default Tax Percentage (%)
+                                    Tax Scheme *
                                 </label>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={data.tax_rate}
-                                    onChange={e => setData('tax_rate', parseInt(e.target.value))}
-                                    className="w-full md:w-48 px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                                />
-                                {errors.tax_rate && <p className="mt-1 text-sm text-red-600">{errors.tax_rate}</p>}
+                                <select
+                                    value={data.default_tax_id || ''}
+                                    onChange={e => setData('default_tax_id', e.target.value ? parseInt(e.target.value) : null)}
+                                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    required={data.taxation_type !== 1}
+                                >
+                                    <option value="">Select Tax Scheme</option>
+                                    <optgroup label="India">
+                                        {taxes?.filter(tax => tax.scheme_name.startsWith('India')).map(tax => (
+                                            <option key={tax.id} value={tax.id}>{tax.scheme_name}</option>
+                                        ))}
+                                    </optgroup>
+                                    <optgroup label="Saudi Arabia">
+                                        {taxes?.filter(tax => tax.scheme_name.startsWith('Saudi')).map(tax => (
+                                            <option key={tax.id} value={tax.id}>{tax.scheme_name}</option>
+                                        ))}
+                                    </optgroup>
+                                    <optgroup label="UAE">
+                                        {taxes?.filter(tax => tax.scheme_name.startsWith('UAE')).map(tax => (
+                                            <option key={tax.id} value={tax.id}>{tax.scheme_name}</option>
+                                        ))}
+                                    </optgroup>
+                                    <optgroup label="Qatar">
+                                        {taxes?.filter(tax => tax.scheme_name.startsWith('Qatar')).map(tax => (
+                                            <option key={tax.id} value={tax.id}>{tax.scheme_name}</option>
+                                        ))}
+                                    </optgroup>
+                                </select>
+                                {errors.default_tax_id && <p className="mt-1 text-sm text-red-600">{errors.default_tax_id}</p>}
                             </div>
                         )}
 
@@ -183,12 +202,12 @@ export default function Create() {
                                 >
                                     <option value="">Select State</option>
                                     {[
-                                        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", 
-                                        "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", 
-                                        "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
-                                        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", 
-                                        "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", 
-                                        "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh", 
+                                        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+                                        "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+                                        "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+                                        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+                                        "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+                                        "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh",
                                         "Lakshadweep", "Puducherry"
                                     ].map(state => (
                                         <option key={state} value={state}>{state}</option>

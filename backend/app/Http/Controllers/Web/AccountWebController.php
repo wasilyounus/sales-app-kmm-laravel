@@ -15,7 +15,7 @@ class AccountWebController extends Controller
     public function index()
     {
         $accounts = Account::orderBy('id', 'desc')->get();
-        
+
         return Inertia::render('Accounts/Index', [
             'accounts' => $accounts
         ]);
@@ -26,7 +26,11 @@ class AccountWebController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Accounts/Create');
+        $taxes = \App\Models\Tax::where('active', true)->get();
+
+        return Inertia::render('Accounts/Create', [
+            'taxes' => $taxes
+        ]);
     }
 
     /**
@@ -39,7 +43,6 @@ class AccountWebController extends Controller
             'name_formatted' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'taxation_type' => 'required|integer|in:1,2,3',
-            'tax_rate' => 'required|integer|min:0|max:100',
             'gst' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'call' => 'nullable|string',
@@ -75,9 +78,11 @@ class AccountWebController extends Controller
     public function edit($id)
     {
         $account = Account::findOrFail($id);
-        
+        $taxes = \App\Models\Tax::where('active', true)->get();
+
         return Inertia::render('Accounts/Edit', [
-            'account' => $account
+            'account' => $account,
+            'taxes' => $taxes
         ]);
     }
 
@@ -93,7 +98,6 @@ class AccountWebController extends Controller
             'name_formatted' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'taxation_type' => 'required|integer|in:1,2,3',
-            'tax_rate' => 'required|integer|min:0|max:100',
             'gst' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'call' => 'nullable|string',

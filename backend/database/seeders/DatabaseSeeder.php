@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'name_formatted' => 'Default Account',
             'desc' => 'Default Account Description',
             'taxation_type' => 'GST',
-            'default_tax' => 0,
             'gst' => 'GST123',
             'address' => 'Default Address',
             'call' => '1234567890',
@@ -39,6 +38,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            TaxSeeder::class,
             UqcSeeder::class,
         ]);
     }

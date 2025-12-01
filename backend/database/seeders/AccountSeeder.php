@@ -30,7 +30,6 @@ class AccountSeeder extends Seeder
             'name_formatted' => 'Default Account',
             'desc' => 'Default account for testing',
             'taxation_type' => 1, // No Tax
-            'default_tax' => 0,
             'gst' => null,
             'address' => null,
             'call' => null,

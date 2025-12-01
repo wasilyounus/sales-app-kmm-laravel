@@ -7,7 +7,7 @@ import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Badge } from "@/Components/ui/badge";
 import { Search, Plus, Edit, Package, Tag, Layers, Filter } from 'lucide-react';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 
 export default function Index({ items, filters }) {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
@@ -74,10 +74,10 @@ export default function Index({ items, filters }) {
                     items.data.map((item) => {
                         const stockCount = item.stock_count || 0;
                         const status = getStockStatus(stockCount);
-                        
+
                         return (
-                            <Card 
-                                key={item.id} 
+                            <Card
+                                key={item.id}
                                 className="group hover:shadow-xl hover:shadow-lime-500/5 transition-all duration-300 hover:-translate-y-1 border-gray-100 overflow-hidden bg-white"
                             >
                                 <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3 bg-gradient-to-br from-transparent to-lime-500/5">
@@ -127,7 +127,7 @@ export default function Index({ items, filters }) {
                     })
                 )}
             </div>
-            
+
             {/* Pagination could be added here */}
         </AdminLayout>
     );
