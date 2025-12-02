@@ -15,20 +15,10 @@ class AccountWebController extends Controller
     public function index()
     {
         $accounts = Account::orderBy('id', 'desc')->get();
-
-        return Inertia::render('Accounts/Index', [
-            'accounts' => $accounts
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new account
-     */
-    public function create()
-    {
         $taxes = \App\Models\Tax::where('active', true)->get();
 
-        return Inertia::render('Accounts/Create', [
+        return Inertia::render('Accounts/Index', [
+            'accounts' => $accounts,
             'taxes' => $taxes
         ]);
     }
@@ -43,16 +33,15 @@ class AccountWebController extends Controller
             'name_formatted' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'taxation_type' => 'required|integer|in:1,2,3',
+            'tax_country' => 'nullable|string|max:50',
+            'default_tax_id' => 'nullable|integer|exists:taxes,id',
             'gst' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'call' => 'nullable|string',
             'whatsapp' => 'nullable|string',
             'footer_content' => 'nullable|string',
             'signature' => 'sometimes|boolean',
-            'financial_year_start' => 'nullable|date_format:Y-m-d H:i:s',
-            'country' => 'required|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'tax_number' => 'nullable|string|max:50',
+            'financial_year_start' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         // Create log entry
@@ -68,22 +57,7 @@ class AccountWebController extends Controller
 
         Account::create($validated);
 
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account created successfully');
-    }
-
-    /**
-     * Show the form for editing an account
-     */
-    public function edit($id)
-    {
-        $account = Account::findOrFail($id);
-        $taxes = \App\Models\Tax::where('active', true)->get();
-
-        return Inertia::render('Accounts/Edit', [
-            'account' => $account,
-            'taxes' => $taxes
-        ]);
+        return back()->with('success', 'Account created successfully');
     }
 
     /**
@@ -98,24 +72,22 @@ class AccountWebController extends Controller
             'name_formatted' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'taxation_type' => 'required|integer|in:1,2,3',
+            'tax_country' => 'nullable|string|max:50',
+            'default_tax_id' => 'nullable|integer|exists:taxes,id',
             'gst' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'call' => 'nullable|string',
             'whatsapp' => 'nullable|string',
             'footer_content' => 'nullable|string',
             'signature' => 'sometimes|boolean',
-            'financial_year_start' => 'nullable|date_format:Y-m-d H:i:s',
-            'country' => 'required|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'tax_number' => 'nullable|string|max:50',
+            'financial_year_start' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         $validated['signature'] = $request->boolean('signature');
 
         $account->update($validated);
 
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account updated successfully');
+        return back()->with('success', 'Account updated successfully');
     }
 
     /**

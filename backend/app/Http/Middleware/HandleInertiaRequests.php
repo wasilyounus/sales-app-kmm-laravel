@@ -45,6 +45,10 @@ class HandleInertiaRequests extends Middleware
             'shared' => [
                 'accounts' => Account::select('id', 'name', 'name_formatted')->get(),
             ],
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+            ],
         ];
     }
 }

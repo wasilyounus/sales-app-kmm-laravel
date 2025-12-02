@@ -16,6 +16,7 @@ class Account extends Model
         'name_formatted',
         'desc',
         'taxation_type',
+        'tax_country',
         'gst',
         'address',
         'call',

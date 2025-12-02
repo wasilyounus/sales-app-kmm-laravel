@@ -18,7 +18,7 @@ export default defineConfig({
         strictPort: true,
         cors: true, // Enable CORS
         hmr: {
-            host: '192.168.1.174', // Your network IP
+            host: '192.168.1.131', // Your network IP
         },
     },
 });

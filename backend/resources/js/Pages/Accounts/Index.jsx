@@ -1,19 +1,36 @@
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import PageHeader from '@/Components/PageHeader';
 import Modal from '@/Components/Modal';
 import AccountForm from '@/Components/AccountForm';
+import Toast from '@/Components/Toast';
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Badge } from "@/Components/ui/badge";
 import { Search, Plus, Edit, FileText, Calculator, Building2 } from 'lucide-react';
 
-export default function Index({ accounts }) {
+export default function Index({ accounts, taxes }) {
+    const { flash } = usePage().props;
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAccount, setEditingAccount] = useState(null);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState('success');
+
+    useEffect(() => {
+        if (flash?.success) {
+            setToastMessage(flash.success);
+            setToastType('success');
+            setShowToast(true);
+        } else if (flash?.error) {
+            setToastMessage(flash.error);
+            setToastType('error');
+            setShowToast(true);
+        }
+    }, [flash]);
 
     const filteredAccounts = accounts.filter(account =>
         account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -157,10 +174,19 @@ export default function Index({ accounts }) {
             >
                 <AccountForm
                     account={editingAccount}
+                    taxes={taxes}
                     onSuccess={closeModal}
                     onCancel={closeModal}
                 />
             </Modal>
+
+            {showToast && (
+                <Toast
+                    message={toastMessage}
+                    type={toastType}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </AdminLayout>
     );
 }
