@@ -11,7 +11,7 @@ data class AccountDto(
     val desc: String?,
     @SerialName("taxation_type") val taxationType: Int,
     @SerialName("tax_rate") val taxRate: Int,
-    val gst: String?,
+    @SerialName("tax_number") val taxNumber: String?,
     val address: String?,
     val call: String?,
     val whatsapp: String?,

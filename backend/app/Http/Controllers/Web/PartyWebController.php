@@ -52,19 +52,21 @@ class PartyWebController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
-            'gst' => 'nullable|string|max:20',
+            'tax_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
         ]);
 
         Party::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
-            'gst' => $validated['gst'],
-            'account_id' => 1, // Default
-            'log_id' => 0, // Default
+            'tax_number' => $validated['tax_number'],
+            'address' => $validated['address'] ?? null,
+            'account_id' => auth()->user()->current_account_id,
+            'log_id' => 0,
         ]);
 
-        return redirect()->back()->with('success', 'Party created successfully.');
+        return redirect()->back()->with('success', 'Party created successfully');
     }
 
     /**
@@ -76,7 +78,8 @@ class PartyWebController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
-            'gst' => 'nullable|string|max:20',
+            'tax_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
         ]);
 
         $party->update($validated);

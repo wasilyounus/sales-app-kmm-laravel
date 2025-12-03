@@ -13,7 +13,7 @@ class Party extends Model
 
     protected $fillable = [
         'name',
-        'gst',
+        'tax_number',
         'phone',
         'email',
         'account_id',

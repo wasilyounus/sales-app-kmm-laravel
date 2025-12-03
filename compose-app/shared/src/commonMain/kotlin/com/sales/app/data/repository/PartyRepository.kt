@@ -41,7 +41,7 @@ class PartyRepository(
                     PartyEntity(
                         id = dto.id,
                         name = dto.name,
-                        gst = dto.gst,
+                        taxNumber = dto.taxNumber,
                         phone = dto.phone,
                         email = dto.email,
                         accountId = dto.account_id,
@@ -86,7 +86,7 @@ class PartyRepository(
     
     suspend fun createParty(
         name: String,
-        gst: String?,
+        taxNumber: String?,
         phone: String?,
         email: String?,
         addresses: List<AddressRequest>,
@@ -95,7 +95,7 @@ class PartyRepository(
         return try {
             val request = PartyRequest(
                 name = name, 
-                gst = gst, 
+                taxNumber = taxNumber, 
                 phone = phone, 
                 email = email, 
                 account_id = accountId,
@@ -108,7 +108,7 @@ class PartyRepository(
                 val entity = PartyEntity(
                     id = dto.id,
                     name = dto.name,
-                    gst = dto.gst,
+                    taxNumber = dto.taxNumber,
                     phone = dto.phone,
                     email = dto.email,
                     accountId = dto.account_id,
@@ -155,7 +155,7 @@ class PartyRepository(
     suspend fun updateParty(
         id: Int,
         name: String,
-        gst: String?,
+        taxNumber: String?,
         phone: String?,
         email: String?,
         addresses: List<AddressRequest>,
@@ -164,7 +164,7 @@ class PartyRepository(
         return try {
             val request = PartyRequest(
                 name = name, 
-                gst = gst, 
+                taxNumber = taxNumber, 
                 phone = phone, 
                 email = email, 
                 account_id = accountId,
@@ -177,7 +177,7 @@ class PartyRepository(
                 val entity = PartyEntity(
                     id = dto.id,
                     name = dto.name,
-                    gst = dto.gst,
+                    taxNumber = dto.taxNumber,
                     phone = dto.phone,
                     email = dto.email,
                     accountId = dto.account_id,
@@ -245,7 +245,7 @@ class PartyRepository(
     private fun PartyEntity.toDomainModel(addresses: List<Address> = emptyList()) = Party(
         id = id,
         name = name,
-        gst = gst,
+        taxNumber = taxNumber,
         phone = phone,
         email = email,
         accountId = accountId,

@@ -19,7 +19,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
         taxation_type: account?.taxation_type || 1,
         tax_country: account?.tax_country || '',
         default_tax_id: account?.default_tax_id || null,
-        gst: account?.gst || '',
+        tax_number: account?.tax_number || '',
         address: account?.address || '',
         call: account?.call || '',
         whatsapp: account?.whatsapp || '',
@@ -52,7 +52,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                 taxation_type: account.taxation_type || 1,
                 tax_country: account.tax_country || '',
                 default_tax_id: account.default_tax_id || null,
-                gst: account.gst || '',
+                tax_number: account.tax_number || '',
                 address: account.address || '',
                 call: account.call || '',
                 whatsapp: account.whatsapp || '',
@@ -208,11 +208,11 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="gst">GST Number</Label>
+                        <Label htmlFor="tax_number">Tax Number</Label>
                         <Input
-                            id="gst"
-                            value={data.gst}
-                            onChange={e => setData('gst', e.target.value)}
+                            id="tax_number"
+                            value={data.tax_number}
+                            onChange={e => setData('tax_number', e.target.value)}
                             placeholder="Enter GST number"
                         />
                     </div>

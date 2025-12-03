@@ -35,9 +35,28 @@ class ItemWebController extends Controller
 
         $items = $query->orderBy('name')->paginate(10)->withQueryString();
 
+        $taxes = \App\Models\Tax::where('active', true)->get();
+        $uqcs = \App\Models\Uqc::where('active', true)->get();
+
         return Inertia::render('Items/Index', [
             'items' => $items,
             'filters' => $request->only(['search']),
+            'taxes' => $taxes,
+            'uqcs' => $uqcs,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $taxes = \App\Models\Tax::where('active', true)->get();
+        $uqcs = \App\Models\Uqc::where('active', true)->get();
+        
+        return Inertia::render('Items/Create', [
+            'taxes' => $taxes,
+            'uqcs' => $uqcs,
         ]);
     }
 
@@ -53,6 +72,7 @@ class ItemWebController extends Controller
             'size' => 'nullable|string|max:255',
             'uqc' => 'required|integer',
             'hsn' => 'nullable|integer',
+            'tax_id' => 'nullable|integer|exists:taxes,id',
             'opening_stock' => 'nullable|numeric|min:0',
         ]);
 
@@ -65,8 +85,8 @@ class ItemWebController extends Controller
                 'size' => $validated['size'],
                 'uqc' => $validated['uqc'],
                 'hsn' => $validated['hsn'],
-                'account_id' => 1, // Default to account 1 for now, or use auth()->user()->current_account_id if available
-                // 'log_id' => ... 
+                'tax_id' => $validated['tax_id'] ?? null,
+                'account_id' => auth()->user()->current_account_id,
             ]);
 
             // Create Stock entry if opening stock provided
@@ -74,12 +94,12 @@ class ItemWebController extends Controller
                 \App\Models\Stock::create([
                     'item_id' => $item->id,
                     'count' => $validated['opening_stock'],
-                    'account_id' => 1,
+                    'account_id' => auth()->user()->current_account_id,
                 ]);
             }
         });
 
-        return redirect()->back()->with('success', 'Item created successfully.');
+        return redirect()->back()->with('success', 'Item created successfully');
     }
 
     /**
@@ -94,6 +114,7 @@ class ItemWebController extends Controller
             'size' => 'nullable|string|max:255',
             'uqc' => 'required|integer',
             'hsn' => 'nullable|integer',
+            'tax_id' => 'nullable|integer|exists:taxes,id',
         ]);
 
         $item->update($validated);

@@ -58,7 +58,7 @@ private fun com.sales.app.data.remote.dto.AccountDto.toEntity(): AccountEntity {
         desc = desc,
         taxationType = taxationType,
         taxRate = taxRate,
-        gst = gst,
+
         address = address,
         call = call,
         whatsapp = whatsapp,
@@ -78,7 +78,7 @@ private fun AccountEntity.toAccount(): Account {
         desc = desc,
         taxationType = taxationType,
         taxRate = taxRate,
-        gst = gst,
+
         address = address,
         call = call,
         whatsapp = whatsapp,
@@ -96,7 +96,7 @@ private fun Account.toDto(): com.sales.app.data.remote.dto.AccountDto {
         desc = desc,
         taxationType = taxationType,
         taxRate = taxRate,
-        gst = gst,
+
         address = address,
         call = call,
         whatsapp = whatsapp,

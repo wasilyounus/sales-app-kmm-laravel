@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class PartyEntity(
     @PrimaryKey val id: Int,
     val name: String,
-    val gst: String?,
+    val taxNumber: String?,
     val phone: String?,
     val email: String?,
     val accountId: Int,

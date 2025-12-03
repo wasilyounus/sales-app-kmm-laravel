@@ -52,7 +52,7 @@ class SyncRepository(
                         PartyEntity(
                             id = dto.id,
                             name = dto.name,
-                            gst = dto.gst,
+                            taxNumber = dto.taxNumber,
                             phone = dto.phone,
                             email = dto.email,
                             accountId = dto.account_id,
@@ -117,7 +117,7 @@ class SyncRepository(
                         PartyEntity(
                             id = dto.id,
                             name = dto.name,
-                            gst = dto.gst,
+                            taxNumber = dto.taxNumber,
                             phone = dto.phone,
                             email = dto.email,
                             accountId = dto.account_id,

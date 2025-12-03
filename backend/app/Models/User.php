@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'current_account_id',
     ];
 
     /**
@@ -45,5 +46,39 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get all accounts assigned to this user
+     */
+    public function accounts()
+    {
+        return $this->belongsToMany(Account::class, 'user_account_permissions')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user has any accounts assigned
+     */
+    public function hasAccounts(): bool
+    {
+        return $this->accounts()->exists();
+    }
+
+    /**
+     * Get accounts for selection (formatted)
+     */
+    public function getAccountsForSelection()
+    {
+        return $this->accounts()->get()->map(function ($account) {
+            return [
+                'id' => $account->id,
+                'name' => $account->name,
+                'name_formatted' => $account->name_formatted,
+                'role' => $account->pivot->role ?? 'user',
+                'visibility' => $account->visibility ?? 'private',
+            ];
+        });
     }
 }

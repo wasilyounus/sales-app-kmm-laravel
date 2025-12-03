@@ -1,4 +1,5 @@
 import { Link, usePage, router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/Components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/Components/ui/sheet";
 import {
@@ -12,10 +13,25 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2 } from 'lucide-react';
 import AccountSwitcher from '@/Components/AccountSwitcher';
+import AccountSelectionModal from '@/Components/AccountSelectionModal';
 
 export default function AdminLayout({ children, title }) {
-    const { shared } = usePage().props;
+    const { shared, flash } = usePage().props;
     const accounts = shared?.accounts || [];
+    const [showAccountModal, setShowAccountModal] = useState(false);
+
+    useEffect(() => {
+        // Show account selection modal if flagged by backend
+        if (flash?.show_account_selection) {
+            setShowAccountModal(true);
+        }
+    }, [flash]);
+
+    const handleAccountSelected = (accountId) => {
+        setShowAccountModal(false);
+        // Reload the page to apply the new account
+        router.reload();
+    };
 
     const navigation = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -145,6 +161,12 @@ export default function AdminLayout({ children, title }) {
                     {children}
                 </main>
             </div>
+
+            {/* Account Selection Modal */}
+            <AccountSelectionModal
+                open={showAccountModal}
+                onAccountSelected={handleAccountSelected}
+            />
         </div>
     );
 }

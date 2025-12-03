@@ -33,13 +33,13 @@ class CreatePartyUseCase(
 ) {
     suspend operator fun invoke(
         name: String,
-        gst: String?,
+        taxNumber: String?,
         phone: String?,
         email: String?,
         addresses: List<AddressRequest>,
         accountId: Int
     ): Result<Party> {
-        return partyRepository.createParty(name, gst, phone, email, addresses, accountId)
+        return partyRepository.createParty(name, taxNumber, phone, email, addresses, accountId)
     }
 }
 
@@ -49,13 +49,13 @@ class UpdatePartyUseCase(
     suspend operator fun invoke(
         id: Int,
         name: String,
-        gst: String?,
+        taxNumber: String?,
         phone: String?,
         email: String?,
         addresses: List<AddressRequest>,
         accountId: Int
     ): Result<Party> {
-        return partyRepository.updateParty(id, name, gst, phone, email, addresses, accountId)
+        return partyRepository.updateParty(id, name, taxNumber, phone, email, addresses, accountId)
     }
 }
 

@@ -24,6 +24,18 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Check if user has accounts
+            $user = Auth::user();
+            if (!$user->hasAccounts()) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'No accounts assigned. Please contact your administrator.',
+                ])->onlyInput('email');
+            }
+
+            // Check if current_account_id is stored in localStorage (client-side) or session
+            // If not, user will be redirected by middleware to select account
+            
             return redirect()->intended(route('admin.dashboard'));
         }
 

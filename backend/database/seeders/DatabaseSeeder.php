@@ -15,31 +15,52 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
+        // Create default user
+        $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@wyco.in',
             'password' => 'pass'
         ]);
 
-        \App\Models\Account::create([
-            'id' => 1,
-            'name' => 'Default Account',
-            'name_formatted' => 'Default Account',
-            'desc' => 'Default Account Description',
-            'taxation_type' => 'GST',
-            'gst' => 'GST123',
-            'address' => 'Default Address',
-            'call' => '1234567890',
-            'whatsapp' => '1234567890',
-            'footer_content' => 'Footer',
-            'signature' => false
+        // Create default account
+        $account = \App\Models\Account::create([
+            'name' => 'Demo Company',
+            'name_formatted' => 'DEMO COMPANY',
+            'desc' => 'Default demo account for testing',
+            'taxation_type' => 2,
+            'tax_country' => 'India',
+            'country' => 'India',
+            'state' => 'Maharashtra',
+            'gst' => '27AAAAA0000A1Z5',
+            'address' => '123 Demo Street, Mumbai, Maharashtra',
+            'call' => '+91 9876543210',
+            'whatsapp' => '+91 9876543210',
+            'footer_content' => 'Thank you for your business!',
+            'signature' => true,
+            'financial_year_start' => now()->format('Y-m-d H:i:s'),
+            'visibility' => 'public',
+            'log_id' => 1,
         ]);
 
+        // Assign account to user with admin role
+        $user->accounts()->attach($account->id, [
+            'role' => 'admin',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Set as current account for user
+        $user->update(['current_account_id' => $account->id]);
+
+        // Seed taxes and UQCs
         $this->call([
             TaxSeeder::class,
             UqcSeeder::class,
         ]);
+
+        $this->command->info('✓ Created default user: test@wyco.in (password: pass)');
+        $this->command->info('✓ Created default account: Demo Company');
+        $this->command->info('✓ Assigned account to user with admin role');
+        $this->command->info('✓ Seeded taxes and UQCs');
     }
 }

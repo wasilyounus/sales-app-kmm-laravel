@@ -188,6 +188,20 @@ class ApiService(
         }.body()
     }
 
+    suspend fun getUserAccounts(): AccountSelectionResponse {
+        return client.get("admin/select-account") {
+            addAuthHeader()
+        }.body()
+    }
+
+    suspend fun selectAccount(accountId: Int): SelectAccountResponse {
+        return client.post("admin/select-account") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(SelectAccountRequest(accountId))
+        }.body()
+    }
+
     suspend fun updateAccount(id: Int, request: AccountDto): AccountResponse {
         return client.put("accounts/$id") {
             addAuthHeader()

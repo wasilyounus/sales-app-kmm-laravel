@@ -17,7 +17,6 @@ class Account extends Model
         'desc',
         'taxation_type',
         'tax_country',
-        'gst',
         'address',
         'call',
         'whatsapp',
@@ -29,6 +28,7 @@ class Account extends Model
         'state',
         'tax_number',
         'default_tax_id',
+        'visibility',
     ];
 
     public function defaultTax()

@@ -101,11 +101,11 @@ fun PartyFormScreen(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // GST Field
+                    // Tax Number Field
                     OutlinedTextField(
-                        value = uiState.gst,
-                        onValueChange = viewModel::onGstChange,
-                        label = { Text("GST No.") },
+                        value = uiState.taxNumber,
+                        onValueChange = viewModel::onTaxNumberChange,
+                        label = { Text("Tax Number") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(

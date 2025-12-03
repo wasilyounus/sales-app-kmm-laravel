@@ -39,7 +39,7 @@ class PartyController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'gst' => 'nullable|string|max:255',
+            'tax_number' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'account_id' => 'required|exists:accounts,id',
@@ -56,7 +56,7 @@ class PartyController extends Controller
         try {
             $party = Party::create([
                 'name' => $validated['name'],
-                'gst' => $validated['gst'] ?? null,
+                'tax_number' => $validated['tax_number'] ?? null,
                 'phone' => $validated['phone'] ?? null,
                 'email' => $validated['email'] ?? null,
                 'account_id' => $validated['account_id'],
@@ -117,7 +117,7 @@ class PartyController extends Controller
         
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'gst' => 'nullable|string|max:255',
+            'tax_number' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'addresses' => 'nullable|array',

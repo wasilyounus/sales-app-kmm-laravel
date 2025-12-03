@@ -7,7 +7,7 @@ data class Account(
     val desc: String?,
     val taxationType: Int,
     val taxRate: Int,
-    val gst: String?,
+
     val address: String?,
     val call: String?,
     val whatsapp: String?,

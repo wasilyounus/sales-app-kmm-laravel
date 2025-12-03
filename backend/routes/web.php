@@ -28,6 +28,10 @@ Route::post('logout', [AuthController::class, 'destroy'])
 
 // Admin routes
 Route::middleware(['auth'])->prefix('admin')->group(function () {
+    // Account Selection
+    Route::get('/select-account', [App\Http\Controllers\Web\AccountSelectionController::class, 'index'])->name('account.list');
+    Route::post('/select-account', [App\Http\Controllers\Web\AccountSelectionController::class, 'store'])->name('account.select');
+    
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('accounts', AccountWebController::class);
 

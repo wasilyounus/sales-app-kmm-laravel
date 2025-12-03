@@ -62,6 +62,15 @@ kotlin {
                 implementation("androidx.datastore:datastore-preferences-core:1.1.0")
             }
         }
+        
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+                implementation("io.mockk:mockk:1.13.8")
+            }
+        }
+        
         val androidMain by getting {
             dependencies {
                 api("androidx.activity:activity-compose:1.9.0")

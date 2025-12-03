@@ -2,6 +2,9 @@ package com.sales.app.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sales.app.data.local.AccountPreferences
+import com.sales.app.data.remote.ApiService
+import com.sales.app.data.remote.dto.AccountSelectionDto
 import com.sales.app.domain.model.User
 import com.sales.app.domain.usecase.LoginUseCase
 import com.sales.app.util.Result
@@ -15,11 +18,16 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val user: User? = null,
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val showAccountSelection: Boolean = false,
+    val accounts: List<AccountSelectionDto> = emptyList(),
+    val noAccountsError: Boolean = false
 )
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val accountPreferences: AccountPreferences,
+    private val apiService: ApiService
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -31,14 +39,17 @@ class LoginViewModel(
             
             when (val result = loginUseCase(email, password)) {
                 is Result.Success -> {
+                    // Note: Backend should return accounts list
+                    // For now, we'll trigger account fetching
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             user = result.data,
-                            isSuccess = true,
                             error = null
                         )
                     }
+                    // Fetch accounts after successful login
+                    fetchAccounts()
                 }
                 is Result.Error -> {
                     _uiState.update {
@@ -56,7 +67,71 @@ class LoginViewModel(
         }
     }
     
+    private fun fetchAccounts() {
+        viewModelScope.launch {
+            try {
+                // Call API to fetch user's accounts
+                val response = apiService.getUserAccounts()
+                val accounts = response.accounts
+                
+                if (accounts.isEmpty()) {
+                    _uiState.update {
+                        it.copy(
+                            noAccountsError = true,
+                            error = "No accounts assigned. Contact your administrator."
+                        )
+                    }
+                } else if (accounts.size == 1) {
+                    // Auto-select single account
+                    selectAccount(accounts[0].id)
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            showAccountSelection = true,
+                            accounts = accounts
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        error = "Failed to load accounts: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+    
+    fun selectAccount(accountId: Int) {
+        viewModelScope.launch {
+            try {
+                // Call API to set account
+                apiService.selectAccount(accountId)
+                
+                // Save to DataStore
+                accountPreferences.saveCurrentAccount(accountId)
+                
+                _uiState.update {
+                    it.copy(
+                        showAccountSelection = false,
+                        isSuccess = true
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        error = "Failed to select account: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+    
     fun clearError() {
         _uiState.update { it.copy(error = null) }
+    }
+    
+    fun dismissAccountSelection() {
+        _uiState.update { it.copy(showAccountSelection = false) }
     }
 }

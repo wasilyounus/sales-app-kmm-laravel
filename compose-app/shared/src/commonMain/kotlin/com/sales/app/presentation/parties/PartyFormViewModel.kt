@@ -36,7 +36,7 @@ data class PartyFormState(
     
     // Fields
     val name: String = "",
-    val gst: String = "",
+    val taxNumber: String = "",
     val phone: String = "",
     val email: String = "",
     val addresses: List<AddressState> = emptyList(),
@@ -79,7 +79,7 @@ class PartyFormViewModel(
                         it.copy(
                             isLoading = false,
                             name = party.name,
-                            gst = party.gst ?: "",
+                            taxNumber = party.taxNumber ?: "",
                             phone = party.phone ?: "",
                             email = party.email ?: "",
                             addresses = addressStates
@@ -103,8 +103,8 @@ class PartyFormViewModel(
         }
     }
 
-    fun onGstChange(gst: String) {
-        _uiState.update { it.copy(gst = gst) }
+    fun onTaxNumberChange(taxNumber: String) {
+        _uiState.update { it.copy(taxNumber = taxNumber) }
     }
 
     fun onPhoneChange(phone: String) {
@@ -163,7 +163,7 @@ class PartyFormViewModel(
                 createPartyUseCase(
                     accountId = accountId,
                     name = _uiState.value.name,
-                    gst = _uiState.value.gst.ifBlank { null },
+                    taxNumber = _uiState.value.taxNumber.ifBlank { null },
                     phone = _uiState.value.phone.ifBlank { null },
                     email = _uiState.value.email.ifBlank { null },
                     addresses = addressRequests
@@ -173,7 +173,7 @@ class PartyFormViewModel(
                     updatePartyUseCase(
                         id = id,
                         name = _uiState.value.name,
-                        gst = _uiState.value.gst.ifBlank { null },
+                        taxNumber = _uiState.value.taxNumber.ifBlank { null },
                         phone = _uiState.value.phone.ifBlank { null },
                         email = _uiState.value.email.ifBlank { null },
                         addresses = addressRequests,
@@ -212,7 +212,7 @@ class PartyFormViewModel(
         _uiState.update { 
             it.copy(
                 name = "",
-                gst = "",
+                taxNumber = "",
                 phone = "",
                 email = "",
                 addresses = emptyList(),

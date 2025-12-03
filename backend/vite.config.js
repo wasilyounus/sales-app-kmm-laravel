@@ -21,4 +21,9 @@ export default defineConfig({
             host: '192.168.1.131', // Your network IP
         },
     },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './resources/js/test/setup.jsx',
+    },
 });

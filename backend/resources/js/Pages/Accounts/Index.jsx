@@ -34,7 +34,7 @@ export default function Index({ accounts, taxes }) {
 
     const filteredAccounts = accounts.filter(account =>
         account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        account.gst?.toLowerCase().includes(searchTerm.toLowerCase())
+        account.tax_number?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const getTaxTypeName = (type) => {
@@ -142,11 +142,11 @@ export default function Index({ accounts, taxes }) {
                                 )}
 
                                 <div className="space-y-2.5">
-                                    {account.gst && (
+                                    {account.tax_number && (
                                         <div className="flex items-center text-sm p-2 rounded-lg bg-gray-50 group-hover:bg-lime-50/50 transition-colors">
                                             <FileText className="w-4 h-4 mr-2.5 text-gray-400 shrink-0" />
-                                            <span className="text-gray-500 w-12 shrink-0">GST:</span>
-                                            <span className="font-medium text-gray-900 truncate">{account.gst}</span>
+                                            <span className="text-gray-500 w-12 shrink-0">Tax#:</span>
+                                            <span className="font-medium text-gray-900 truncate">{account.tax_number}</span>
                                         </div>
                                     )}
                                 </div>

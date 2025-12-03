@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class PartyDto(
     val id: Int,
     val name: String,
-    val gst: String?,
+    @SerialName("tax_number") val taxNumber: String?,
     val phone: String?,
     val email: String?,
     val account_id: Int,
@@ -19,7 +19,7 @@ data class PartyDto(
 @Serializable
 data class PartyRequest(
     val name: String,
-    val gst: String? = null,
+    @SerialName("tax_number") val taxNumber: String? = null,
     val phone: String? = null,
     val email: String? = null,
     val account_id: Int,

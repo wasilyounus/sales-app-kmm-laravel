@@ -13,7 +13,7 @@ class Transport extends Model
 
     protected $fillable = [
         'name',
-        'gst',
+        'tax_number',
         'contact',
         'active',
         'account_id',
