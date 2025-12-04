@@ -2,9 +2,11 @@ package com.sales.app.presentation.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sales.app.domain.model.Tax
 import com.sales.app.domain.model.Uqc
 import com.sales.app.domain.usecase.CreateItemUseCase
 import com.sales.app.domain.usecase.GetItemByIdUseCase
+import com.sales.app.domain.usecase.GetTaxesUseCase
 import com.sales.app.domain.usecase.GetUqcsUseCase
 import com.sales.app.domain.usecase.UpdateItemUseCase
 import com.sales.app.util.Result

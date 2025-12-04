@@ -107,6 +107,9 @@ class StockAdjustmentViewModel(
                         )
                     }
                 }
+                is Result.Loading -> {
+                    _uiState.update { it.copy(isSaving = true) }
+                }
             }
         }
     }

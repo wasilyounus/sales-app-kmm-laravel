@@ -17,7 +17,7 @@ data class InventoryUiState(
 )
 
 class InventoryViewModel(
-    private valgetInventorySummaryUseCase: GetInventorySummaryUseCase
+    private val getInventorySummaryUseCase: GetInventorySummaryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InventoryUiState())

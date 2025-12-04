@@ -10,6 +10,7 @@ data class PurchaseItemEntity(
     val itemId: Int,
     val price: Double,
     val qty: Double,
+    val taxId: Int?,
     val accountId: Int,
     val logId: Int,
     val createdAt: String,

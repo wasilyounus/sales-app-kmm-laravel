@@ -44,7 +44,8 @@ class CreateItemUseCase(
         brand: String?,
         size: String?,
         uqc: Int,
-        hsn: Int?
+        hsn: Int?,
+        taxId: Int?
     ): Result<Item> {
         return itemRepository.createItem(
             accountId = accountId,
@@ -53,7 +54,8 @@ class CreateItemUseCase(
             brand = brand,
             size = size,
             uqc = uqc,
-            hsn = hsn
+            hsn = hsn,
+            taxId = taxId
         )
     }
 }
@@ -69,7 +71,8 @@ class UpdateItemUseCase(
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int
+        accountId: Int,
+        taxId: Int?
     ): Result<Item> {
         return itemRepository.updateItem(
             id = itemId,
@@ -79,7 +82,8 @@ class UpdateItemUseCase(
             size = size,
             uqc = uqc,
             hsn = hsn,
-            accountId = accountId
+            accountId = accountId,
+            taxId = taxId
         )
     }
 }

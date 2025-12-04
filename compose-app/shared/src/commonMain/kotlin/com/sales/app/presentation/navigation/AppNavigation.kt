@@ -2,18 +2,40 @@ package com.sales.app.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import com.sales.app.presentation.quotes.QuoteViewScreen
-
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+import com.sales.app.di.SalesAppContainer
+import com.sales.app.presentation.login.LoginScreen
+import com.sales.app.presentation.register.RegisterScreen
+import com.sales.app.presentation.home.HomeScreen
+import com.sales.app.presentation.items.ItemsScreen
 import com.sales.app.presentation.items.ItemFormScreen
+import com.sales.app.presentation.parties.PartiesScreen
 import com.sales.app.presentation.parties.PartyFormScreen
+import com.sales.app.presentation.quotes.QuotesScreen
+import com.sales.app.presentation.quotes.QuoteFormScreen
+import com.sales.app.presentation.quotes.QuoteViewScreen
+import com.sales.app.presentation.sales.SalesScreen
+import com.sales.app.presentation.sales.SaleFormScreen
+import com.sales.app.presentation.orders.OrdersScreen
+import com.sales.app.presentation.orders.OrderFormScreen
+import com.sales.app.presentation.purchases.PurchasesScreen
+import com.sales.app.presentation.purchases.PurchaseFormScreen
+import com.sales.app.presentation.inventory.InventoryScreen
+import com.sales.app.presentation.inventory.StockAdjustmentScreen
+import com.sales.app.presentation.sync.SyncScreen
+import com.sales.app.presentation.settings.AccountSettingsScreen
 
 @Composable
 fun AppNavigation(
     navController: NavHostController,
     startDestination: String,
-    appContainer: AppContainer
+    appContainer: SalesAppContainer
 ) {
     NavHost(
         navController = navController,

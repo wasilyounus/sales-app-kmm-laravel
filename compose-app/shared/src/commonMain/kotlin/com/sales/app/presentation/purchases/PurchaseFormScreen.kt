@@ -293,7 +293,7 @@ fun PurchaseFormScreen(
             items = uiState.items,
             onDismiss = { showAddItemDialog = false },
             onItemSelected = { item ->
-                viewModel.onAddItem(item, 1.0, item.price)
+                viewModel.onAddItem(item, 1.0, 0.0)
                 showAddItemDialog = false
             }
         )

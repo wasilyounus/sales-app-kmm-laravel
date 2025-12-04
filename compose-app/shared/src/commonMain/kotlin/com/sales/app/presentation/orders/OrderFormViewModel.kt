@@ -196,6 +196,9 @@ class OrderFormViewModel(
                         )
                     }
                 }
+                is Result.Loading -> {
+                    // Loading state is already handled by isSaving flag
+                }
             }
         }
     }

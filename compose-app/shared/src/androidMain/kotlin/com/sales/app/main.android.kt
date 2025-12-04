@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
-import com.sales.app.di.AppContainer
+import com.sales.app.di.SalesAppContainer
 import com.sales.app.di.createDataStore
 import com.sales.app.di.createDatabase
 import com.sales.app.di.createHttpClient
@@ -38,7 +38,7 @@ actual fun getPlatformName(): String = "Android"
             }
         )
         
-        AppContainer(
+        SalesAppContainer(
             database = database,
             httpClient = createHttpClient(),
             dataStore = dataStore

@@ -35,15 +35,15 @@ class TaxRepository(
     
     private fun TaxEntity.toDomainModel() = Tax(
         id = id,
-        name = schemeName,
+        name = name,
         tax1Name = tax1Name,
-        tax1Rate = tax1Val?.toDouble(),
+        tax1Rate = tax1Rate,
         tax2Name = tax2Name,
-        tax2Rate = tax2Val?.toDouble(),
+        tax2Rate = tax2Rate,
         tax3Name = tax3Name,
-        tax3Rate = tax3Val?.toDouble(),
+        tax3Rate = tax3Rate,
         tax4Name = tax4Name,
-        tax4Rate = tax4Val?.toDouble(),
+        tax4Rate = tax4Rate,
         active = active
     )
 }

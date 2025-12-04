@@ -57,7 +57,7 @@ class OrderViewViewModel(
                         id = order.id,
                         partyName = partyName,
                         date = order.date,
-                        amount = order.items.sumOf { it.price * it.qty },
+                        amount = order.items.sumOf { it.price * it.qty }.toString(),
                         itemsCount = order.items.size
                     )
                     

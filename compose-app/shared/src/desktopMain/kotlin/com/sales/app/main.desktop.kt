@@ -3,7 +3,7 @@ package com.sales.app
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.sales.app.di.AppContainer
+import com.sales.app.di.SalesAppContainer
 import com.sales.app.di.createDataStore
 import com.sales.app.di.createDatabase
 import com.sales.app.di.createHttpClient
@@ -12,7 +12,7 @@ actual fun getPlatformName(): String = "Desktop"
 
 @Composable fun MainView() {
     val appContainer = remember {
-        AppContainer(
+        SalesAppContainer(
             database = createDatabase(null),
             httpClient = createHttpClient(),
             dataStore = createDataStore(null)
@@ -24,7 +24,7 @@ actual fun getPlatformName(): String = "Desktop"
 @Preview
 @Composable
 fun AppPreview() {
-    val appContainer = AppContainer(
+    val appContainer = SalesAppContainer(
         database = createDatabase(null),
         httpClient = createHttpClient(),
         dataStore = createDataStore(null)

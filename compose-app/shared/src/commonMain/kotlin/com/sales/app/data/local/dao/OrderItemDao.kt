@@ -5,7 +5,7 @@ import com.sales.app.data.local.entity.OrderItemEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface OrderItemDao {
+interface OrderItemDao { // DAO for order items
     @Query("SELECT * FROM order_items WHERE orderId = :orderId AND deletedAt IS NULL")
     fun getOrderItemsByOrderId(orderId: Int): Flow<List<OrderItemEntity>>
     

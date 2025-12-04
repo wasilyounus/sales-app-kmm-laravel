@@ -77,8 +77,10 @@ class OrderRepository(
                         price = dto.price,
                         qty = dto.qty,
                         accountId = dto.account_id,
+                        logId = 0,
                         createdAt = "",
-                        updatedAt = ""
+                        updatedAt = "",
+                        deletedAt = null
                     )
                 }
                 orderItemDao.insertOrderItems(entities)
@@ -126,8 +128,10 @@ class OrderRepository(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             accountId = itemDto.account_id,
+                            logId = 0,
                             createdAt = "",
-                            updatedAt = ""
+                            updatedAt = "",
+                            deletedAt = null
                         )
                     }
                     orderItemDao.insertOrderItems(itemEntities)
@@ -181,8 +185,10 @@ class OrderRepository(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             accountId = itemDto.account_id,
+                            logId = 0,
                             createdAt = "",
-                            updatedAt = ""
+                            updatedAt = "",
+                            deletedAt = null
                         )
                     }
                     orderItemDao.insertOrderItems(itemEntities)

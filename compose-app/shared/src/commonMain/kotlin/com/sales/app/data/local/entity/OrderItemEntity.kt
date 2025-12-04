@@ -3,7 +3,7 @@ package com.sales.app.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "order_items")
+@Entity(tableName = "order_items") // Table for order items
 data class OrderItemEntity(
     @PrimaryKey val id: Int,
     val orderId: Int,

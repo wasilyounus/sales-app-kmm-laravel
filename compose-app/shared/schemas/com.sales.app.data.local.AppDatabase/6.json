@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 5,
-    "identityHash": "6721b1092d80c8f944cc118dd85ec0f1",
+    "version": 6,
+    "identityHash": "65821d6dae7e0efacb550485b8c7c85b",
     "entities": [
       {
         "tableName": "users",
@@ -702,7 +702,7 @@
       },
       {
         "tableName": "order_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `orderId` INTEGER NOT NULL, `itemId` INTEGER NOT NULL, `price` REAL NOT NULL, `qty` REAL NOT NULL, `accountId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `orderId` INTEGER NOT NULL, `itemId` INTEGER NOT NULL, `price` REAL NOT NULL, `qty` REAL NOT NULL, `accountId` INTEGER NOT NULL, `logId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -741,6 +741,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "logId",
+            "columnName": "logId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "createdAt",
             "columnName": "createdAt",
             "affinity": "TEXT",
@@ -751,6 +757,11 @@
             "columnName": "updatedAt",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "deletedAt",
+            "columnName": "deletedAt",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -1137,7 +1148,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6721b1092d80c8f944cc118dd85ec0f1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '65821d6dae7e0efacb550485b8c7c85b')"
     ]
   }
 }

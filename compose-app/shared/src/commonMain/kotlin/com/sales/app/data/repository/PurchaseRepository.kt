@@ -78,8 +78,10 @@ class PurchaseRepository(
                         qty = dto.qty,
                         taxId = dto.tax_id,
                         accountId = dto.account_id,
+                        logId = 0,
                         createdAt = "",
-                        updatedAt = ""
+                        updatedAt = "",
+                        deletedAt = null
                     )
                 }
                 purchaseItemDao.insertPurchaseItems(entities)
@@ -128,8 +130,10 @@ class PurchaseRepository(
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
+                            logId = 0,
                             createdAt = "",
-                            updatedAt = ""
+                            updatedAt = "",
+                            deletedAt = null
                         )
                     }
                     purchaseItemDao.insertPurchaseItems(itemEntities)
@@ -184,8 +188,10 @@ class PurchaseRepository(
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
+                            logId = 0,
                             createdAt = "",
-                            updatedAt = ""
+                            updatedAt = "",
+                            deletedAt = null
                         )
                     }
                     purchaseItemDao.insertPurchaseItems(itemEntities)

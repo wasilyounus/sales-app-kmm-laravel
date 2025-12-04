@@ -80,8 +80,10 @@ class SaleRepository(
                         qty = dto.qty,
                         taxId = dto.tax_id,
                         accountId = dto.account_id,
+                        logId = 0,
                         createdAt = "",
-                        updatedAt = ""
+                        updatedAt = "",
+                        deletedAt = null
                     )
                 }
                 saleItemDao.insertSaleItems(entities)
@@ -136,8 +138,10 @@ class SaleRepository(
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
+                            logId = 0,
                             createdAt = "",
-                            updatedAt = ""
+                            updatedAt = "",
+                            deletedAt = null
                         )
                     }
                     saleItemDao.insertSaleItems(itemEntities)
@@ -198,8 +202,10 @@ class SaleRepository(
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
+                            logId = 0,
                             createdAt = "",
-                            updatedAt = ""
+                            updatedAt = "",
+                            deletedAt = null
                         )
                     }
                     saleItemDao.insertSaleItems(itemEntities)
