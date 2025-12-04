@@ -20,6 +20,10 @@ class AccountRepositoryImpl(
         }
     }
     
+    override fun getAccountById(id: Int): Flow<Account?> {
+        return accountDao.getAccountById(id).map { it?.toAccount() }
+    }
+    
     override suspend fun fetchAccount(id: Int) {
         try {
             val response = apiService.getAccount(id)

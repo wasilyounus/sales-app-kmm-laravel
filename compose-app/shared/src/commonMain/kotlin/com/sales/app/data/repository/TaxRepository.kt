@@ -23,6 +23,17 @@ class TaxRepository(
         }
     }
     
+    fun getActiveTaxesByCountry(country: String?): Flow<List<Tax>> {
+        return taxDao.getAllActive().map { entities ->
+            entities
+                .filter { entity ->
+                    // Show taxes where country matches or is null (global taxes like "No Tax")
+                    entity.country == null || entity.country == country
+                }
+                .map { it.toDomainModel() }
+        }
+    }
+    
     suspend fun syncTaxes(): com.sales.app.util.Result<Unit> {
         return try {
             // Assuming there's an API endpoint for taxes
@@ -35,15 +46,17 @@ class TaxRepository(
     
     private fun TaxEntity.toDomainModel() = Tax(
         id = id,
-        name = name,
+        schemeName = schemeName,
+        country = country,
         tax1Name = tax1Name,
-        tax1Rate = tax1Rate,
+        tax1Val = tax1Val,
         tax2Name = tax2Name,
-        tax2Rate = tax2Rate,
+        tax2Val = tax2Val,
         tax3Name = tax3Name,
-        tax3Rate = tax3Rate,
+        tax3Val = tax3Val,
         tax4Name = tax4Name,
-        tax4Rate = tax4Rate,
+        tax4Val = tax4Val,
         active = active
     )
+
 }

@@ -29,7 +29,7 @@ class AuthRepository(
         return try {
             val response = apiService.login(LoginRequest(email, password))
             
-            if (response.success) {
+            if (response.success && response.data != null) {
                 // Save token
                 saveToken(response.data.token)
                 
@@ -72,7 +72,7 @@ class AuthRepository(
                 RegisterRequest(name, email, password, passwordConfirmation)
             )
             
-            if (response.success) {
+            if (response.success && response.data != null) {
                 // Save token
                 saveToken(response.data.token)
                 

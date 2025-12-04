@@ -20,8 +20,9 @@ data class RegisterRequest(
 data class AuthResponse(
     val success: Boolean,
     val message: String,
-    val data: AuthData
+    val data: AuthData? = null
 )
+
 
 @Serializable
 data class AuthData(

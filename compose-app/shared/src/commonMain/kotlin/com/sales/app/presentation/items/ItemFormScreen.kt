@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +34,11 @@ fun ItemFormScreen(
     viewModel: ItemFormViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    
+    LaunchedEffect(accountId) {
+        // Load taxes filtered by account country
+        viewModel.loadTaxesByAccount(accountId)
+    }
     
     LaunchedEffect(itemId) {
         if (itemId != null) {
@@ -227,52 +233,48 @@ fun ItemFormScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     
-                    FlowRow(
+                    var showTaxDialog by remember { mutableStateOf(false) }
+                    
+                    // Tax Selection Dropdown
+                    OutlinedButton(
+                        onClick = { showTaxDialog = true },
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
                     ) {
-                        // None option
-                        val isNoneSelected = uiState.selectedTaxId == null
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(
-                                    if (isNoneSelected) MaterialTheme.colorScheme.primaryContainer 
-                                    else MaterialTheme.colorScheme.surfaceVariant
-                                )
-                                .clickable { viewModel.onTaxChange(null) }
-                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "None",
-                                color = if (isNoneSelected) MaterialTheme.colorScheme.onPrimaryContainer 
-                                       else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 14.sp
+                                text = uiState.taxes.find { it.id == uiState.selectedTaxId }?.schemeName 
+                                    ?: "Select Tax Scheme",
+                                color = if (uiState.selectedTaxId != null) {
+                                    MaterialTheme.colorScheme.onSurface
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "Select",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                        
-                        uiState.taxes.forEach { tax ->
-                            val isSelected = tax.id == uiState.selectedTaxId
-                            val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-                            val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                            
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(backgroundColor)
-                                    .clickable { viewModel.onTaxChange(tax.id) }
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = tax.name,
-                                    color = contentColor,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 14.sp
-                                )
-                            }
-                        }
+                    }
+                    
+                    // Tax Selection Dialog
+                    if (showTaxDialog) {
+                        com.sales.app.presentation.components.TaxSelectionDialog(
+                            taxes = uiState.taxes,
+                            selectedTaxId = uiState.selectedTaxId,
+                            onTaxSelected = viewModel::onTaxChange,
+                            onDismiss = { showTaxDialog = false }
+                        )
                     }
                     
                     Spacer(modifier = Modifier.height(32.dp))

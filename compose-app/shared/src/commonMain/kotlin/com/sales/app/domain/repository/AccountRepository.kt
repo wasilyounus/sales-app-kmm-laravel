@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {
     fun getAccount(): Flow<Account?>
+    fun getAccountById(id: Int): Flow<Account?>
     suspend fun updateAccount(account: Account): com.sales.app.util.Result<Account>
     suspend fun fetchAccount(id: Int)
 }

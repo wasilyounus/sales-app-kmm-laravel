@@ -25,7 +25,7 @@ import com.sales.app.data.local.entity.*
         SyncTimestampEntity::class,
         StockMovementEntity::class
     ],
-    version = 7,
+    version = 9,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -44,5 +44,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun addressDao(): AddressDao
     abstract fun syncDao(): SyncDao
     abstract fun taxDao(): TaxDao
+    abstract fun uqcDao(): UqcDao
     abstract fun inventoryDao(): InventoryDao
 }

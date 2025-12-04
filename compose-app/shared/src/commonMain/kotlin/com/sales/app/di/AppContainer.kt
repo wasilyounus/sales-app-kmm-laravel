@@ -39,7 +39,7 @@ class SalesAppContainer(
     val authRepository = AuthRepository(apiService, database.userDao(), dataStore)
     val itemRepository = ItemRepository(apiService, database.itemDao())
     val partyRepository = PartyRepository(apiService, database.partyDao(), database.addressDao())
-    val syncRepository = SyncRepository(apiService, database.itemDao(), database.partyDao(), database.syncDao())
+    val syncRepository = SyncRepository(apiService, database.itemDao(), database.partyDao(), database.taxDao(), database.uqcDao(), database.syncDao())
     val quoteRepository = QuoteRepository(apiService, database.quoteDao(), database.quoteItemDao())
     val saleRepository = SaleRepository(apiService, database.saleDao(), database.saleItemDao())
     val orderRepository = OrderRepository(apiService, database.orderDao(), database.orderItemDao())
@@ -123,7 +123,8 @@ class SalesAppContainer(
         updateItemUseCase,
         getItemByIdUseCase,
         getUqcsUseCase,
-        getTaxesUseCase
+        getTaxesUseCase,
+        accountRepository
     )
     fun createPartiesViewModel() = PartiesViewModel(getPartiesUseCase, searchPartiesUseCase)
     fun createPartyFormViewModel() = com.sales.app.presentation.parties.PartyFormViewModel(

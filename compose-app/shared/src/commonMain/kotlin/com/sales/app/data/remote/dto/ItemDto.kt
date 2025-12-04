@@ -58,17 +58,20 @@ data class UqcsResponse(
     val data: List<UqcDto>
 )
 
+
 @Serializable
 data class TaxDto(
     val id: Int,
-    val name: String,
+    val scheme_name: String,
+    val country: String? = null,
     val tax1_name: String?,
-    val tax1_rate: Double?,
+    val tax1_val: Double?,
     val tax2_name: String?,
-    val tax2_rate: Double?,
+    val tax2_val: Double?,
     val tax3_name: String?,
-    val tax3_rate: Double?,
+    val tax3_val: Double?,
     val tax4_name: String?,
-    val tax4_rate: Double?,
+    val tax4_val: Double?,
     val active: Boolean
 )
+

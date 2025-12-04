@@ -22,8 +22,10 @@ class Tax extends Model
         'tax4_name',
         'tax4_val',
         'active',
+        'country',
         'log_id',
     ];
+
 
     protected $casts = [
         'active' => 'boolean',

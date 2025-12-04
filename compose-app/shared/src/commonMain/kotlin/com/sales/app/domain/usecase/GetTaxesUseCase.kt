@@ -7,7 +7,11 @@ import kotlinx.coroutines.flow.Flow
 class GetTaxesUseCase(
     private val taxRepository: TaxRepository
 ) {
-    operator fun invoke(): Flow<List<Tax>> {
-        return taxRepository.getAllActiveTaxes()
+    operator fun invoke(country: String? = null): Flow<List<Tax>> {
+        return if (country != null) {
+            taxRepository.getActiveTaxesByCountry(country)
+        } else {
+            taxRepository.getAllActiveTaxes()
+        }
     }
 }

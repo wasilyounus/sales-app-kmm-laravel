@@ -30,6 +30,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user', [AuthController::class, 'user']);
     
+    // Account Selection
+    Route::prefix('admin')->group(function () {
+        Route::get('select-account', [App\Http\Controllers\Web\AccountSelectionController::class, 'index']);
+        Route::post('select-account', [App\Http\Controllers\Web\AccountSelectionController::class, 'store']);
+    });
+    
     // Accounts
     Route::get('accounts', [AccountController::class, 'index']);
     Route::post('accounts', [AccountController::class, 'store']);

@@ -22,14 +22,16 @@ data class Uqc(
 
 data class Tax(
     val id: Int,
-    val name: String,
+    val schemeName: String,
+    val country: String? = null,
     val tax1Name: String?,
-    val tax1Rate: Double?,
+    val tax1Val: Double?,
     val tax2Name: String?,
-    val tax2Rate: Double?,
+    val tax2Val: Double?,
     val tax3Name: String?,
-    val tax3Rate: Double?,
+    val tax3Val: Double?,
     val tax4Name: String?,
-    val tax4Rate: Double?,
+    val tax4Val: Double?,
     val active: Boolean
 )
+

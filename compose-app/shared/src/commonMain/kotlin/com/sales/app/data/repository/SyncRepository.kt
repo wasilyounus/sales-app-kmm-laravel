@@ -3,6 +3,8 @@ package com.sales.app.data.repository
 import com.sales.app.data.local.dao.ItemDao
 import com.sales.app.data.local.dao.PartyDao
 import com.sales.app.data.local.dao.SyncDao
+import com.sales.app.data.local.dao.TaxDao
+import com.sales.app.data.local.dao.UqcDao
 import com.sales.app.data.local.entity.ItemEntity
 import com.sales.app.data.local.entity.PartyEntity
 import com.sales.app.data.local.entity.SyncTimestampEntity
@@ -16,6 +18,8 @@ class SyncRepository(
     private val apiService: ApiService,
     private val itemDao: ItemDao,
     private val partyDao: PartyDao,
+    private val taxDao: TaxDao,
+    private val uqcDao: UqcDao,
     private val syncDao: SyncDao
 ) {
     suspend fun syncMasterData(accountId: Int): Result<Unit> {
@@ -62,6 +66,44 @@ class SyncRepository(
                         )
                     }
                     partyDao.insertParties(entities)
+                }
+                
+                // Save taxes
+                response.data.taxes?.let { taxes ->
+                    val entities = taxes.map { dto ->
+                        com.sales.app.data.local.entity.TaxEntity(
+                            id = dto.id,
+                            schemeName = dto.scheme_name,
+                            country = dto.country,
+                            tax1Name = dto.tax1_name,
+                            tax1Val = dto.tax1_val,
+                            tax2Name = dto.tax2_name,
+                            tax2Val = dto.tax2_val,
+                            tax3Name = dto.tax3_name,
+                            tax3Val = dto.tax3_val,
+                            tax4Name = dto.tax4_name,
+                            tax4Val = dto.tax4_val,
+                            active = dto.active,
+                            createdAt = "",
+                            updatedAt = ""
+                        )
+                    }
+                    taxDao.insertAll(entities)
+                }
+                
+                // Save uqcs
+                response.data.uqcs?.let { uqcs ->
+                    val entities = uqcs.map { dto ->
+                        com.sales.app.data.local.entity.UqcEntity(
+                            id = dto.id,
+                            code = dto.uqc,
+                            name = dto.quantity ?: "",
+                            active = dto.active,
+                            createdAt = "",
+                            updatedAt = ""
+                        )
+                    }
+                    uqcDao.insertAll(entities)
                 }
                 
                 // Update sync timestamp
