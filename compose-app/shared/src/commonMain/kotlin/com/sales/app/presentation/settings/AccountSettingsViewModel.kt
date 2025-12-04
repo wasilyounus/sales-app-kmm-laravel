@@ -14,6 +14,7 @@ data class AccountSettingsUiState(
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val account: Account? = null,
+    val taxes: List<com.sales.app.domain.model.Tax> = emptyList(),
     val error: String? = null,
     val successMessage: String? = null
 )
@@ -21,7 +22,8 @@ data class AccountSettingsUiState(
 class AccountSettingsViewModel(
     private val getAccountUseCase: GetAccountUseCase,
     private val updateAccountUseCase: UpdateAccountUseCase,
-    private val fetchAccountUseCase: FetchAccountUseCase
+    private val fetchAccountUseCase: FetchAccountUseCase,
+    private val getTaxesUseCase: com.sales.app.domain.usecase.GetTaxesUseCase
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(AccountSettingsUiState())
@@ -31,6 +33,13 @@ class AccountSettingsViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             
+            // Load taxes
+            launch {
+                getTaxesUseCase().collect { taxes ->
+                    _uiState.update { it.copy(taxes = taxes) }
+                }
+            }
+            
             // Fetch from API first
             try {
                 fetchAccountUseCase(accountId)
@@ -38,8 +47,8 @@ class AccountSettingsViewModel(
                 // Continue with local data if fetch fails
             }
             
-            // Observe local data
-            getAccountUseCase().collect { account ->
+            // Observe local data by ID
+            getAccountUseCase(accountId).collect { account ->
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
@@ -120,14 +129,14 @@ class AccountSettingsViewModel(
         }
     }
     
-    fun updateDefaultTax(taxRate: Int) {
+    fun updateDefaultTax(taxId: Int) {
         val currentAccount = _uiState.value.account ?: return
         
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true, error = null, successMessage = null) }
             
             val updatedAccount = currentAccount.copy(
-                taxRate = taxRate
+                defaultTaxId = taxId
             )
             
             when (val result = updateAccountUseCase(updatedAccount)) {
@@ -136,6 +145,58 @@ class AccountSettingsViewModel(
                         it.copy(
                             isSaving = false,
                             successMessage = "Default tax updated successfully"
+                        ) 
+                    }
+                }
+                is Result.Error -> {
+                    _uiState.update { 
+                        it.copy(
+                            isSaving = false,
+                            error = result.message
+                        ) 
+                    }
+                }
+                is Result.Loading -> {
+                    // Already handled by isSaving state
+                }
+            }
+        }
+    }
+    
+    fun updateAddress(address: String) {
+        updateAccountField { it.copy(address = address) }
+    }
+    
+    fun updateCall(call: String) {
+        updateAccountField { it.copy(call = call) }
+    }
+    
+    fun updateWhatsapp(whatsapp: String) {
+        updateAccountField { it.copy(whatsapp = whatsapp) }
+    }
+    
+    fun updateFooterContent(content: String) {
+        updateAccountField { it.copy(footerContent = content) }
+    }
+    
+    fun updateSignature(enabled: Boolean) {
+        updateAccountField { it.copy(signature = if (enabled) "1" else "0") }
+    }
+    
+    private fun updateAccountField(update: (Account) -> Account) {
+        val currentAccount = _uiState.value.account ?: return
+        
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true, error = null, successMessage = null) }
+            
+            val updatedAccount = update(currentAccount)
+            
+            when (val result = updateAccountUseCase(updatedAccount)) {
+                is Result.Success -> {
+                    _uiState.update { 
+                        it.copy(
+                            isSaving = false,
+                            successMessage = "Settings updated successfully"
                         ) 
                     }
                 }

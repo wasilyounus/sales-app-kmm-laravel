@@ -10,7 +10,7 @@ data class AccountDto(
     @SerialName("name_formatted") val nameFormatted: String,
     val desc: String?,
     @SerialName("taxation_type") val taxationType: Int,
-    @SerialName("tax_rate") val taxRate: Int,
+    @SerialName("tax_rate") val taxRate: Int = 0,
     val address: String?,
     val call: String?,
     val whatsapp: String?,

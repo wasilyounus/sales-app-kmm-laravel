@@ -69,6 +69,10 @@ private fun com.sales.app.data.remote.dto.AccountDto.toEntity(): AccountEntity {
         footerContent = footerContent,
         signature = signature?.toString(),
         financialYearStart = financialYearStart,
+        country = country,
+        state = state,
+        taxNumber = taxNumber,
+        defaultTaxId = defaultTaxId,
         createdAt = createdAt ?: "",
         updatedAt = updatedAt ?: ""
     )
@@ -88,7 +92,11 @@ private fun AccountEntity.toAccount(): Account {
         whatsapp = whatsapp,
         footerContent = footerContent,
         signature = signature,
-        financialYearStart = financialYearStart
+        financialYearStart = financialYearStart,
+        country = country,
+        state = state,
+        taxNumber = taxNumber,
+        defaultTaxId = defaultTaxId
     )
 }
 
@@ -106,6 +114,10 @@ private fun Account.toDto(): com.sales.app.data.remote.dto.AccountDto {
         whatsapp = whatsapp,
         footerContent = footerContent,
         signature = signature?.toBoolean(),
-        financialYearStart = financialYearStart
+        financialYearStart = financialYearStart,
+        country = country,
+        state = state,
+        taxNumber = taxNumber,
+        defaultTaxId = defaultTaxId
     )
 }

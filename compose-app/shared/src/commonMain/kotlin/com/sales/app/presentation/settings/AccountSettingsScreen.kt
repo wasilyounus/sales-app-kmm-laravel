@@ -75,10 +75,16 @@ fun AccountSettingsScreen(
                     onTaxationTypeChange = { taxationType ->
                         viewModel.updateTaxationType(taxationType)
                     },
-                    onDefaultTaxChange = { taxRate ->
-                        viewModel.updateDefaultTax(taxRate)
+                    onDefaultTaxChange = { taxId ->
+                        viewModel.updateDefaultTax(taxId)
                     },
-                    onClearMessages = viewModel::clearMessages
+                    onAddressChange = viewModel::updateAddress,
+                    onCallChange = viewModel::updateCall,
+                    onWhatsappChange = viewModel::updateWhatsapp,
+                    onFooterContentChange = viewModel::updateFooterContent,
+                    onSignatureChange = viewModel::updateSignature,
+                    onClearMessages = viewModel::clearMessages,
+                    taxes = uiState.taxes
                 )
             }
         }
@@ -95,9 +101,16 @@ private fun AccountSettingsContent(
     onFinancialYearStartChange: (String) -> Unit,
     onTaxationTypeChange: (Int) -> Unit,
     onDefaultTaxChange: (Int) -> Unit,
-    onClearMessages: () -> Unit
+    onAddressChange: (String) -> Unit,
+    onCallChange: (String) -> Unit,
+    onWhatsappChange: (String) -> Unit,
+    onFooterContentChange: (String) -> Unit,
+    onSignatureChange: (Boolean) -> Unit,
+    onClearMessages: () -> Unit,
+    taxes: List<com.sales.app.domain.model.Tax>
 ) {
     var showDateTimePicker by remember { mutableStateOf(false) }
+    var showTaxDropdown by remember { mutableStateOf(false) }
     
     Column(
         modifier = Modifier
@@ -129,10 +142,69 @@ private fun AccountSettingsContent(
                 
                 HorizontalDivider()
                 
+                // Contact Info
+                OutlinedTextField(
+                    value = account.address ?: "",
+                    onValueChange = onAddressChange,
+                    label = { Text("Address") },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isSaving,
+                    minLines = 2
+                )
+                
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = account.call ?: "",
+                        onValueChange = onCallChange,
+                        label = { Text("Phone") },
+                        modifier = Modifier.weight(1f),
+                        enabled = !isSaving,
+                        singleLine = true
+                    )
+                    
+                    OutlinedTextField(
+                        value = account.whatsapp ?: "",
+                        onValueChange = onWhatsappChange,
+                        label = { Text("WhatsApp") },
+                        modifier = Modifier.weight(1f),
+                        enabled = !isSaving,
+                        singleLine = true
+                    )
+                }
+                
+                HorizontalDivider()
+                
                 InfoRow(label = "Country", value = account.country ?: "India")
                 account.state?.let { InfoRow(label = "State", value = it) }
                 account.taxNumber?.let { 
                     InfoRow(label = if (account.country == "India") "GST Number" else "Tax Number", value = it) 
+                }
+                
+                // Footer Content
+                OutlinedTextField(
+                    value = account.footerContent ?: "",
+                    onValueChange = onFooterContentChange,
+                    label = { Text("Footer Content (Invoice)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isSaving,
+                    minLines = 2
+                )
+                
+                // Signature Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Enable Signature",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Switch(
+                        checked = account.signature == "1" || account.signature == "true",
+                        onCheckedChange = onSignatureChange,
+                        enabled = !isSaving
+                    )
                 }
             }
         }
@@ -187,27 +259,53 @@ private fun AccountSettingsContent(
                     )
                 }
                 
-                // Default Tax Percentage (only show if not "No Tax")
+                // Default Tax Selection (only show if not "No Tax")
                 if (account.taxationType != 1) {
                     Spacer(modifier = Modifier.height(8.dp))
                     
-                    OutlinedTextField(
-                        value = account.taxRate.toString(),
-                        onValueChange = { value ->
-                            value.toIntOrNull()?.let { tax ->
-                                if (tax in 0..100) {
-                                    onDefaultTaxChange(tax)
-                                }
+                    ExposedDropdownMenuBox(
+                        expanded = showTaxDropdown,
+                        onExpandedChange = { if (!isSaving) showTaxDropdown = !showTaxDropdown }
+                    ) {
+                        val selectedTax = taxes.find { it.id == account.defaultTaxId }
+                        val displayText = selectedTax?.let { "${it.schemeName} (${(it.tax1Val ?: 0.0) + (it.tax2Val ?: 0.0) + (it.tax3Val ?: 0.0) + (it.tax4Val ?: 0.0)}%)" } ?: "Select Default Tax"
+                        
+                        // Filter taxes by account country
+                        val filteredTaxes = taxes.filter { tax ->
+                            tax.country == null || tax.country == account.country
+                        }
+                        
+                        OutlinedTextField(
+                            value = displayText,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Default Tax") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showTaxDropdown) },
+                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            enabled = !isSaving
+                        )
+                        
+                        ExposedDropdownMenu(
+                            expanded = showTaxDropdown,
+                            onDismissRequest = { showTaxDropdown = false }
+                        ) {
+                            filteredTaxes.forEach { tax ->
+                                DropdownMenuItem(
+                                    text = { 
+                                        Text("${tax.schemeName} (${(tax.tax1Val ?: 0.0) + (tax.tax2Val ?: 0.0) + (tax.tax3Val ?: 0.0) + (tax.tax4Val ?: 0.0)}%)") 
+                                    },
+                                    onClick = {
+                                        onDefaultTaxChange(tax.id)
+                                        showTaxDropdown = false
+                                    }
+                                )
                             }
-                        },
-                        label = { Text("Default Tax (%)") },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = !isSaving,
-                        singleLine = true
-                    )
+                        }
+                    }
                     
                     Text(
-                        text = "Enter the default tax percentage (0-100)",
+                        text = "Select the default tax rate for new items",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

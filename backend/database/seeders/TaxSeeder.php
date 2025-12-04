@@ -16,6 +16,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 1,
                 'scheme_name' => 'No Tax',
+                'country' => null,  // Global - available everywhere
                 'tax1_name' => null,
                 'tax1_val' => 0,
                 'tax2_name' => null,
@@ -32,6 +33,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 2,
                 'scheme_name' => 'India GST 5% (Intrastate - CGST+SGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 2.5,
                 'tax2_name' => 'SGST',
@@ -46,6 +48,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 3,
                 'scheme_name' => 'India GST 5% (Interstate - IGST)',
+                'country' => 'India',
                 'tax1_name' => 'IGST',
                 'tax1_val' => 5,
                 'tax2_name' => null,
@@ -60,6 +63,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 4,
                 'scheme_name' => 'India GST 5% (UT - CGST+UTGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 2.5,
                 'tax2_name' => 'UTGST',
@@ -76,6 +80,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 5,
                 'scheme_name' => 'India GST 12% (Intrastate - CGST+SGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 6,
                 'tax2_name' => 'SGST',
@@ -90,6 +95,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 6,
                 'scheme_name' => 'India GST 12% (Interstate - IGST)',
+                'country' => 'India',
                 'tax1_name' => 'IGST',
                 'tax1_val' => 12,
                 'tax2_name' => null,
@@ -104,6 +110,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 7,
                 'scheme_name' => 'India GST 12% (UT - CGST+UTGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 6,
                 'tax2_name' => 'UTGST',
@@ -120,6 +127,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 8,
                 'scheme_name' => 'India GST 18% (Intrastate - CGST+SGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 9,
                 'tax2_name' => 'SGST',
@@ -134,6 +142,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 9,
                 'scheme_name' => 'India GST 18% (Interstate - IGST)',
+                'country' => 'India',
                 'tax1_name' => 'IGST',
                 'tax1_val' => 18,
                 'tax2_name' => null,
@@ -148,6 +157,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 10,
                 'scheme_name' => 'India GST 18% (UT - CGST+UTGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 9,
                 'tax2_name' => 'UTGST',
@@ -164,6 +174,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 11,
                 'scheme_name' => 'India GST 28% (Intrastate - CGST+SGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 14,
                 'tax2_name' => 'SGST',
@@ -178,6 +189,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 12,
                 'scheme_name' => 'India GST 28% (Interstate - IGST)',
+                'country' => 'India',
                 'tax1_name' => 'IGST',
                 'tax1_val' => 28,
                 'tax2_name' => null,
@@ -192,6 +204,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 13,
                 'scheme_name' => 'India GST 28% (UT - CGST+UTGST)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 14,
                 'tax2_name' => 'UTGST',
@@ -206,6 +219,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 14,
                 'scheme_name' => 'India GST 28% + Cess (Luxury/Sin Goods)',
+                'country' => 'India',
                 'tax1_name' => 'CGST',
                 'tax1_val' => 14,
                 'tax2_name' => 'SGST',
@@ -222,6 +236,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 15,
                 'scheme_name' => 'Saudi VAT 15% (Standard)',
+                'country' => 'Saudi Arabia',
                 'tax1_name' => 'VAT',
                 'tax1_val' => 15,
                 'tax2_name' => null,
@@ -236,6 +251,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 16,
                 'scheme_name' => 'Saudi VAT 0% (Zero-rated - Exports)',
+                'country' => 'Saudi Arabia',
                 'tax1_name' => 'VAT',
                 'tax1_val' => 0,
                 'tax2_name' => null,
@@ -250,6 +266,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 17,
                 'scheme_name' => 'Saudi VAT Exempt (Financial Services)',
+                'country' => 'Saudi Arabia',
                 'tax1_name' => null,
                 'tax1_val' => 0,
                 'tax2_name' => null,
@@ -266,6 +283,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 18,
                 'scheme_name' => 'UAE VAT 5% (Standard)',
+                'country' => 'UAE',
                 'tax1_name' => 'VAT',
                 'tax1_val' => 5,
                 'tax2_name' => null,
@@ -280,6 +298,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 19,
                 'scheme_name' => 'UAE VAT 0% (Zero-rated - Exports)',
+                'country' => 'UAE',
                 'tax1_name' => 'VAT',
                 'tax1_val' => 0,
                 'tax2_name' => null,
@@ -294,6 +313,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 20,
                 'scheme_name' => 'UAE VAT Exempt (Financial Services)',
+                'country' => 'UAE',
                 'tax1_name' => null,
                 'tax1_val' => 0,
                 'tax2_name' => null,
@@ -310,6 +330,7 @@ class TaxSeeder extends Seeder
             [
                 'id' => 21,
                 'scheme_name' => 'Qatar VAT 0%',
+                'country' => 'Qatar',
                 'tax1_name' => 'VAT',
                 'tax1_val' => 0,
                 'tax2_name' => null,

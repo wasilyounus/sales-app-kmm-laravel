@@ -10,4 +10,8 @@ class GetAccountUseCase(
     operator fun invoke(): Flow<Account?> {
         return accountRepository.getAccount()
     }
+    
+    operator fun invoke(accountId: Int): Flow<Account?> {
+        return accountRepository.getAccountById(accountId)
+    }
 }

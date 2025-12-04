@@ -83,6 +83,9 @@ class AccountController extends Controller
             'signature' => 'sometimes|boolean',
             'log_id' => 'sometimes|required|integer',
             'financial_year_start' => 'nullable|date_format:Y-m-d H:i:s',
+            'default_tax_id' => 'nullable|integer|exists:taxes,id',
+            'country' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
         ]);
 
         $account->update($validated);

@@ -207,7 +207,8 @@ class SalesAppContainer(
     fun createAccountSettingsViewModel() = com.sales.app.presentation.settings.AccountSettingsViewModel(
         getAccountUseCase,
         updateAccountUseCase,
-        fetchAccountUseCase
+        fetchAccountUseCase,
+        getTaxesUseCase
     )
 
     fun createSyncViewModel() = SyncViewModel(syncMasterDataUseCase, fullSyncUseCase)
