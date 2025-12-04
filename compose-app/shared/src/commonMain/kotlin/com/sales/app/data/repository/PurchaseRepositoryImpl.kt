@@ -1,64 +1,65 @@
 package com.sales.app.data.repository
 
-import com.sales.app.data.local.dao.QuoteDao
-import com.sales.app.data.local.dao.QuoteItemDao
-import com.sales.app.data.local.entity.QuoteEntity
-import com.sales.app.data.local.entity.QuoteItemEntity
+import com.sales.app.data.local.dao.PurchaseDao
+import com.sales.app.data.local.dao.PurchaseItemDao
+import com.sales.app.data.local.entity.PurchaseEntity
+import com.sales.app.data.local.entity.PurchaseItemEntity
 import com.sales.app.data.remote.ApiService
-import com.sales.app.data.remote.dto.QuoteItemRequest
-import com.sales.app.data.remote.dto.QuoteRequest
-import com.sales.app.domain.model.Quote
-import com.sales.app.domain.model.QuoteItem
+import com.sales.app.data.remote.dto.PurchaseItemRequest
+import com.sales.app.data.remote.dto.PurchaseRequest
+import com.sales.app.domain.model.Purchase
+import com.sales.app.domain.model.PurchaseItem
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
-class QuoteRepository(
+import com.sales.app.domain.repository.PurchaseRepository
+
+class PurchaseRepositoryImpl(
     private val apiService: ApiService,
-    private val quoteDao: QuoteDao,
-    private val quoteItemDao: QuoteItemDao
-) {
-    fun getQuotesByAccount(accountId: Int): Flow<List<Quote>> {
-        return quoteDao.getQuotesByAccount(accountId).map { entities ->
+    private val purchaseDao: PurchaseDao,
+    private val purchaseItemDao: PurchaseItemDao
+) : PurchaseRepository {
+    override fun getPurchasesByAccount(accountId: Int): Flow<List<Purchase>> {
+        return purchaseDao.getPurchasesByAccount(accountId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    fun getQuoteById(quoteId: Int): Flow<Quote?> {
-        val quoteFlow = quoteDao.getQuoteById(quoteId)
-        val itemsFlow = quoteItemDao.getQuoteItemsByQuoteId(quoteId)
+    override fun getPurchaseById(purchaseId: Int): Flow<Purchase?> {
+        val purchaseFlow = purchaseDao.getPurchaseById(purchaseId)
+        val itemsFlow = purchaseItemDao.getPurchaseItemsByPurchaseId(purchaseId)
         
-        return combine(quoteFlow, itemsFlow) { quoteEntity, itemEntities ->
-            quoteEntity?.toDomainModel(itemEntities.map { it.toDomainModel() })
+        return combine(purchaseFlow, itemsFlow) { purchaseEntity, itemEntities ->
+            purchaseEntity?.toDomainModel(itemEntities.map { it.toDomainModel() })
         }
     }
     
-    suspend fun syncQuotes(accountId: Int): Result<Unit> {
+    override suspend fun syncPurchases(accountId: Int): Result<Unit> {
         return try {
-            val response = apiService.getQuotes(accountId)
+            val response = apiService.getPurchases(accountId)
             
             if (response.success) {
                 val entities = response.data.map { dto ->
-                    QuoteEntity(
+                    PurchaseEntity(
                         id = dto.id,
                         partyId = dto.party_id,
                         date = dto.date,
                         accountId = dto.account_id,
-                        logId = dto.log_id,
-                        createdAt = "", // Missing in DTO
-                        updatedAt = "", // Missing in DTO
+                        createdAt = "",
+                        updatedAt = "",
                         deletedAt = dto.deleted_at
                     )
                 }
-                quoteDao.insertQuotes(entities)
+                purchaseDao.insertPurchases(entities)
                 
                 // Also sync items
-                syncQuoteItems(accountId)
+                syncPurchaseItems(accountId)
                 
                 Result.Success(Unit)
             } else {
-                Result.Error("Failed to sync quotes")
+                Result.Error("Failed to sync purchases")
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -66,171 +67,157 @@ class QuoteRepository(
         }
     }
     
-    private suspend fun syncQuoteItems(accountId: Int) {
+    private suspend fun syncPurchaseItems(accountId: Int) {
         try {
-            val response = apiService.getQuoteItems(accountId)
+            val response = apiService.getPurchaseItems(accountId)
             if (response.success) {
                 val entities = response.data.map { dto ->
-                    QuoteItemEntity(
+                    PurchaseItemEntity(
                         id = dto.id,
-                        quoteId = dto.quote_id,
+                        purchaseId = dto.purchase_id,
                         itemId = dto.item_id,
                         price = dto.price,
                         qty = dto.qty,
+                        taxId = dto.tax_id,
                         accountId = dto.account_id,
-                        logId = dto.log_id,
-                        createdAt = "", // Missing in DTO
-                        updatedAt = "", // Missing in DTO
-                        deletedAt = dto.deleted_at
+                        logId = 0,
+                        createdAt = "",
+                        updatedAt = "",
+                        deletedAt = null
                     )
                 }
-                quoteItemDao.insertQuoteItems(entities)
+                purchaseItemDao.insertPurchaseItems(entities)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
     
-    suspend fun createQuote(
+    override suspend fun createPurchase(
         partyId: Int,
         date: String,
-        items: List<QuoteItemRequest>,
+        items: List<PurchaseItemRequest>,
         accountId: Int
-    ): Result<Quote> {
+    ): Result<Purchase> {
         return try {
-            val request = QuoteRequest(
+            val request = PurchaseRequest(
                 party_id = partyId,
                 date = date,
                 account_id = accountId,
                 items = items
             )
-            val response = apiService.createQuote(request)
+            val response = apiService.createPurchase(request)
             
             if (response.success) {
                 val dto = response.data
-                val entity = QuoteEntity(
+                val entity = PurchaseEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
                     accountId = dto.account_id,
-                    logId = dto.log_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
                 )
-                quoteDao.insertQuote(entity)
+                purchaseDao.insertPurchase(entity)
                 
                 // Save items from response if present
                 dto.items?.let { items ->
                     val itemEntities = items.map { itemDto ->
-                        QuoteItemEntity(
+                        PurchaseItemEntity(
                             id = itemDto.id,
-                            quoteId = itemDto.quote_id,
+                            purchaseId = itemDto.purchase_id,
                             itemId = itemDto.item_id,
                             price = itemDto.price,
                             qty = itemDto.qty,
+                            taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
-                            logId = itemDto.log_id,
+                            logId = 0,
                             createdAt = "",
                             updatedAt = "",
-                            deletedAt = itemDto.deleted_at
+                            deletedAt = null
                         )
                     }
-                    quoteItemDao.insertQuoteItems(itemEntities)
+                    purchaseItemDao.insertPurchaseItems(itemEntities)
                 }
                 
                 Result.Success(entity.toDomainModel())
             } else {
-                Result.Error("Failed to create quote")
+                Result.Error("Failed to create purchase")
             }
         } catch (e: Exception) {
             Result.Error("Create failed: ${e.message}", e)
         }
     }
     
-    
-    suspend fun updateQuote(
+    override suspend fun updatePurchase(
         id: Int,
         partyId: Int,
         date: String,
-        items: List<QuoteItemRequest>,
+        items: List<PurchaseItemRequest>,
         accountId: Int
-    ): Result<Quote> {
+    ): Result<Purchase> {
         return try {
-            val request = QuoteRequest(
+            val request = PurchaseRequest(
                 party_id = partyId,
                 date = date,
                 account_id = accountId,
                 items = items
             )
-            val response = apiService.updateQuote(id, request)
+            val response = apiService.updatePurchase(id, request)
             
             if (response.success) {
                 val dto = response.data
-                val entity = QuoteEntity(
+                val entity = PurchaseEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
                     accountId = dto.account_id,
-                    logId = dto.log_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
                 )
-                quoteDao.updateQuote(entity)
+                purchaseDao.updatePurchase(entity)
                 
                 // Save items from response if present
                 dto.items?.let { items ->
-                    // First delete existing items for this quote to avoid duplicates/stale data
-                    // actually insertQuoteItems usually uses OnConflictStrategy.REPLACE but we might have deleted items
-                    // For now, let's just insert/update. Ideally we should sync properly.
-                    // But since the backend response has the current state of items, we can rely on it.
-                    // A cleaner way is to delete local items for this quote and insert new ones from response
-                    // But we don't have a deleteByQuoteId in DAO yet? Let's check or just insert.
-                    // If we just insert, deleted items might remain.
-                    // Let's assume for now we just insert/update.
-                    
                     val itemEntities = items.map { itemDto ->
-                        QuoteItemEntity(
+                        PurchaseItemEntity(
                             id = itemDto.id,
-                            quoteId = itemDto.quote_id,
+                            purchaseId = itemDto.purchase_id,
                             itemId = itemDto.item_id,
                             price = itemDto.price,
                             qty = itemDto.qty,
+                            taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
-                            logId = itemDto.log_id,
+                            logId = 0,
                             createdAt = "",
                             updatedAt = "",
-                            deletedAt = itemDto.deleted_at
+                            deletedAt = null
                         )
                     }
-                    quoteItemDao.insertQuoteItems(itemEntities)
+                    purchaseItemDao.insertPurchaseItems(itemEntities)
                 }
                 
                 Result.Success(entity.toDomainModel())
             } else {
-                Result.Error("Failed to update quote")
+                Result.Error("Failed to update purchase")
             }
         } catch (e: Exception) {
             Result.Error("Update failed: ${e.message}", e)
         }
     }
     
-    suspend fun deleteQuote(id: Int): Result<Unit> {
+    override suspend fun deletePurchase(id: Int): Result<Unit> {
         return try {
-            apiService.deleteQuote(id)
-            // Ideally we should mark as deleted locally or delete
-            // For now, let's rely on sync or just delete locally if we are sure
-            // But since we use soft deletes, we might want to keep it until sync confirms
-            // However, for UI responsiveness, we can delete locally
-            // quoteDao.deleteQuote(...) // We need the entity
+            apiService.deletePurchase(id)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error("Delete failed: ${e.message}", e)
         }
     }
     
-    private fun QuoteEntity.toDomainModel(items: List<QuoteItem> = emptyList()) = Quote(
+    private fun PurchaseEntity.toDomainModel(items: List<PurchaseItem> = emptyList()) = Purchase(
         id = id,
         partyId = partyId,
         date = date,
@@ -238,12 +225,13 @@ class QuoteRepository(
         items = items
     )
     
-    private fun QuoteItemEntity.toDomainModel() = QuoteItem(
+    private fun PurchaseItemEntity.toDomainModel() = PurchaseItem(
         id = id,
-        quoteId = quoteId,
+        purchaseId = purchaseId,
         itemId = itemId,
         price = price,
         qty = qty,
+        taxId = taxId,
         accountId = accountId
     )
 }

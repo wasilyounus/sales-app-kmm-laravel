@@ -1,63 +1,67 @@
 package com.sales.app.data.repository
 
-import com.sales.app.data.local.dao.OrderDao
-import com.sales.app.data.local.dao.OrderItemDao
-import com.sales.app.data.local.entity.OrderEntity
-import com.sales.app.data.local.entity.OrderItemEntity
+import com.sales.app.data.local.dao.SaleDao
+import com.sales.app.data.local.dao.SaleItemDao
+import com.sales.app.data.local.entity.SaleEntity
+import com.sales.app.data.local.entity.SaleItemEntity
 import com.sales.app.data.remote.ApiService
-import com.sales.app.data.remote.dto.OrderItemRequest
-import com.sales.app.data.remote.dto.OrderRequest
-import com.sales.app.domain.model.Order
-import com.sales.app.domain.model.OrderItem
+import com.sales.app.data.remote.dto.SaleItemRequest
+import com.sales.app.data.remote.dto.SaleRequest
+import com.sales.app.domain.model.Sale
+import com.sales.app.domain.model.SaleItem
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
-class OrderRepository(
+import com.sales.app.domain.repository.SaleRepository
+
+class SaleRepositoryImpl(
     private val apiService: ApiService,
-    private val orderDao: OrderDao,
-    private val orderItemDao: OrderItemDao
-) {
-    fun getOrdersByAccount(accountId: Int): Flow<List<Order>> {
-        return orderDao.getOrdersByAccount(accountId).map { entities ->
+    private val saleDao: SaleDao,
+    private val saleItemDao: SaleItemDao
+) : SaleRepository {
+    override fun getSalesByAccount(accountId: Int): Flow<List<Sale>> {
+        return saleDao.getSalesByAccount(accountId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    fun getOrderById(orderId: Int): Flow<Order?> {
-        val orderFlow = orderDao.getOrderById(orderId)
-        val itemsFlow = orderItemDao.getOrderItemsByOrderId(orderId)
+    override fun getSaleById(saleId: Int): Flow<Sale?> {
+        val saleFlow = saleDao.getSaleById(saleId)
+        val itemsFlow = saleItemDao.getSaleItemsBySaleId(saleId)
         
-        return combine(orderFlow, itemsFlow) { orderEntity, itemEntities ->
-            orderEntity?.toDomainModel(itemEntities.map { it.toDomainModel() })
+        return combine(saleFlow, itemsFlow) { saleEntity, itemEntities ->
+            saleEntity?.toDomainModel(itemEntities.map { it.toDomainModel() })
         }
     }
     
-    suspend fun syncOrders(accountId: Int): Result<Unit> {
+    override suspend fun syncSales(accountId: Int): Result<Unit> {
         return try {
-            val response = apiService.getOrders(accountId)
+            val response = apiService.getSales(accountId)
             
             if (response.success) {
                 val entities = response.data.map { dto ->
-                    OrderEntity(
+                    SaleEntity(
                         id = dto.id,
                         partyId = dto.party_id,
                         date = dto.date,
+                        invoiceNo = dto.invoice_no,
+                        taxId = dto.tax_id,
                         accountId = dto.account_id,
                         createdAt = "",
                         updatedAt = "",
                         deletedAt = dto.deleted_at
                     )
                 }
-                orderDao.insertOrders(entities)
+                saleDao.insertSales(entities)
                 
                 // Also sync items
-                syncOrderItems(accountId)
+                syncSaleItems(accountId)
                 
                 Result.Success(Unit)
             } else {
-                Result.Error("Failed to sync orders")
+                Result.Error("Failed to sync sales")
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -65,17 +69,18 @@ class OrderRepository(
         }
     }
     
-    private suspend fun syncOrderItems(accountId: Int) {
+    private suspend fun syncSaleItems(accountId: Int) {
         try {
-            val response = apiService.getOrderItems(accountId)
+            val response = apiService.getSaleItems(accountId)
             if (response.success) {
                 val entities = response.data.map { dto ->
-                    OrderItemEntity(
+                    SaleItemEntity(
                         id = dto.id,
-                        orderId = dto.order_id,
+                        saleId = dto.sale_id,
                         itemId = dto.item_id,
                         price = dto.price,
                         qty = dto.qty,
+                        taxId = dto.tax_id,
                         accountId = dto.account_id,
                         logId = 0,
                         createdAt = "",
@@ -83,50 +88,57 @@ class OrderRepository(
                         deletedAt = null
                     )
                 }
-                orderItemDao.insertOrderItems(entities)
+                saleItemDao.insertSaleItems(entities)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
     
-    suspend fun createOrder(
+    override suspend fun createSale(
         partyId: Int,
         date: String,
-        items: List<OrderItemRequest>,
+        invoiceNo: String,
+        taxId: Int?,
+        items: List<SaleItemRequest>,
         accountId: Int
-    ): Result<Order> {
+    ): Result<Sale> {
         return try {
-            val request = OrderRequest(
+            val request = SaleRequest(
                 party_id = partyId,
                 date = date,
+                invoice_no = invoiceNo,
+                tax_id = taxId,
                 account_id = accountId,
                 items = items
             )
-            val response = apiService.createOrder(request)
+            val response = apiService.createSale(request)
             
             if (response.success) {
                 val dto = response.data
-                val entity = OrderEntity(
+                val entity = SaleEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    invoiceNo = dto.invoice_no,
+                    taxId = dto.tax_id,
                     accountId = dto.account_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
                 )
-                orderDao.insertOrder(entity)
+                saleDao.insertSale(entity)
                 
                 // Save items from response if present
                 dto.items?.let { items ->
                     val itemEntities = items.map { itemDto ->
-                        OrderItemEntity(
+                        SaleItemEntity(
                             id = itemDto.id,
-                            orderId = itemDto.order_id,
+                            saleId = itemDto.sale_id,
                             itemId = itemDto.item_id,
                             price = itemDto.price,
                             qty = itemDto.qty,
+                            taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
                             logId = 0,
                             createdAt = "",
@@ -134,56 +146,63 @@ class OrderRepository(
                             deletedAt = null
                         )
                     }
-                    orderItemDao.insertOrderItems(itemEntities)
+                    saleItemDao.insertSaleItems(itemEntities)
                 }
                 
                 Result.Success(entity.toDomainModel())
             } else {
-                Result.Error("Failed to create order")
+                Result.Error("Failed to create sale")
             }
         } catch (e: Exception) {
             Result.Error("Create failed: ${e.message}", e)
         }
     }
     
-    suspend fun updateOrder(
+    override suspend fun updateSale(
         id: Int,
         partyId: Int,
         date: String,
-        items: List<OrderItemRequest>,
+        invoiceNo: String,
+        taxId: Int?,
+        items: List<SaleItemRequest>,
         accountId: Int
-    ): Result<Order> {
+    ): Result<Sale> {
         return try {
-            val request = OrderRequest(
+            val request = SaleRequest(
                 party_id = partyId,
                 date = date,
+                invoice_no = invoiceNo,
+                tax_id = taxId,
                 account_id = accountId,
                 items = items
             )
-            val response = apiService.updateOrder(id, request)
+            val response = apiService.updateSale(id, request)
             
             if (response.success) {
                 val dto = response.data
-                val entity = OrderEntity(
+                val entity = SaleEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    invoiceNo = dto.invoice_no,
+                    taxId = dto.tax_id,
                     accountId = dto.account_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
                 )
-                orderDao.updateOrder(entity)
+                saleDao.updateSale(entity)
                 
                 // Save items from response if present
                 dto.items?.let { items ->
                     val itemEntities = items.map { itemDto ->
-                        OrderItemEntity(
+                        SaleItemEntity(
                             id = itemDto.id,
-                            orderId = itemDto.order_id,
+                            saleId = itemDto.sale_id,
                             itemId = itemDto.item_id,
                             price = itemDto.price,
                             qty = itemDto.qty,
+                            taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
                             logId = 0,
                             createdAt = "",
@@ -191,41 +210,44 @@ class OrderRepository(
                             deletedAt = null
                         )
                     }
-                    orderItemDao.insertOrderItems(itemEntities)
+                    saleItemDao.insertSaleItems(itemEntities)
                 }
                 
                 Result.Success(entity.toDomainModel())
             } else {
-                Result.Error("Failed to update order")
+                Result.Error("Failed to update sale")
             }
         } catch (e: Exception) {
             Result.Error("Update failed: ${e.message}", e)
         }
     }
     
-    suspend fun deleteOrder(id: Int): Result<Unit> {
+    override suspend fun deleteSale(id: Int): Result<Unit> {
         return try {
-            apiService.deleteOrder(id)
+            apiService.deleteSale(id)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error("Delete failed: ${e.message}", e)
         }
     }
     
-    private fun OrderEntity.toDomainModel(items: List<OrderItem> = emptyList()) = Order(
+    private fun SaleEntity.toDomainModel(items: List<SaleItem> = emptyList()) = Sale(
         id = id,
         partyId = partyId,
         date = date,
+        invoiceNo = invoiceNo,
+        taxId = taxId,
         accountId = accountId,
         items = items
     )
     
-    private fun OrderItemEntity.toDomainModel() = OrderItem(
+    private fun SaleItemEntity.toDomainModel() = SaleItem(
         id = id,
-        orderId = orderId,
+        saleId = saleId,
         itemId = itemId,
         price = price,
         qty = qty,
+        taxId = taxId,
         accountId = accountId
     )
 }

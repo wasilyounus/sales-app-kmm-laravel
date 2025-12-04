@@ -14,15 +14,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 
-class SyncRepository(
+import com.sales.app.domain.repository.SyncRepository
+
+class SyncRepositoryImpl(
     private val apiService: ApiService,
     private val itemDao: ItemDao,
     private val partyDao: PartyDao,
     private val taxDao: TaxDao,
     private val uqcDao: UqcDao,
     private val syncDao: SyncDao
-) {
-    suspend fun syncMasterData(accountId: Int): Result<Unit> {
+) : SyncRepository {
+    override suspend fun syncMasterData(accountId: Int): Result<Unit> {
         return try {
             val lastSync = syncDao.getSyncTimestamp("master_data")
             val timestamp = lastSync?.timestamp ?: "1970-01-01 00:00:00"
@@ -125,7 +127,7 @@ class SyncRepository(
         }
     }
     
-    suspend fun fullSync(accountId: Int): Result<Unit> {
+    override suspend fun fullSync(accountId: Int): Result<Unit> {
         return try {
             val response = apiService.fullSync(accountId)
             
@@ -189,7 +191,7 @@ class SyncRepository(
         }
     }
     
-    fun getSyncStatus(): Flow<SyncTimestampEntity?> = flow {
+    override fun getSyncStatus(): Flow<SyncTimestampEntity?> = flow {
         emit(syncDao.getSyncTimestamp("master_data"))
     }
 }

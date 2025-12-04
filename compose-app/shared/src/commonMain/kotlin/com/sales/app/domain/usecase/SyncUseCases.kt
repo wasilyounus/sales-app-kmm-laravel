@@ -1,6 +1,6 @@
 package com.sales.app.domain.usecase
 
-import com.sales.app.data.repository.SyncRepository
+import com.sales.app.domain.repository.SyncRepository
 import com.sales.app.util.Result
 
 class SyncMasterDataUseCase(

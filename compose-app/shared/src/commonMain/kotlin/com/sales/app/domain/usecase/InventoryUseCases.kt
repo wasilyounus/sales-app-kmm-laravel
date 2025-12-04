@@ -1,6 +1,6 @@
 package com.sales.app.domain.usecase
 
-import com.sales.app.data.repository.InventoryRepository
+import com.sales.app.domain.repository.InventoryRepository
 import com.sales.app.domain.model.InventorySummary
 import com.sales.app.domain.model.StockMovement
 import com.sales.app.util.Result

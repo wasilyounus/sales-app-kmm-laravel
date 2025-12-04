@@ -13,11 +13,13 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class InventoryRepository(
+import com.sales.app.domain.repository.InventoryRepository
+
+class InventoryRepositoryImpl(
     private val inventoryDao: InventoryDao,
     private val itemDao: ItemDao
-) {
-    fun getInventorySummary(accountId: Int): Flow<List<InventorySummary>> {
+) : InventoryRepository {
+    override fun getInventorySummary(accountId: Int): Flow<List<InventorySummary>> {
         val itemsFlow = itemDao.getItemsByAccount(accountId)
         val movementsFlow = inventoryDao.getAllStockMovements(accountId)
 
@@ -40,13 +42,13 @@ class InventoryRepository(
         }
     }
 
-    fun getStockMovements(itemId: Int): Flow<List<StockMovement>> {
+    override fun getStockMovements(itemId: Int): Flow<List<StockMovement>> {
         return inventoryDao.getStockMovements(itemId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
 
-    suspend fun adjustStock(
+    override suspend fun adjustStock(
         itemId: Int,
         qty: Double,
         type: String,

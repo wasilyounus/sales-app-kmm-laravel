@@ -15,24 +15,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
-class PartyRepository(
+import com.sales.app.domain.repository.PartyRepository
+
+class PartyRepositoryImpl(
     private val apiService: ApiService,
     private val partyDao: PartyDao,
     private val addressDao: AddressDao
-) {
-    fun getPartiesByAccount(accountId: Int): Flow<List<Party>> {
+) : PartyRepository {
+    override fun getPartiesByAccount(accountId: Int): Flow<List<Party>> {
         return partyDao.getPartiesByAccount(accountId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    fun searchParties(accountId: Int, query: String): Flow<List<Party>> {
+    override fun searchParties(accountId: Int, query: String): Flow<List<Party>> {
         return partyDao.searchParties(accountId, query).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    suspend fun syncParties(accountId: Int): Result<Unit> {
+    override suspend fun syncParties(accountId: Int): Result<Unit> {
         return try {
             val response = apiService.getParties(accountId)
             if (response.success) {
@@ -84,7 +86,7 @@ class PartyRepository(
         }
     }
     
-    suspend fun createParty(
+    override suspend fun createParty(
         name: String,
         taxNumber: String?,
         phone: String?,
@@ -152,7 +154,7 @@ class PartyRepository(
         }
     }
     
-    suspend fun updateParty(
+    override suspend fun updateParty(
         id: Int,
         name: String,
         taxNumber: String?,
@@ -222,7 +224,7 @@ class PartyRepository(
         }
     }
     
-    suspend fun deleteParty(id: Int): Result<Unit> {
+    override suspend fun deleteParty(id: Int): Result<Unit> {
         return try {
             apiService.deleteParty(id)
             // Local delete logic if needed
@@ -232,7 +234,7 @@ class PartyRepository(
         }
     }
     
-    fun getPartyById(accountId: Int, partyId: Int): Flow<Party?> {
+    override fun getPartyById(accountId: Int, partyId: Int): Flow<Party?> {
         val partyFlow = partyDao.getPartyById(partyId) // This needs to return Flow
         val addressesFlow = addressDao.getAddressesByPartyId(partyId)
         

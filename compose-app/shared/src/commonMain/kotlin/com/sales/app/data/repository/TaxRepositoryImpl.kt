@@ -7,23 +7,25 @@ import com.sales.app.domain.model.Tax
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TaxRepository(
+import com.sales.app.domain.repository.TaxRepository
+
+class TaxRepositoryImpl(
     private val apiService: ApiService,
     private val taxDao: TaxDao
-) {
-    fun getAllActiveTaxes(): Flow<List<Tax>> {
+) : TaxRepository {
+    override fun getAllActiveTaxes(): Flow<List<Tax>> {
         return taxDao.getAllActive().map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    fun getAllTaxes(): Flow<List<Tax>> {
+    override fun getAllTaxes(): Flow<List<Tax>> {
         return taxDao.getAll().map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    fun getActiveTaxesByCountry(country: String?): Flow<List<Tax>> {
+    override fun getActiveTaxesByCountry(country: String?): Flow<List<Tax>> {
         return taxDao.getAllActive().map { entities ->
             entities
                 .filter { entity ->
@@ -34,7 +36,7 @@ class TaxRepository(
         }
     }
     
-    suspend fun syncTaxes(): com.sales.app.util.Result<Unit> {
+    override suspend fun syncTaxes(): com.sales.app.util.Result<Unit> {
         return try {
             // Assuming there's an API endpoint for taxes
             // For now, we'll skip actual API call since it might not exist yet

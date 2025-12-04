@@ -1,6 +1,6 @@
 package com.sales.app.domain.usecase
 
-import com.sales.app.data.repository.ItemRepository
+import com.sales.app.domain.repository.ItemRepository
 import com.sales.app.domain.model.Item
 import com.sales.app.domain.model.Uqc
 import com.sales.app.util.Result

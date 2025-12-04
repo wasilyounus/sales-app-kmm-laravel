@@ -1,6 +1,6 @@
 package com.sales.app.domain.usecase
 
-import com.sales.app.data.repository.PartyRepository
+import com.sales.app.domain.repository.PartyRepository
 import com.sales.app.domain.model.Party
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow

@@ -15,17 +15,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class AuthRepository(
+import com.sales.app.domain.repository.AuthRepository
+
+class AuthRepositoryImpl(
     private val apiService: ApiService,
     private val userDao: UserDao,
     private val dataStore: DataStore<Preferences>
-) {
+) : AuthRepository {
     companion object {
         private val AUTH_TOKEN_KEY = stringPreferencesKey("auth_token")
         private val USER_ID_KEY = stringPreferencesKey("user_id")
     }
     
-    suspend fun login(email: String, password: String): Result<User> {
+    override suspend fun login(email: String, password: String): Result<User> {
         return try {
             val response = apiService.login(LoginRequest(email, password))
             
@@ -61,7 +63,7 @@ class AuthRepository(
         }
     }
     
-    suspend fun register(
+    override suspend fun register(
         name: String,
         email: String,
         password: String,
@@ -104,7 +106,7 @@ class AuthRepository(
         }
     }
     
-    suspend fun logout(): Result<Unit> {
+    override suspend fun logout(): Result<Unit> {
         return try {
             apiService.logout()
             clearAuthData()
@@ -116,13 +118,13 @@ class AuthRepository(
         }
     }
     
-    fun getToken(): Flow<String?> {
+    override fun getToken(): Flow<String?> {
         return dataStore.data.map { preferences ->
             preferences[AUTH_TOKEN_KEY]
         }
     }
     
-    suspend fun isLoggedIn(): Boolean {
+    override suspend fun isLoggedIn(): Boolean {
         return getToken().first() != null
     }
     

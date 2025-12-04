@@ -36,17 +36,18 @@ class SalesAppContainer(
     private val accountPreferences = AccountPreferences(dataStore)
     
     // Repositories
-    val authRepository = AuthRepository(apiService, database.userDao(), dataStore)
-    val itemRepository = ItemRepository(apiService, database.itemDao())
-    val partyRepository = PartyRepository(apiService, database.partyDao(), database.addressDao())
-    val syncRepository = SyncRepository(apiService, database.itemDao(), database.partyDao(), database.taxDao(), database.uqcDao(), database.syncDao())
-    val quoteRepository = QuoteRepository(apiService, database.quoteDao(), database.quoteItemDao())
-    val saleRepository = SaleRepository(apiService, database.saleDao(), database.saleItemDao())
-    val orderRepository = OrderRepository(apiService, database.orderDao(), database.orderItemDao())
-    val purchaseRepository = PurchaseRepository(apiService, database.purchaseDao(), database.purchaseItemDao())
-    val accountRepository = com.sales.app.data.repository.AccountRepositoryImpl(apiService, database.accountDao())
-    val inventoryRepository = InventoryRepository(database.inventoryDao(), database.itemDao())
-    val taxRepository = TaxRepository(apiService, database.taxDao())
+    // Repositories
+    val authRepository: com.sales.app.domain.repository.AuthRepository = AuthRepositoryImpl(apiService, database.userDao(), dataStore)
+    val itemRepository: com.sales.app.domain.repository.ItemRepository = ItemRepositoryImpl(apiService, database.itemDao())
+    val partyRepository: com.sales.app.domain.repository.PartyRepository = PartyRepositoryImpl(apiService, database.partyDao(), database.addressDao())
+    val syncRepository: com.sales.app.domain.repository.SyncRepository = SyncRepositoryImpl(apiService, database.itemDao(), database.partyDao(), database.taxDao(), database.uqcDao(), database.syncDao())
+    val quoteRepository: com.sales.app.domain.repository.QuoteRepository = QuoteRepositoryImpl(apiService, database.quoteDao(), database.quoteItemDao())
+    val saleRepository: com.sales.app.domain.repository.SaleRepository = SaleRepositoryImpl(apiService, database.saleDao(), database.saleItemDao())
+    val orderRepository: com.sales.app.domain.repository.OrderRepository = OrderRepositoryImpl(apiService, database.orderDao(), database.orderItemDao())
+    val purchaseRepository: com.sales.app.domain.repository.PurchaseRepository = PurchaseRepositoryImpl(apiService, database.purchaseDao(), database.purchaseItemDao())
+    val accountRepository: com.sales.app.domain.repository.AccountRepository = com.sales.app.data.repository.AccountRepositoryImpl(apiService, database.accountDao())
+    val inventoryRepository: com.sales.app.domain.repository.InventoryRepository = InventoryRepositoryImpl(database.inventoryDao(), database.itemDao())
+    val taxRepository: com.sales.app.domain.repository.TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
 
     // Use Cases
     val loginUseCase = LoginUseCase(authRepository)

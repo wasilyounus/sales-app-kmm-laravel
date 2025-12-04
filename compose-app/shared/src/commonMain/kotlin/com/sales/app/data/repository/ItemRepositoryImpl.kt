@@ -9,23 +9,26 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class ItemRepository(
+import com.sales.app.domain.repository.ItemRepository
+import com.sales.app.domain.model.Uqc
+
+class ItemRepositoryImpl(
     private val apiService: ApiService,
     private val itemDao: ItemDao
-) {
-    fun getItemsByAccount(accountId: Int): Flow<List<Item>> {
+) : ItemRepository {
+    override fun getItemsByAccount(accountId: Int): Flow<List<Item>> {
         return itemDao.getItemsByAccount(accountId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    fun searchItems(accountId: Int, query: String): Flow<List<Item>> {
+    override fun searchItems(accountId: Int, query: String): Flow<List<Item>> {
         return itemDao.searchItems(accountId, query).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    suspend fun syncItems(accountId: Int): Result<Unit> {
+    override suspend fun syncItems(accountId: Int): Result<Unit> {
         return try {
             val response = apiService.getItems(accountId)
             
@@ -56,7 +59,7 @@ class ItemRepository(
         }
     }
     
-    suspend fun createItem(
+    override suspend fun createItem(
         name: String,
         altName: String?,
         brand: String?,
@@ -64,7 +67,7 @@ class ItemRepository(
         uqc: Int,
         hsn: Int?,
         accountId: Int,
-        taxId: Int? = null
+        taxId: Int?
     ): Result<Item> {
         return try {
             val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId, taxId)
@@ -95,7 +98,7 @@ class ItemRepository(
         }
     }
     
-    suspend fun updateItem(
+    override suspend fun updateItem(
         id: Int,
         name: String,
         altName: String?,
@@ -104,7 +107,7 @@ class ItemRepository(
         uqc: Int,
         hsn: Int?,
         accountId: Int,
-        taxId: Int? = null
+        taxId: Int?
     ): Result<Item> {
         return try {
             val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId, taxId)
@@ -135,7 +138,7 @@ class ItemRepository(
         }
     }
     
-    suspend fun deleteItem(id: Int): Result<Unit> {
+    override suspend fun deleteItem(id: Int): Result<Unit> {
         return try {
             apiService.deleteItem(id)
             // Soft delete locally - we'll sync later
@@ -145,7 +148,7 @@ class ItemRepository(
         }
     }
     
-    suspend fun getItemById(accountId: Int, itemId: Int): Item? {
+    override suspend fun getItemById(accountId: Int, itemId: Int): Item? {
         return try {
             val response = apiService.getItem(itemId)
             if (response.success) {
@@ -171,12 +174,12 @@ class ItemRepository(
         }
     }
 
-    suspend fun getUqcs(): List<com.sales.app.domain.model.Uqc> {
+    override suspend fun getUqcs(): List<Uqc> {
         return try {
             val response = apiService.getUqcs()
             if (response.success) {
                 response.data.map { dto ->
-                    com.sales.app.domain.model.Uqc(
+                    Uqc(
                         id = dto.id,
                         uqc = dto.uqc,
                         quantity = dto.quantity,

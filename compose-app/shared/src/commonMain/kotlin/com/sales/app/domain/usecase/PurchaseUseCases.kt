@@ -1,7 +1,7 @@
 package com.sales.app.domain.usecase
 
 import com.sales.app.data.remote.dto.PurchaseItemRequest
-import com.sales.app.data.repository.PurchaseRepository
+import com.sales.app.domain.repository.PurchaseRepository
 import com.sales.app.domain.model.Purchase
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow

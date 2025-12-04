@@ -1,7 +1,7 @@
 package com.sales.app.domain.usecase
 
 import com.sales.app.data.remote.dto.QuoteItemRequest
-import com.sales.app.data.repository.QuoteRepository
+import com.sales.app.domain.repository.QuoteRepository
 import com.sales.app.domain.model.Quote
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
