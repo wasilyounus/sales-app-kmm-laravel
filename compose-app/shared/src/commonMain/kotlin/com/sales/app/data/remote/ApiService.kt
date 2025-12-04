@@ -210,7 +210,137 @@ class ApiService(
         }.body()
     }
 
+    // Sales
+    suspend fun getSales(accountId: Int): SalesResponse {
+        return client.get("sales") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+    
+    suspend fun getSale(id: Int): SaleResponse {
+        return client.get("sales/$id") {
+            addAuthHeader()
+        }.body()
+    }
+    
+    suspend fun createSale(request: SaleRequest): SaleResponse {
+        return client.post("sales") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun updateSale(id: Int, request: SaleRequest): SaleResponse {
+        return client.put("sales/$id") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun deleteSale(id: Int) {
+        client.delete("sales/$id") {
+            addAuthHeader()
+        }
+    }
+    
+    suspend fun getSaleItems(accountId: Int): SaleItemsResponse {
+        return client.get("saleItems") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+
+    // Orders
+    suspend fun getOrders(accountId: Int): OrdersResponse {
+        return client.get("orders") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+    
+    suspend fun getOrder(id: Int): OrderResponse {
+        return client.get("orders/$id") {
+            addAuthHeader()
+        }.body()
+    }
+    
+    suspend fun createOrder(request: OrderRequest): OrderResponse {
+        return client.post("orders") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun updateOrder(id: Int, request: OrderRequest): OrderResponse {
+        return client.put("orders/$id") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun deleteOrder(id: Int) {
+        client.delete("orders/$id") {
+            addAuthHeader()
+        }
+    }
+    
+    suspend fun getOrderItems(accountId: Int): OrderItemsResponse {
+        return client.get("orderItems") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+
+    // Purchases
+    suspend fun getPurchases(accountId: Int): PurchasesResponse {
+        return client.get("purchases") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+    
+    suspend fun getPurchase(id: Int): PurchaseResponse {
+        return client.get("purchases/$id") {
+            addAuthHeader()
+        }.body()
+    }
+    
+    suspend fun createPurchase(request: PurchaseRequest): PurchaseResponse {
+        return client.post("purchases") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun updatePurchase(id: Int, request: PurchaseRequest): PurchaseResponse {
+        return client.put("purchases/$id") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun deletePurchase(id: Int) {
+        client.delete("purchases/$id") {
+            addAuthHeader()
+        }
+    }
+    
+    suspend fun getPurchaseItems(accountId: Int): PurchaseItemsResponse {
+        return client.get("purchaseItems") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+
     private suspend fun HttpRequestBuilder.addAuthHeader() {
+
         tokenProvider()?.let { token ->
             header(HttpHeaders.Authorization, "Bearer $token")
         }

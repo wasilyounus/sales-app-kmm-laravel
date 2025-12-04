@@ -1,72 +1,70 @@
-package com.sales.app.presentation.quotes
+package com.sales.app.presentation.purchases
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sales.app.domain.usecase.GetItemsUseCase
 import com.sales.app.domain.usecase.GetPartyByIdUseCase
-import com.sales.app.domain.usecase.GetQuoteByIdUseCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.sales.app.domain.usecase.GetPurchaseByIdUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-data class QuoteViewUiState(
+data class PurchaseViewUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val quote: QuoteUiModel? = null,
-    val items: List<QuoteItemUiModel> = emptyList()
+    val purchase: PurchaseUiModel? = null,
+    val items: List<PurchaseItemUiModel> = emptyList()
 )
 
-class QuoteViewViewModel(
-    private val getQuoteByIdUseCase: GetQuoteByIdUseCase,
+class PurchaseViewViewModel(
+    private val getPurchaseByIdUseCase: GetPurchaseByIdUseCase,
     private val getPartyByIdUseCase: GetPartyByIdUseCase,
     private val getItemsUseCase: GetItemsUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(QuoteViewUiState())
-    val uiState: StateFlow<QuoteViewUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(PurchaseViewUiState())
+    val uiState: StateFlow<PurchaseViewUiState> = _uiState.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadQuote(accountId: Int, quoteId: Int) {
+    fun loadPurchase(accountId: Int, purchaseId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             combine(
-                getQuoteByIdUseCase(quoteId),
+                getPurchaseByIdUseCase(purchaseId),
                 getItemsUseCase(accountId)
-            ) { quote, allItems ->
-                if (quote != null) {
-                    val party = getPartyByIdUseCase(accountId, quote.partyId).firstOrNull()
-                    Triple(quote, party, allItems)
+            ) { purchase, allItems ->
+                if (purchase != null) {
+                    val party = getPartyByIdUseCase(accountId, purchase.partyId).firstOrNull()
+                    Triple(purchase, party, allItems)
                 } else {
                     null
                 }
             }.collect { triple ->
                 if (triple != null) {
-                    val (quote, party, allItems) = triple
+                    val (purchase, party, allItems) = triple
                     val partyName = party?.name ?: "Unknown Party"
                     
-                    val items = quote.items.map { item ->
+                    val items = purchase.items.map { item ->
                         val itemDetails = allItems.find { it.id == item.itemId }
-                        QuoteItemUiModel(
-                            id = item.id,
+                        PurchaseItemUiModel(
                             itemId = item.itemId,
                             itemName = itemDetails?.name ?: "Item #${item.itemId}",
                             price = item.price.toString(),
-                            qty = item.qty.toString()
+                            qty = item.qty.toString(),
+                            taxId = item.taxId
                         )
                     }
                     
-                    val quoteUiModel = QuoteUiModel(
-                        id = quote.id,
+                    val purchaseUiModel = PurchaseUiModel(
+                        id = purchase.id,
                         partyName = partyName,
-                        date = quote.date,
-                        amount = quote.items.sumOf { it.price * it.qty },
-                        itemsCount = quote.items.size
+                        date = purchase.date,
+                        amount = purchase.items.sumOf { it.price * it.qty }.toString(),
+                        itemsCount = purchase.items.size
                     )
                     
                     _uiState.update {
                         it.copy(
-                            quote = quoteUiModel,
+                            purchase = purchaseUiModel,
                             items = items,
                             isLoading = false,
                             error = null
@@ -74,7 +72,7 @@ class QuoteViewViewModel(
                     }
                 } else {
                     _uiState.update {
-                        it.copy(isLoading = false, error = "Quote not found")
+                        it.copy(isLoading = false, error = "Purchase not found")
                     }
                 }
             }

@@ -2,19 +2,6 @@ package com.sales.app.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.sales.app.di.AppContainer
-import com.sales.app.presentation.home.HomeScreen
-import com.sales.app.presentation.items.ItemsScreen
-import com.sales.app.presentation.login.LoginScreen
-import com.sales.app.presentation.parties.PartiesScreen
-import com.sales.app.presentation.register.RegisterScreen
-import com.sales.app.presentation.sync.SyncScreen
-import com.sales.app.presentation.quotes.QuotesScreen
-import com.sales.app.presentation.quotes.QuoteFormScreen
 import com.sales.app.presentation.quotes.QuoteViewScreen
 
 import androidx.navigation.NavType
@@ -215,25 +202,173 @@ fun AppNavigation(
             )
         }
         
-        composable(Screen.Orders.route) {
-            androidx.compose.foundation.layout.Box(
-                modifier = androidx.compose.ui.Modifier.fillMaxSize(),
-                contentAlignment = androidx.compose.ui.Alignment.Center
-            ) { androidx.compose.material3.Text("Orders (Not Implemented)") }
-        }
-        
         composable(Screen.Sales.route) {
-            androidx.compose.foundation.layout.Box(
-                modifier = androidx.compose.ui.Modifier.fillMaxSize(),
-                contentAlignment = androidx.compose.ui.Alignment.Center
-            ) { androidx.compose.material3.Text("Sales (Not Implemented)") }
+            com.sales.app.presentation.sales.SalesScreen(
+                viewModel = viewModel { appContainer.createSalesViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCreateSale = {
+                    navController.navigate(Screen.SaleCreate.route)
+                },
+                onNavigateToSaleDetails = { saleId ->
+                    navController.navigate(Screen.SaleDetail.createRoute(saleId))
+                }
+            )
         }
         
+        composable(Screen.SaleCreate.route) {
+            com.sales.app.presentation.sales.SaleFormScreen(
+                viewModel = viewModel { appContainer.createSaleFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        
+        composable(
+            route = Screen.SaleEdit.route,
+            arguments = listOf(navArgument("saleId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val saleId = backStackEntry.arguments?.getInt("saleId")
+            com.sales.app.presentation.sales.SaleFormScreen(
+                viewModel = viewModel { appContainer.createSaleFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                saleId = saleId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.SaleDetail.route,
+            arguments = listOf(navArgument("saleId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val saleId = backStackEntry.arguments?.getInt("saleId") ?: return@composable
+            // Placeholder for SaleViewScreen, redirecting to Edit for now or just showing text
+            // For now, let's redirect to Edit as View is not implemented yet
+             com.sales.app.presentation.sales.SaleFormScreen(
+                viewModel = viewModel { appContainer.createSaleFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                saleId = saleId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Orders.route) {
+            com.sales.app.presentation.orders.OrdersScreen(
+                viewModel = viewModel { appContainer.createOrdersViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCreateOrder = {
+                    navController.navigate(Screen.OrderCreate.route)
+                },
+                onNavigateToOrderDetails = { orderId ->
+                    navController.navigate(Screen.OrderDetail.createRoute(orderId))
+                }
+            )
+        }
+        
+        composable(Screen.OrderCreate.route) {
+            com.sales.app.presentation.orders.OrderFormScreen(
+                viewModel = viewModel { appContainer.createOrderFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        
+        composable(
+            route = Screen.OrderEdit.route,
+            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getInt("orderId")
+            com.sales.app.presentation.orders.OrderFormScreen(
+                viewModel = viewModel { appContainer.createOrderFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                orderId = orderId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.OrderDetail.route,
+            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
+             com.sales.app.presentation.orders.OrderFormScreen(
+                viewModel = viewModel { appContainer.createOrderFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                orderId = orderId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
         composable(Screen.Purchases.route) {
-            androidx.compose.foundation.layout.Box(
-                modifier = androidx.compose.ui.Modifier.fillMaxSize(),
-                contentAlignment = androidx.compose.ui.Alignment.Center
-            ) { androidx.compose.material3.Text("Purchases (Not Implemented)") }
+            com.sales.app.presentation.purchases.PurchasesScreen(
+                viewModel = viewModel { appContainer.createPurchasesViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCreatePurchase = {
+                    navController.navigate(Screen.PurchaseCreate.route)
+                },
+                onNavigateToPurchaseDetails = { purchaseId ->
+                    navController.navigate(Screen.PurchaseDetail.createRoute(purchaseId))
+                }
+            )
+        }
+        
+        composable(Screen.PurchaseCreate.route) {
+            com.sales.app.presentation.purchases.PurchaseFormScreen(
+                viewModel = viewModel { appContainer.createPurchaseFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        
+        composable(
+            route = Screen.PurchaseEdit.route,
+            arguments = listOf(navArgument("purchaseId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val purchaseId = backStackEntry.arguments?.getInt("purchaseId")
+            com.sales.app.presentation.purchases.PurchaseFormScreen(
+                viewModel = viewModel { appContainer.createPurchaseFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                purchaseId = purchaseId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.PurchaseDetail.route,
+            arguments = listOf(navArgument("purchaseId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val purchaseId = backStackEntry.arguments?.getInt("purchaseId") ?: return@composable
+             com.sales.app.presentation.purchases.PurchaseFormScreen(
+                viewModel = viewModel { appContainer.createPurchaseFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                purchaseId = purchaseId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // Inventory
+        composable(Screen.Inventory.route) {
+            InventoryScreen(
+                viewModel = viewModel { appContainer.createInventoryViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToAdjustment = {
+                    navController.navigate(Screen.StockAdjustment.createRoute(1)) // TODO: accountId
+                }
+            )
+        }
+
+        composable(
+            route = Screen.StockAdjustment.route,
+            arguments = listOf(navArgument("accountId") { type = NavType.IntType })
+        ) {
+            StockAdjustmentScreen(
+                viewModel = viewModel { appContainer.createStockAdjustmentViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
         
         composable(Screen.Settings.route) {

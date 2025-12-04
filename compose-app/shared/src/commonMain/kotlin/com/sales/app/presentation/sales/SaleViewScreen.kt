@@ -1,4 +1,4 @@
-package com.sales.app.presentation.quotes
+package com.sales.app.presentation.sales
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,24 +18,24 @@ import com.sales.app.presentation.common.TransactionPrintPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuoteViewScreen(
+fun SaleViewScreen(
     accountId: Int,
-    quoteId: Int,
+    saleId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToEdit: (Int) -> Unit,
-    viewModel: QuoteViewViewModel
+    viewModel: SaleViewViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var isPrintPreview by remember { mutableStateOf(false) }
     
-    LaunchedEffect(accountId, quoteId) {
-        viewModel.loadQuote(accountId, quoteId)
+    LaunchedEffect(accountId, saleId) {
+        viewModel.loadSale(accountId, saleId)
     }
     
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isPrintPreview) "Print Preview" else "Quote Details") },
+                title = { Text(if (isPrintPreview) "Print Preview" else "Sale Details") },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (isPrintPreview) isPrintPreview = false else onNavigateBack()
@@ -44,16 +44,15 @@ fun QuoteViewScreen(
                     }
                 },
                 actions = {
-                    // Toggle Print Preview
                     IconButton(onClick = { isPrintPreview = !isPrintPreview }) {
                         Icon(
-                            if (isPrintPreview) Icons.Default.Edit else Icons.Default.Info, // Using Info icon as placeholder for "Print/View" toggle if no specific print icon
+                            if (isPrintPreview) Icons.Default.Edit else Icons.Default.Info,
                             contentDescription = if (isPrintPreview) "Edit Mode" else "Print Preview"
                         )
                     }
                     
                     if (!isPrintPreview) {
-                        IconButton(onClick = { onNavigateToEdit(quoteId) }) {
+                        IconButton(onClick = { onNavigateToEdit(saleId) }) {
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
                         }
                     }
@@ -79,14 +78,14 @@ fun QuoteViewScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-                uiState.quote?.let { quote ->
+                uiState.sale?.let { sale ->
                     if (isPrintPreview) {
                         TransactionPrintPreview(
-                            title = "Quote",
+                            title = "Invoice",
                             details = mapOf(
-                                "Quote No" to "#${quote.id}",
-                                "Date" to quote.date,
-                                "Party" to quote.partyName
+                                "Invoice No" to sale.invoiceNo,
+                                "Date" to sale.date,
+                                "Party" to sale.partyName
                             ),
                             items = uiState.items.map { 
                                 val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
@@ -97,7 +96,7 @@ fun QuoteViewScreen(
                                     total = "%.2f".format(total)
                                 )
                             },
-                            totalAmount = "₹${"%.2f".format(quote.amount)}"
+                            totalAmount = "₹${"%.2f".format(sale.amount)}"
                         )
                     } else {
                         Column(
@@ -105,7 +104,6 @@ fun QuoteViewScreen(
                                 .fillMaxSize()
                                 .padding(16.dp)
                         ) {
-                            // Header Card
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(
@@ -114,14 +112,19 @@ fun QuoteViewScreen(
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     Text(
-                                        text = quote.partyName,
+                                        text = sale.partyName,
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = "Date: ${quote.date}",
+                                        text = "Invoice: ${sale.invoiceNo}",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                    Text(
+                                        text = "Date: ${sale.date}",
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
@@ -175,7 +178,7 @@ fun QuoteViewScreen(
                                         color = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                     Text(
-                                        text = "₹${"%.2f".format(quote.amount)}",
+                                        text = "₹${"%.2f".format(sale.amount)}",
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer
