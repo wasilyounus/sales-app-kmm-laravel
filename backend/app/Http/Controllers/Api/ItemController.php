@@ -14,15 +14,15 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $accountId = $request->input('account_id');
-        
+
         $query = Item::query();
-        
+
         if ($accountId) {
             $query->where('account_id', $accountId);
         }
-        
+
         $items = $query->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $items,
@@ -43,6 +43,7 @@ class ItemController extends Controller
             'size' => 'nullable|string|max:255',
             'uqc' => 'required|integer',
             'hsn' => 'nullable|integer',
+            'tax_id' => 'nullable|integer|exists:taxes,id',
             'account_id' => 'required|exists:accounts,id',
         ]);
 
@@ -62,7 +63,7 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $item,
@@ -75,7 +76,7 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         $item = Item::findOrFail($id);
-        
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'alt_name' => 'nullable|string|max:255',
@@ -83,6 +84,7 @@ class ItemController extends Controller
             'size' => 'nullable|string|max:255',
             'uqc' => 'sometimes|required|integer',
             'hsn' => 'nullable|integer',
+            'tax_id' => 'nullable|integer|exists:taxes,id',
         ]);
 
         $item->update($validated);

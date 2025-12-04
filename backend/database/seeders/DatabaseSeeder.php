@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             'tax_country' => 'India',
             'country' => 'India',
             'state' => 'Maharashtra',
-            'gst' => '27AAAAA0000A1Z5',
+            'tax_number' => '27AAAAA0000A1Z5',
             'address' => '123 Demo Street, Mumbai, Maharashtra',
             'call' => '+91 9876543210',
             'whatsapp' => '+91 9876543210',
