@@ -14,15 +14,4 @@ data class PurchaseEntity(
     val deletedAt: String?
 )
 
-@Entity(tableName = "purchase_items")
-data class PurchaseItemEntity(
-    @PrimaryKey val id: Int,
-    val purchaseId: Int,
-    val itemId: Int,
-    val price: Double,
-    val qty: Double,
-    val taxId: Int?,
-    val accountId: Int,
-    val createdAt: String,
-    val updatedAt: String
-)
+

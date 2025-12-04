@@ -25,7 +25,7 @@ import com.sales.app.data.local.entity.*
         SyncTimestampEntity::class,
         StockMovementEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

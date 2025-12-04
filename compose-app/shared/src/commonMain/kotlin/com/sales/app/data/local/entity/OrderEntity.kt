@@ -14,14 +14,4 @@ data class OrderEntity(
     val deletedAt: String?
 )
 
-@Entity(tableName = "order_items")
-data class OrderItemEntity(
-    @PrimaryKey val id: Int,
-    val orderId: Int,
-    val itemId: Int,
-    val price: Double,
-    val qty: Double,
-    val accountId: Int,
-    val createdAt: String,
-    val updatedAt: String
-)
+

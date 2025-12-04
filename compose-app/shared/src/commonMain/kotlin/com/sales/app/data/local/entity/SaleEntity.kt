@@ -16,15 +16,3 @@ data class SaleEntity(
     val deletedAt: String?
 )
 
-@Entity(tableName = "sale_items")
-data class SaleItemEntity(
-    @PrimaryKey val id: Int,
-    val saleId: Int,
-    val itemId: Int,
-    val price: Double,
-    val qty: Double,
-    val taxId: Int?,
-    val accountId: Int,
-    val createdAt: String,
-    val updatedAt: String
-)
