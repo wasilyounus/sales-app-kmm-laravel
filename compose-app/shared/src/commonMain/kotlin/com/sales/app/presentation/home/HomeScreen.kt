@@ -153,7 +153,7 @@ private fun DesktopHomeLayout(
                 modules = listOf(
                     ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
                     ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), false) {},
-                    ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), false) {},
+                    ModuleData("Sales", "Record sales", Icons.AutoMirrored.Filled.TrendingUp, Color(0xFFC1689B), false) {},
                     ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), false) {},
                     ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), false) {}
                 )
@@ -217,7 +217,7 @@ private fun MobileHomeLayout(
             modules = listOf(
                 ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
                 ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), false) {},
-                ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), false) {},
+                ModuleData("Sales", "Record sales", Icons.AutoMirrored.Filled.TrendingUp, Color(0xFFC1689B), false) {},
                 ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), false) {},
                 ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), false) {}
             )
