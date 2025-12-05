@@ -72,12 +72,9 @@ actual fun createHttpClient(): HttpClient {
             }
         }
         
-        // Configure base URL
-        // Use 10.0.2.2 for Android emulator (maps to host's localhost)
-        // For physical device, use your computer's IP address
+        // Configure base URL from BuildConfig (generated from root .env)
         install(DefaultRequest) {
-            // base URL
-            url("http://192.168.1.174:8000/api/")
+            url(com.sales.app.config.BuildConfig.API_BASE_URL)
 
             // Default headers
             header(HttpHeaders.Accept, ContentType.Application.Json)

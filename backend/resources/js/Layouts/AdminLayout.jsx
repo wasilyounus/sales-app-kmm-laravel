@@ -35,7 +35,8 @@ export default function AdminLayout({ children, title }) {
 
     const navigation = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-        { name: 'Sales', href: '/admin/sales', icon: FileText },
+        { name: 'Quotes', href: '/admin/quotes', icon: FileText },
+        { name: 'Sales', href: '/admin/sales', icon: ShoppingCart },
         { name: 'Items', href: '/admin/items', icon: Package },
         { name: 'Parties', href: '/admin/parties', icon: Users },
         { name: 'Accounts', href: '/admin/accounts', icon: Building2 },

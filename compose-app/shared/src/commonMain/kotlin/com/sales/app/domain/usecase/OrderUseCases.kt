@@ -1,7 +1,7 @@
 package com.sales.app.domain.usecase
 
 import com.sales.app.data.remote.dto.OrderItemRequest
-import com.sales.app.data.repository.OrderRepository
+import com.sales.app.domain.repository.OrderRepository
 import com.sales.app.domain.model.Order
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow

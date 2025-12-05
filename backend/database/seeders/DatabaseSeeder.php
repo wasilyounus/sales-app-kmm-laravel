@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
             'name_formatted' => 'DEMO COMPANY',
             'desc' => 'Default demo account for testing',
             'taxation_type' => 2,
-            'tax_country' => 'India',
             'country' => 'India',
             'state' => 'Maharashtra',
             'tax_number' => '27AAAAA0000A1Z5',
@@ -52,11 +51,20 @@ class DatabaseSeeder extends Seeder
         // Set as current account for user
         $user->update(['current_account_id' => $account->id]);
 
-        // Seed taxes and UQCs
+        // Always seed taxes and UQCs
         $this->call([
             TaxSeeder::class,
             UqcSeeder::class,
         ]);
+
+        // Only seed sample Party and Item data in development environment
+        if (app()->environment('local', 'development') || env('APP_ENV') === 'development') {
+            $this->call([
+                PartySeeder::class,
+                ItemSeeder::class,
+            ]);
+            $this->command->info('✓ Seeded sample parties and items (dev only)');
+        }
 
         $this->command->info('✓ Created default user: test@wyco.in (password: pass)');
         $this->command->info('✓ Created default account: Demo Company');

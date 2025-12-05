@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ItemWebController;
 use App\Http\Controllers\Web\PartyWebController;
 use App\Http\Controllers\Web\SaleWebController;
+use App\Http\Controllers\Web\QuoteWebController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -38,5 +39,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::resource('items', ItemWebController::class);
     Route::resource('parties', PartyWebController::class);
     Route::resource('sales', SaleWebController::class);
+    Route::resource('quotes', QuoteWebController::class);
     Route::get('/reports', function () { return Inertia::render('Reports/Index'); })->name('reports.index');
 });

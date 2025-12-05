@@ -16,6 +16,7 @@ class QuoteItem extends Model
         'item_id',
         'price',
         'qty',
+        'tax_id',
         'account_id',
         'log_id',
     ];
@@ -33,6 +34,11 @@ class QuoteItem extends Model
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
     }
 
     public function account()

@@ -38,7 +38,7 @@ class AccountRepositoryTest {
                 nameFormatted = "TEST ACCOUNT 1",
                 desc = "Description 1",
                 taxationType = 1,
-                taxCountry = "India",
+                taxRate = 18,
                 country = "India",
                 state = "Maharashtra",
                 taxNumber = "TAX123",
@@ -46,10 +46,11 @@ class AccountRepositoryTest {
                 call = "1234567890",
                 whatsapp = "1234567890",
                 footerContent = "Footer 1",
-                signature = true,
+                signature = "true",
                 financialYearStart = "2025-04-01 00:00:00",
                 defaultTaxId = null,
-                visibility = "private"
+                createdAt = "2025-01-01 00:00:00",
+                updatedAt = "2025-01-01 00:00:00"
             )
         )
         
@@ -74,7 +75,7 @@ class AccountRepositoryTest {
             nameFormatted = "NO GST ACCOUNT",
             desc = null,
             taxationType = 1,
-            taxCountry = null,
+            taxRate = 0,
             country = "India",
             state = null,
             taxNumber = "NEWTAX789",
@@ -82,10 +83,11 @@ class AccountRepositoryTest {
             call = null,
             whatsapp = null,
             footerContent = null,
-            signature = false,
+            signature = null,
             financialYearStart = "2025-04-01 00:00:00",
             defaultTaxId = null,
-            visibility = "private"
+            createdAt = "2025-01-01 00:00:00",
+            updatedAt = "2025-01-01 00:00:00"
         )
         
         every { accountDao.getAll() } returns flowOf(listOf(accountEntity))
@@ -110,7 +112,7 @@ class AccountRepositoryTest {
             nameFormatted = "DTO ACCOUNT",
             desc = null,
             taxationType = 2,
-            taxCountry = "India",
+            taxRate = 18,
             country = "India",
             state = "Delhi",
             taxNumber = "DTOTAX123",
@@ -121,7 +123,8 @@ class AccountRepositoryTest {
             signature = false,
             financialYearStart = "2025-04-01 00:00:00",
             defaultTaxId = null,
-            visibility = "private"
+            createdAt = "2025-01-01 00:00:00",
+            updatedAt = "2025-01-01 00:00:00"
         )
         
         coEvery { apiService.getAccounts() } returns listOf(accountDto)

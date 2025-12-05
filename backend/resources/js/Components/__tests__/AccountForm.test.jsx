@@ -9,7 +9,6 @@ describe('AccountForm', () => {
         name_formatted: 'TEST ACCOUNT',
         desc: 'Description',
         taxation_type: 1, // No tax to simplify the test
-        tax_country: '',
         country: 'India',
         state: 'Maharashtra',
         tax_number: '27ABCDE1234F1Z5',

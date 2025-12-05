@@ -12,6 +12,78 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
+// Read API configuration from root .env file
+fun loadEnvConfig(): Map<String, String> {
+    val envFile = rootProject.file("../.env")
+    val config = mutableMapOf(
+        "APP_ENV" to "development",  // defaults
+        "APP_DEBUG" to "true",
+        "API_PROTOCOL" to "http",
+        "API_HOST" to "192.168.1.174",
+        "API_PORT" to "8000"
+    )
+    if (envFile.exists()) {
+        envFile.readLines().forEach { line ->
+            if (line.isNotBlank() && !line.startsWith("#") && line.contains("=")) {
+                val (key, value) = line.split("=", limit = 2)
+                config[key.trim()] = value.trim()
+            }
+        }
+    }
+    return config
+}
+
+// Task to generate BuildConfig.kt from .env
+tasks.register("generateBuildConfig") {
+    val envConfig = loadEnvConfig()
+    val outputDir = file("src/commonMain/kotlin/com/sales/app/config")
+    val outputFile = file("$outputDir/BuildConfig.kt")
+    
+    outputs.file(outputFile)
+    
+    doLast {
+        outputDir.mkdirs()
+        val appEnv = envConfig["APP_ENV"] ?: "development"
+        val appDebug = envConfig["APP_DEBUG"] ?: "true"
+        val apiProtocol = envConfig["API_PROTOCOL"] ?: "http"
+        val apiHost = envConfig["API_HOST"] ?: "192.168.1.174"
+        val apiPort = envConfig["API_PORT"] ?: "8000"
+        val isProduction = appEnv == "production"
+        val isDebug = appDebug.lowercase() == "true"
+        
+        outputFile.writeText("""
+            |package com.sales.app.config
+            |
+            |/**
+            | * Build configuration injected at compile time from root .env file.
+            | * To update, modify the .env file in the project root and rebuild.
+            | * 
+            | * Generated - do not edit manually!
+            | */
+            |object BuildConfig {
+            |    // Environment
+            |    const val APP_ENV: String = "$appEnv"
+            |    const val IS_PRODUCTION: Boolean = $isProduction
+            |    const val IS_DEBUG: Boolean = $isDebug
+            |    
+            |    // API Configuration
+            |    const val API_PROTOCOL: String = "$apiProtocol"
+            |    const val API_HOST: String = "$apiHost"
+            |    const val API_PORT: String = "$apiPort"
+            |    const val API_BASE_URL: String = "${'$'}API_PROTOCOL://${'$'}API_HOST:${'$'}API_PORT/api/"
+            |}
+        """.trimMargin())
+        
+        println("Generated BuildConfig: APP_ENV=$appEnv, DEBUG=$isDebug, API=$apiProtocol://$apiHost:$apiPort")
+    }
+}
+
+// Run generateBuildConfig before compilation
+tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
+    dependsOn("generateBuildConfig")
+}
+
+
 kotlin {
     androidTarget()
     jvm("desktop")

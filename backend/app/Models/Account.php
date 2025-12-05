@@ -16,7 +16,6 @@ class Account extends Model
         'name_formatted',
         'desc',
         'taxation_type',
-        'tax_country',
         'address',
         'call',
         'whatsapp',

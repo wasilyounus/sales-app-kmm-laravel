@@ -17,7 +17,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
         name_formatted: account?.name_formatted || '',
         desc: account?.desc || '',
         taxation_type: account?.taxation_type || 1,
-        tax_country: account?.tax_country || '',
+        country: account?.country || '',
         default_tax_id: account?.default_tax_id || null,
         tax_number: account?.tax_number || '',
         address: account?.address || '',
@@ -29,19 +29,19 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
     });
 
     useEffect(() => {
-        if (data.tax_country === 'India') {
+        if (data.country === 'India') {
             const currentYear = new Date().getFullYear();
             // Only set if empty to avoid overwriting user changes
             if (!data.financial_year_start) {
                 setData('financial_year_start', `${currentYear}-04-01 00:00:00`);
             }
-        } else if (['Saudi Arabia', 'UAE', 'Qatar'].includes(data.tax_country)) {
+        } else if (['Saudi Arabia', 'UAE', 'Qatar'].includes(data.country)) {
             const currentYear = new Date().getFullYear();
             if (!data.financial_year_start) {
                 setData('financial_year_start', `${currentYear}-01-01 00:00:00`);
             }
         }
-    }, [data.tax_country]);
+    }, [data.country]);
 
     useEffect(() => {
         if (account) {
@@ -50,7 +50,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                 name_formatted: account.name_formatted || '',
                 desc: account.desc || '',
                 taxation_type: account.taxation_type || 1,
-                tax_country: account.tax_country || '',
+                country: account.country || '',
                 default_tax_id: account.default_tax_id || null,
                 tax_number: account.tax_number || '',
                 address: account.address || '',
@@ -166,12 +166,12 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                     {data.taxation_type !== 1 && (
                         <>
                             <div className="space-y-2">
-                                <Label htmlFor="tax_country">Tax Country/Region *</Label>
+                                <Label htmlFor="country">Country/Region *</Label>
                                 <select
-                                    id="tax_country"
-                                    value={data.tax_country || ''}
+                                    id="country"
+                                    value={data.country || ''}
                                     onChange={e => {
-                                        setData('tax_country', e.target.value);
+                                        setData('country', e.target.value);
                                         // Reset tax scheme when country changes
                                         setData('default_tax_id', null);
                                     }}
@@ -184,10 +184,10 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                                     <option value="UAE">UAE</option>
                                     <option value="Qatar">Qatar</option>
                                 </select>
-                                {errors.tax_country && <p className="text-sm text-red-600">{errors.tax_country}</p>}
+                                {errors.country && <p className="text-sm text-red-600">{errors.country}</p>}
                             </div>
 
-                            {data.tax_country && (
+                            {data.country && (
                                 <div className="space-y-2">
                                     <Label htmlFor="default_tax_id">Tax Scheme (Optional)</Label>
                                     <select
@@ -197,7 +197,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         <option value="">No specific tax scheme</option>
-                                        {taxes?.filter(tax => tax.scheme_name.startsWith(data.tax_country)).map(tax => (
+                                        {taxes?.filter(tax => tax.country === data.country).map(tax => (
                                             <option key={tax.id} value={tax.id}>{tax.scheme_name}</option>
                                         ))}
                                     </select>
