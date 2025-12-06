@@ -3,3 +3,5 @@ references/YCo-android-jetpack-compose-app
 
 # Environment configuration (keep .env.example in git)
 .env
+.vscode/settings.json
+compose-app/.kotlin/errors/
