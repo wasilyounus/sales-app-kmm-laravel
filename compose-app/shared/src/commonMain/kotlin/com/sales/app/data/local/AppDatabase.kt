@@ -23,9 +23,12 @@ import com.sales.app.data.local.entity.*
         PurchaseEntity::class,
         PurchaseItemEntity::class,
         SyncTimestampEntity::class,
-        StockMovementEntity::class
+        StockMovementEntity::class,
+        TransactionEntity::class,
+        PriceListEntity::class,
+        PriceListItemEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -46,4 +49,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun taxDao(): TaxDao
     abstract fun uqcDao(): UqcDao
     abstract fun inventoryDao(): InventoryDao
+    abstract fun transactionDao(): TransactionDao
+    abstract fun priceListDao(): PriceListDao
 }

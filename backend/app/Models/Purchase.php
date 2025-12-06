@@ -13,10 +13,16 @@ class Purchase extends Model
 
     protected $fillable = [
         'party_id',
+        'tax_id',
         'date',
         'account_id',
         'log_id',
     ];
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
 
     protected $casts = [
         'date' => 'date',

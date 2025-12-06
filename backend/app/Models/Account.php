@@ -27,6 +27,7 @@ class Account extends Model
         'state',
         'tax_number',
         'default_tax_id',
+        'tax_application_level',
         'visibility',
     ];
 
@@ -37,6 +38,7 @@ class Account extends Model
 
     protected $casts = [
         'signature' => 'boolean',
+        'tax_application_level' => 'string', // 'account', 'bill', or 'item'
     ];
 
     public function users()

@@ -47,8 +47,12 @@ sealed class Screen(val route: String) {
         fun createRoute(purchaseId: Int) = "purchases/$purchaseId"
     }
     object Inventory : Screen("inventory")
-    object StockAdjustment : Screen("inventory/adjustment/{accountId}") {
-        fun createRoute(accountId: Int) = "inventory/adjustment/$accountId"
+    object Payments : Screen("payments")
+    object PaymentCreate : Screen("payments/create")
+    object PriceLists : Screen("price-lists")
+    object PriceListCreate : Screen("price-lists/create")
+    object PriceListDetail : Screen("price-lists/{priceListId}") {
+        fun createRoute(priceListId: Long) = "price-lists/$priceListId"
     }
     object Settings : Screen("settings")
     object AccountSettings : Screen("account-settings")

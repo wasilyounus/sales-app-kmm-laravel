@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,10 +25,11 @@ import androidx.compose.ui.unit.dp
 fun InventoryScreen(
     accountId: Int,
     onNavigateBack: () -> Unit,
-    onNavigateToAdjustment: () -> Unit,
-    viewModel: InventoryViewModel
+    viewModel: InventoryViewModel,
+    stockAdjustmentViewModel: StockAdjustmentViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showAdjustmentDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(accountId) {
         viewModel.loadInventory(accountId)
@@ -43,7 +47,7 @@ fun InventoryScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToAdjustment) {
+            FloatingActionButton(onClick = { showAdjustmentDialog = true }) {
                 Icon(Icons.Default.Add, contentDescription = "Adjust Stock")
             }
         }
@@ -107,5 +111,16 @@ fun InventoryScreen(
                 )
             }
         }
+    }
+
+    if (showAdjustmentDialog) {
+        StockAdjustmentDialog(
+            accountId = accountId,
+            onDismissRequest = { showAdjustmentDialog = false },
+            onAdjustmentSaved = {
+                viewModel.loadInventory(accountId) // Refresh inventory
+            },
+            viewModel = stockAdjustmentViewModel
+        )
     }
 }

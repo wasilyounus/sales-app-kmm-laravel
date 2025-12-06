@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\ResourceController;
 use App\Http\Controllers\Api\SyncController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\AnalyticsController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\PriceListController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -123,7 +125,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('party-analytics', [AnalyticsController::class, 'partyAnalytics']);
         Route::get('conversion-funnel', [AnalyticsController::class, 'conversionFunnel']);
     });
+
+    // Payments / Transactions
+    Route::get('transactions', [TransactionController::class, 'index']);
+    Route::post('transactions', [TransactionController::class, 'store']);
+    Route::get('transactions/{id}', [TransactionController::class, 'show']);
+    Route::put('transactions/{id}', [TransactionController::class, 'update']);
+    Route::delete('transactions/{id}', [TransactionController::class, 'destroy']);
     
+    // Alias payments to transactions for semantic clarity if needed
+    Route::get('payments', [TransactionController::class, 'index']);
+    Route::post('payments', [TransactionController::class, 'store']);
+    Route::get('payments/{id}', [TransactionController::class, 'show']);
+    Route::put('payments/{id}', [TransactionController::class, 'update']);
+    Route::delete('payments/{id}', [TransactionController::class, 'destroy']);
+    
+    // Price Lists
+    Route::get('price-lists', [PriceListController::class, 'index']);
+    Route::post('price-lists', [PriceListController::class, 'store']);
+    Route::get('price-lists/{id}', [PriceListController::class, 'show']);
+    Route::put('price-lists/{id}', [PriceListController::class, 'update']);
+    Route::delete('price-lists/{id}', [PriceListController::class, 'destroy']);
+    Route::post('price-lists/{id}/items', [PriceListController::class, 'addItems']);
+    Route::get('price/effective', [PriceListController::class, 'getEffectivePrice']);
+
     // Test endpoint
     Route::get('test', function () {
         return response()->json([

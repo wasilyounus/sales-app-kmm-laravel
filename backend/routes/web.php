@@ -8,6 +8,11 @@ use App\Http\Controllers\Web\ItemWebController;
 use App\Http\Controllers\Web\PartyWebController;
 use App\Http\Controllers\Web\SaleWebController;
 use App\Http\Controllers\Web\QuoteWebController;
+use App\Http\Controllers\Web\PurchaseWebController;
+use App\Http\Controllers\Web\OrderWebController;
+use App\Http\Controllers\Web\InventoryWebController;
+use App\Http\Controllers\Web\PaymentWebController;
+use App\Http\Controllers\Web\PriceListWebController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -40,5 +45,20 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::resource('parties', PartyWebController::class);
     Route::resource('sales', SaleWebController::class);
     Route::resource('quotes', QuoteWebController::class);
+    Route::resource('purchases', PurchaseWebController::class);
+    Route::resource('orders', OrderWebController::class);
+    
+    // Inventory
+    Route::resource('inventory', InventoryWebController::class)->only(['index']);
+    Route::post('inventory/adjust', [InventoryWebController::class, 'adjust'])->name('inventory.adjust');
+
+    // Payments
+    Route::resource('payments', PaymentWebController::class)->only(['index', 'store']);
+
+    // Price Lists
+    Route::resource('price-lists', PriceListWebController::class);
+    Route::post('price-lists/{priceList}/items', [PriceListWebController::class, 'updateItems'])->name('price-lists.update-items');
+    Route::delete('price-lists/{priceList}/items/{item}', [PriceListWebController::class, 'removeItem'])->name('price-lists.remove-item');
+
     Route::get('/reports', function () { return Inertia::render('Reports/Index'); })->name('reports.index');
 });

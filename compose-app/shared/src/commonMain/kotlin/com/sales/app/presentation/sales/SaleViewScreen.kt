@@ -13,8 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.filled.Share
 import com.sales.app.presentation.common.PrintItem
 import com.sales.app.presentation.common.TransactionPrintPreview
+import com.sales.app.util.PrintData
+import com.sales.app.util.PrintItem as UtilPrintItem
+import com.sales.app.util.getPlatformShare
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +53,43 @@ fun SaleViewScreen(
                             if (isPrintPreview) Icons.Default.Edit else Icons.Default.Info,
                             contentDescription = if (isPrintPreview) "Edit Mode" else "Print Preview"
                         )
+                    }
+
+                    if (isPrintPreview) {
+                        IconButton(onClick = {
+                            uiState.sale?.let { sale ->
+                                val data = PrintData(
+                                    title = "Invoice",
+                                    subtitle = "Invoice No: ${sale.invoiceNo} | Date: ${sale.date}",
+                                    items = uiState.items.map { 
+                                        val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
+                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                    },
+                                    total = "%.2f".format(sale.amount),
+                                    meta = mapOf("Party" to sale.partyName, "Status" to "Confirmed")
+                                )
+                                getPlatformShare().print(data)
+                            }
+                        }) {
+                            Icon(Icons.Default.Info, contentDescription = "Print") // Using Info as generic action if Print missing, but let's try Share first
+                        }
+                        IconButton(onClick = {
+                            uiState.sale?.let { sale ->
+                                val data = PrintData(
+                                    title = "Invoice",
+                                    subtitle = "Invoice No: ${sale.invoiceNo} | Date: ${sale.date}",
+                                    items = uiState.items.map { 
+                                        val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
+                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                    },
+                                    total = "%.2f".format(sale.amount),
+                                    meta = mapOf("Party" to sale.partyName, "Status" to "Confirmed")
+                                )
+                                getPlatformShare().sharePdf(data)
+                            }
+                        }) {
+                            Icon(Icons.Default.Share, contentDescription = "Share")
+                        }
                     }
                     
                     if (!isPrintPreview) {

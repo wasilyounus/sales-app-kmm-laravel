@@ -48,6 +48,8 @@ class SalesAppContainer(
     val accountRepository: com.sales.app.domain.repository.AccountRepository = com.sales.app.data.repository.AccountRepositoryImpl(apiService, database.accountDao())
     val inventoryRepository: com.sales.app.domain.repository.InventoryRepository = InventoryRepositoryImpl(database.inventoryDao(), database.itemDao())
     val taxRepository: com.sales.app.domain.repository.TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
+    val paymentRepository: com.sales.app.domain.repository.PaymentRepository = PaymentRepositoryImpl(apiService, database.transactionDao())
+    val priceListRepository: com.sales.app.domain.repository.PriceListRepository = PriceListRepositoryImpl(apiService, database.priceListDao())
 
     // Use Cases
     val loginUseCase = LoginUseCase(authRepository)
@@ -217,4 +219,12 @@ class SalesAppContainer(
     // Inventory ViewModels
     fun createInventoryViewModel() = InventoryViewModel(getInventorySummaryUseCase)
     fun createStockAdjustmentViewModel() = StockAdjustmentViewModel(adjustStockUseCase, getItemsUseCase)
+
+    // Payments ViewModels
+    fun createPaymentsViewModel() = com.sales.app.presentation.payments.PaymentsViewModel(paymentRepository)
+    fun createPaymentFormViewModel() = com.sales.app.presentation.payments.PaymentFormViewModel(paymentRepository, partyRepository)
+
+    // Price Lists ViewModels
+    fun createPriceListsViewModel() = com.sales.app.presentation.pricelists.PriceListsViewModel(priceListRepository)
+    fun createPriceListDetailViewModel() = com.sales.app.presentation.pricelists.PriceListDetailViewModel(priceListRepository, itemRepository)
 }

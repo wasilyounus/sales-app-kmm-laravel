@@ -13,8 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.filled.Share
 import com.sales.app.presentation.common.PrintItem
 import com.sales.app.presentation.common.TransactionPrintPreview
+import com.sales.app.util.PrintData
+import com.sales.app.util.PrintItem as UtilPrintItem
+import com.sales.app.util.getPlatformShare
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +53,43 @@ fun OrderViewScreen(
                             if (isPrintPreview) Icons.Default.Edit else Icons.Default.Info,
                             contentDescription = if (isPrintPreview) "Edit Mode" else "Print Preview"
                         )
+                    }
+
+                    if (isPrintPreview) {
+                        IconButton(onClick = {
+                            uiState.order?.let { order ->
+                                val data = PrintData(
+                                    title = "Order",
+                                    subtitle = "Order No: ${order.id} | Date: ${order.date}",
+                                    items = uiState.items.map { 
+                                        val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
+                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                    },
+                                    total = "%.2f".format(order.amount),
+                                    meta = mapOf("Party" to order.partyName, "Status" to "Active")
+                                )
+                                getPlatformShare().print(data)
+                            }
+                        }) {
+                            Icon(Icons.Default.Info, contentDescription = "Print")
+                        }
+                        IconButton(onClick = {
+                            uiState.order?.let { order ->
+                                val data = PrintData(
+                                    title = "Order",
+                                    subtitle = "Order No: ${order.id} | Date: ${order.date}",
+                                    items = uiState.items.map { 
+                                        val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
+                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                    },
+                                    total = "%.2f".format(order.amount),
+                                    meta = mapOf("Party" to order.partyName, "Status" to "Active")
+                                )
+                                getPlatformShare().sharePdf(data)
+                            }
+                        }) {
+                            Icon(Icons.Default.Share, contentDescription = "Share")
+                        }
                     }
                     
                     if (!isPrintPreview) {

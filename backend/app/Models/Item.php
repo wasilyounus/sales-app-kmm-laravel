@@ -57,4 +57,9 @@ class Item extends Model
     {
         return $this->hasMany(PurchaseItem::class);
     }
+
+    public function uqc_data()
+    {
+        return $this->belongsTo(Uqc::class, 'uqc', 'uqc');
+    }
 }

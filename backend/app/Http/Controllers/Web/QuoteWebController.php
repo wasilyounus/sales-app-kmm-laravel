@@ -139,6 +139,11 @@ class QuoteWebController extends Controller
                 'total_value' => $totalValue,
             ],
             'filters' => $request->only(['search']),
+            // Account tax settings
+            'taxSettings' => [
+                'level' => $account?->tax_application_level ?? 'item',
+                'default_tax_id' => $account?->default_tax_id,
+            ],
         ]);
     }
 

@@ -13,8 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.filled.Share
 import com.sales.app.presentation.common.PrintItem
 import com.sales.app.presentation.common.TransactionPrintPreview
+import com.sales.app.util.PrintData
+import com.sales.app.util.PrintItem as UtilPrintItem
+import com.sales.app.util.getPlatformShare
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +54,43 @@ fun QuoteViewScreen(
                             if (isPrintPreview) Icons.Default.Edit else Icons.Default.Info, // Using Info icon as placeholder for "Print/View" toggle if no specific print icon
                             contentDescription = if (isPrintPreview) "Edit Mode" else "Print Preview"
                         )
+                    }
+
+                    if (isPrintPreview) {
+                        IconButton(onClick = {
+                            uiState.quote?.let { quote ->
+                                val data = PrintData(
+                                    title = "Quote",
+                                    subtitle = "Quote No: ${quote.id} | Date: ${quote.date}",
+                                    items = uiState.items.map { 
+                                        val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
+                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                    },
+                                    total = "%.2f".format(quote.amount),
+                                    meta = mapOf("Party" to quote.partyName, "Status" to "Pending")
+                                )
+                                getPlatformShare().print(data)
+                            }
+                        }) {
+                            Icon(Icons.Default.Info, contentDescription = "Print")
+                        }
+                        IconButton(onClick = {
+                            uiState.quote?.let { quote ->
+                                val data = PrintData(
+                                    title = "Quote",
+                                    subtitle = "Quote No: ${quote.id} | Date: ${quote.date}",
+                                    items = uiState.items.map { 
+                                        val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
+                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                    },
+                                    total = "%.2f".format(quote.amount),
+                                    meta = mapOf("Party" to quote.partyName, "Status" to "Pending")
+                                )
+                                getPlatformShare().sharePdf(data)
+                            }
+                        }) {
+                            Icon(Icons.Default.Share, contentDescription = "Share")
+                        }
                     }
                     
                     if (!isPrintPreview) {

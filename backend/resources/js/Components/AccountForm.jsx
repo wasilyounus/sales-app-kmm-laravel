@@ -19,6 +19,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
         taxation_type: account?.taxation_type || 1,
         country: account?.country || '',
         default_tax_id: account?.default_tax_id || null,
+        tax_application_level: account?.tax_application_level || 'item',
         tax_number: account?.tax_number || '',
         address: account?.address || '',
         call: account?.call || '',
@@ -52,6 +53,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                 taxation_type: account.taxation_type || 1,
                 country: account.country || '',
                 default_tax_id: account.default_tax_id || null,
+                tax_application_level: account.tax_application_level || 'item',
                 tax_number: account.tax_number || '',
                 address: account.address || '',
                 call: account.call || '',
@@ -189,7 +191,7 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
 
                             {data.country && (
                                 <div className="space-y-2">
-                                    <Label htmlFor="default_tax_id">Tax Scheme (Optional)</Label>
+                                    <Label htmlFor="default_tax_id">Default Tax Scheme</Label>
                                     <select
                                         id="default_tax_id"
                                         value={data.default_tax_id || ''}
@@ -204,6 +206,42 @@ export default function AccountForm({ account = null, taxes = [], onSuccess, onC
                                     {errors.default_tax_id && <p className="text-sm text-red-600">{errors.default_tax_id}</p>}
                                 </div>
                             )}
+
+                            {/* Tax Application Level */}
+                            <div className="md:col-span-2 space-y-3">
+                                <Label>Tax Selection Level</Label>
+                                <p className="text-xs text-muted-foreground">Choose where you want to select tax in quotes, sales, purchases, and orders</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    {[
+                                        { value: 'account', label: 'Account Level', desc: 'Use default tax for all items' },
+                                        { value: 'bill', label: 'Bill Level', desc: 'Select tax once per transaction' },
+                                        { value: 'item', label: 'Item Level', desc: 'Select tax for each item' },
+                                    ].map(option => (
+                                        <label
+                                            key={option.value}
+                                            className={`flex flex-col p-3 border rounded-lg cursor-pointer transition-all ${
+                                                data.tax_application_level === option.value 
+                                                    ? 'border-violet-500 bg-violet-50 ring-1 ring-violet-500' 
+                                                    : 'border-gray-200 hover:border-gray-300'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="radio"
+                                                    name="tax_application_level"
+                                                    value={option.value}
+                                                    checked={data.tax_application_level === option.value}
+                                                    onChange={e => setData('tax_application_level', e.target.value)}
+                                                    className="w-4 h-4 text-violet-600"
+                                                />
+                                                <span className="font-medium text-sm">{option.label}</span>
+                                            </div>
+                                            <span className="text-xs text-muted-foreground mt-1 ml-6">{option.desc}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                                {errors.tax_application_level && <p className="text-sm text-red-600">{errors.tax_application_level}</p>}
+                            </div>
                         </>
                     )}
 

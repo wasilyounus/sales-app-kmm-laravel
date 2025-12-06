@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
-import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2 } from 'lucide-react';
+import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2, PackageOpen, ClipboardList, Wallet, Tags } from 'lucide-react';
 import AccountSwitcher from '@/Components/AccountSwitcher';
 import AccountSelectionModal from '@/Components/AccountSelectionModal';
 
@@ -37,6 +37,11 @@ export default function AdminLayout({ children, title }) {
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Quotes', href: '/admin/quotes', icon: FileText },
         { name: 'Sales', href: '/admin/sales', icon: ShoppingCart },
+        { name: 'Purchases', href: '/admin/purchases', icon: PackageOpen },
+        { name: 'Orders', href: '/admin/orders', icon: ClipboardList },
+        { name: 'Payments', href: '/admin/payments', icon: Wallet },
+        { name: 'Price Lists', href: '/admin/price-lists', icon: Tags },
+        { name: 'Inventory', href: '/admin/inventory', icon: Package },
         { name: 'Items', href: '/admin/items', icon: Package },
         { name: 'Parties', href: '/admin/parties', icon: Users },
         { name: 'Accounts', href: '/admin/accounts', icon: Building2 },

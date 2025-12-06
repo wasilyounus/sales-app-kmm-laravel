@@ -339,6 +339,60 @@ class ApiService(
         }.body()
     }
 
+    // Payments
+    suspend fun getTransactions(accountId: Int, page: Int = 1, search: String? = null): TransactionsResponse {
+        return client.get("payments") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+            parameter("page", page)
+            if (search != null) parameter("search", search)
+        }.body()
+    }
+
+    suspend fun createTransaction(request: TransactionRequest) {
+        client.post("payments") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    // Price Lists
+    suspend fun getPriceLists(accountId: Int): PriceListsResponse {
+        return client.get("price-lists") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+
+    suspend fun getPriceList(id: Long): PriceListDto {
+        return client.get("price-lists/$id") {
+            addAuthHeader()
+        }.body()
+    }
+
+    suspend fun createPriceList(request: PriceListRequest) {
+        client.post("price-lists") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    suspend fun updatePriceListItems(id: Long, request: UpdatePriceListItemsRequest) {
+        client.post("price-lists/$id/items") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
+    suspend fun deletePriceList(id: Long) {
+        client.delete("price-lists/$id") {
+            addAuthHeader()
+        }
+    }
+
     private suspend fun HttpRequestBuilder.addAuthHeader() {
 
         tokenProvider()?.let { token ->

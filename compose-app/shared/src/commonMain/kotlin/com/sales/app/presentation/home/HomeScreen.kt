@@ -28,7 +28,14 @@ fun HomeScreen(
     onNavigateToItems: () -> Unit,
     onNavigateToParties: () -> Unit,
     onNavigateToQuotes: () -> Unit,
+    onNavigateToPayments: () -> Unit,
+    onNavigateToPriceLists: () -> Unit,
     onNavigateToSync: () -> Unit,
+    onNavigateToInventory: () -> Unit,
+    onNavigateToOrders: () -> Unit,
+    onNavigateToSales: () -> Unit,
+    onNavigateToPurchases: () -> Unit,
+    onNavigateToTransfers: () -> Unit,
     onNavigateToAccountSettings: () -> Unit = {},
     viewModel: HomeViewModel
 ) {
@@ -75,7 +82,14 @@ fun HomeScreen(
                 onNavigateToItems = onNavigateToItems,
                 onNavigateToParties = onNavigateToParties,
                 onNavigateToQuotes = onNavigateToQuotes,
+                onNavigateToPayments = onNavigateToPayments,
+                onNavigateToPriceLists = onNavigateToPriceLists,
                 onNavigateToSync = onNavigateToSync,
+                onNavigateToInventory = onNavigateToInventory,
+                onNavigateToOrders = onNavigateToOrders,
+                onNavigateToSales = onNavigateToSales,
+                onNavigateToPurchases = onNavigateToPurchases,
+                onNavigateToTransfers = onNavigateToTransfers,
                 onNavigateToAccountSettings = onNavigateToAccountSettings
             )
         } else {
@@ -85,7 +99,14 @@ fun HomeScreen(
                 onNavigateToItems = onNavigateToItems,
                 onNavigateToParties = onNavigateToParties,
                 onNavigateToQuotes = onNavigateToQuotes,
+                onNavigateToPayments = onNavigateToPayments,
+                onNavigateToPriceLists = onNavigateToPriceLists,
                 onNavigateToSync = onNavigateToSync,
+                onNavigateToInventory = onNavigateToInventory,
+                onNavigateToOrders = onNavigateToOrders,
+                onNavigateToSales = onNavigateToSales,
+                onNavigateToPurchases = onNavigateToPurchases,
+                onNavigateToTransfers = onNavigateToTransfers,
                 onNavigateToAccountSettings = onNavigateToAccountSettings
             )
         }
@@ -99,7 +120,14 @@ private fun DesktopHomeLayout(
     onNavigateToItems: () -> Unit,
     onNavigateToParties: () -> Unit,
     onNavigateToQuotes: () -> Unit,
+    onNavigateToPayments: () -> Unit,
+    onNavigateToPriceLists: () -> Unit,
     onNavigateToSync: () -> Unit,
+    onNavigateToInventory: () -> Unit,
+    onNavigateToOrders: () -> Unit,
+    onNavigateToSales: () -> Unit,
+    onNavigateToPurchases: () -> Unit,
+    onNavigateToTransfers: () -> Unit,
     onNavigateToAccountSettings: () -> Unit
 ) {
     Row(
@@ -133,8 +161,8 @@ private fun DesktopHomeLayout(
                 title = "Inventory Management",
                 modules = listOf(
                     ModuleData("Items", "Manage your product catalog", Icons.Default.Inventory, Color(0xFF6750A4), true, onNavigateToItems),
-                    ModuleData("Inventory", "Track stock levels", Icons.Default.Warehouse, Color(0xFF8E6FCC), false) {},
-                    ModuleData("Prices", "Manage pricing", Icons.Default.AttachMoney, Color(0xFFB39DDB), false) {}
+                    ModuleData("Inventory", "Track stock levels", Icons.Default.Warehouse, Color(0xFF8E6FCC), true, onNavigateToInventory),
+                    ModuleData("Prices", "Manage pricing", Icons.Default.AttachMoney, Color(0xFFB39DDB), true, onNavigateToPriceLists)
                 )
             )
             
@@ -143,7 +171,7 @@ private fun DesktopHomeLayout(
                 title = "Customer Relationship",
                 modules = listOf(
                     ModuleData("Parties", "Manage customers and suppliers", Icons.Default.People, Color(0xFF006A6A), true, onNavigateToParties),
-                    ModuleData("Payments", "Track payments", Icons.Default.Payment, Color(0xFF00897B), false) {}
+                    ModuleData("Payments", "Track payments", Icons.Default.Payment, Color(0xFF00897B), true, onNavigateToPayments)
                 )
             )
             
@@ -152,10 +180,10 @@ private fun DesktopHomeLayout(
                 title = "Transactions",
                 modules = listOf(
                     ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
-                    ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), false) {},
-                    ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), false) {},
-                    ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), false) {},
-                    ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), false) {}
+                    ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), true, onNavigateToOrders),
+                    ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), true, onNavigateToSales),
+                    ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), true, onNavigateToPurchases),
+                    ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), true, onNavigateToTransfers)
                 )
             )
             
@@ -179,7 +207,14 @@ private fun MobileHomeLayout(
     onNavigateToItems: () -> Unit,
     onNavigateToParties: () -> Unit,
     onNavigateToQuotes: () -> Unit,
+    onNavigateToPayments: () -> Unit,
+    onNavigateToPriceLists: () -> Unit,
     onNavigateToSync: () -> Unit,
+    onNavigateToInventory: () -> Unit,
+    onNavigateToOrders: () -> Unit,
+    onNavigateToSales: () -> Unit,
+    onNavigateToPurchases: () -> Unit,
+    onNavigateToTransfers: () -> Unit,
     onNavigateToAccountSettings: () -> Unit
 ) {
     Column(
@@ -197,8 +232,8 @@ private fun MobileHomeLayout(
             title = "Inventory Management",
             modules = listOf(
                 ModuleData("Items", "Manage your product catalog", Icons.Default.Inventory, Color(0xFF6750A4), true, onNavigateToItems),
-                ModuleData("Inventory", "Track stock levels", Icons.Default.Warehouse, Color(0xFF8E6FCC), false) {},
-                ModuleData("Prices", "Manage pricing", Icons.Default.AttachMoney, Color(0xFFB39DDB), false) {}
+                ModuleData("Inventory", "Track stock levels", Icons.Default.Warehouse, Color(0xFF8E6FCC), true, onNavigateToInventory),
+                ModuleData("Prices", "Manage pricing", Icons.Default.AttachMoney, Color(0xFFB39DDB), true, onNavigateToPriceLists)
             )
         )
         
@@ -207,7 +242,7 @@ private fun MobileHomeLayout(
             title = "Customer Relationship",
             modules = listOf(
                 ModuleData("Parties", "Manage customers and suppliers", Icons.Default.People, Color(0xFF006A6A), true, onNavigateToParties),
-                ModuleData("Payments", "Track payments", Icons.Default.Payment, Color(0xFF00897B), false) {}
+                ModuleData("Payments", "Track payments", Icons.Default.Payment, Color(0xFF00897B), true, onNavigateToPayments)
             )
         )
         
@@ -216,10 +251,10 @@ private fun MobileHomeLayout(
             title = "Transactions",
             modules = listOf(
                 ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
-                ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), false) {},
-                ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), false) {},
-                ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), false) {},
-                ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), false) {}
+                ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), true, onNavigateToOrders),
+                ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), true, onNavigateToSales),
+                ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), true, onNavigateToPurchases),
+                ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), true, onNavigateToTransfers)
             )
         )
         

@@ -17,5 +17,6 @@ data class Account(
     val country: String? = "India",
     val state: String? = null,
     val taxNumber: String? = null,
-    val defaultTaxId: Int? = null
+    val defaultTaxId: Int? = null,
+    val taxApplicationLevel: String = "item"
 )

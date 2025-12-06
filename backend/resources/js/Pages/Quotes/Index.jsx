@@ -27,15 +27,20 @@ import {
     SelectValue,
 } from "@/Components/ui/select";
 
-export default function Index({ quotes, parties, items, taxes, stats, filters }) {
+export default function Index({ quotes, parties, items, taxes, stats, filters, taxSettings }) {
     const [searchTerm, setSearchTerm] = useState(filters?.search || '');
     const [modalOpen, setModalOpen] = useState(false);
     const [editingQuote, setEditingQuote] = useState(null);
     const [deleteConfirm, setDeleteConfirm] = useState(null);
 
+    // Tax application level from account settings
+    const taxLevel = taxSettings?.level || 'item';
+    const defaultTaxId = taxSettings?.default_tax_id?.toString() || '';
+
     const { data, setData, post, put, processing, errors, reset } = useForm({
         party_id: '',
         date: new Date().toISOString().split('T')[0],
+        tax_id: '', // Bill-level tax
         items: [{ item_id: '', price: '', qty: 1, tax_id: '' }],
     });
 
@@ -53,10 +58,13 @@ export default function Index({ quotes, parties, items, taxes, stats, filters })
 
     const openCreateModal = () => {
         reset();
+        // Initialize tax based on application level
+        const initialTaxId = taxLevel === 'account' ? defaultTaxId : '';
         setData({
             party_id: '',
             date: new Date().toISOString().split('T')[0],
-            items: [{ item_id: '', price: '', qty: 1, tax_id: '' }],
+            tax_id: taxLevel === 'bill' ? '' : initialTaxId,
+            items: [{ item_id: '', price: '', qty: 1, tax_id: taxLevel === 'item' ? '' : initialTaxId }],
         });
         setEditingQuote(null);
         setModalOpen(true);
@@ -67,6 +75,7 @@ export default function Index({ quotes, parties, items, taxes, stats, filters })
         setData({
             party_id: quote.party_id.toString(),
             date: quote.date,
+            tax_id: quote.tax_id ? quote.tax_id.toString() : '',
             items: quote.items.map(item => ({
                 item_id: item.item_id.toString(),
                 price: item.price.toString(),
@@ -78,7 +87,9 @@ export default function Index({ quotes, parties, items, taxes, stats, filters })
     };
 
     const addItemRow = () => {
-        setData('items', [...data.items, { item_id: '', price: '', qty: 1, tax_id: '' }]);
+        // For account/bill level, use the bill's tax_id or account default
+        const itemTaxId = taxLevel === 'item' ? '' : (data.tax_id || defaultTaxId);
+        setData('items', [...data.items, { item_id: '', price: '', qty: 1, tax_id: itemTaxId }]);
     };
 
     const removeItemRow = (index) => {
@@ -304,6 +315,44 @@ export default function Index({ quotes, parties, items, taxes, stats, filters })
                             </div>
                         </div>
 
+                        {/* Bill-level Tax - shown when tax level is 'bill' */}
+                        {taxLevel === 'bill' && (
+                            <div className="p-4 bg-violet-50 rounded-lg border border-violet-200">
+                                <div className="space-y-2">
+                                    <Label>Tax for all items</Label>
+                                    <Select 
+                                        value={data.tax_id || "none"} 
+                                        onValueChange={(value) => {
+                                            const newTaxId = value === 'none' ? '' : value;
+                                            setData('tax_id', newTaxId);
+                                            // Apply to all items
+                                            setData('items', data.items.map(item => ({
+                                                ...item,
+                                                tax_id: newTaxId
+                                            })));
+                                        }}
+                                    >
+                                        <SelectTrigger><SelectValue placeholder="Select tax" /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">No Tax</SelectItem>
+                                            {taxes?.map((t) => (
+                                                <SelectItem key={t.id} value={t.id.toString()}>{t.name} ({t.rate}%)</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Account-level Tax info - shown when tax level is 'account' */}
+                        {taxLevel === 'account' && defaultTaxId && (
+                            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-sm">
+                                <span className="text-blue-700">
+                                    Using account default tax: <strong>{taxes?.find(t => t.id.toString() === defaultTaxId)?.name || 'Unknown'}</strong>
+                                </span>
+                            </div>
+                        )}
+
                         {/* Items */}
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
@@ -315,8 +364,8 @@ export default function Index({ quotes, parties, items, taxes, stats, filters })
 
                             <div className="space-y-3 max-h-60 overflow-y-auto">
                                 {data.items.map((item, index) => (
-                                    <div key={index} className="grid grid-cols-12 gap-2 items-start p-3 bg-gray-50 rounded-lg">
-                                        <div className="col-span-3">
+                                    <div key={index} className={`grid gap-2 items-start p-3 bg-gray-50 rounded-lg ${taxLevel === 'item' ? 'grid-cols-12' : 'grid-cols-10'}`}>
+                                        <div className={taxLevel === 'item' ? 'col-span-3' : 'col-span-4'}>
                                             <Select value={item.item_id} onValueChange={(value) => updateItem(index, 'item_id', value)}>
                                                 <SelectTrigger><SelectValue placeholder="Item" /></SelectTrigger>
                                                 <SelectContent>
@@ -332,17 +381,19 @@ export default function Index({ quotes, parties, items, taxes, stats, filters })
                                         <div className="col-span-2">
                                             <Input type="number" placeholder="Qty" value={item.qty} onChange={(e) => updateItem(index, 'qty', e.target.value)} min="0.01" step="0.01" />
                                         </div>
-                                        <div className="col-span-2">
-                                            <Select value={item.tax_id || "none"} onValueChange={(value) => updateItem(index, 'tax_id', value === 'none' ? '' : value)}>
-                                                <SelectTrigger><SelectValue placeholder="Tax" /></SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="none">No Tax</SelectItem>
-                                                    {taxes?.map((t) => (
-                                                        <SelectItem key={t.id} value={t.id.toString()}>{t.name} ({t.rate}%)</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                        {taxLevel === 'item' && (
+                                            <div className="col-span-2">
+                                                <Select value={item.tax_id || "none"} onValueChange={(value) => updateItem(index, 'tax_id', value === 'none' ? '' : value)}>
+                                                    <SelectTrigger><SelectValue placeholder="Tax" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="none">No Tax</SelectItem>
+                                                        {taxes?.map((t) => (
+                                                            <SelectItem key={t.id} value={t.id.toString()}>{t.name} ({t.rate}%)</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        )}
                                         <div className="col-span-2 text-right font-medium pt-2 text-sm">
                                             {formatCurrency((parseFloat(item.price) || 0) * (parseFloat(item.qty) || 0))}
                                         </div>

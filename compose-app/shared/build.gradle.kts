@@ -83,6 +83,10 @@ tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
     dependsOn("generateBuildConfig")
 }
 
+tasks.matching { it.name.startsWith("kspKotlin") }.configureEach {
+    dependsOn("generateBuildConfig")
+}
+
 
 kotlin {
     androidTarget()

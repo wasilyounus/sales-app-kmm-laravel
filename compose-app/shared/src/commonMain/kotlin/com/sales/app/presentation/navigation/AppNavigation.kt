@@ -27,7 +27,6 @@ import com.sales.app.presentation.orders.OrderFormScreen
 import com.sales.app.presentation.purchases.PurchasesScreen
 import com.sales.app.presentation.purchases.PurchaseFormScreen
 import com.sales.app.presentation.inventory.InventoryScreen
-import com.sales.app.presentation.inventory.StockAdjustmentScreen
 import com.sales.app.presentation.sync.SyncScreen
 import com.sales.app.presentation.settings.AccountSettingsScreen
 
@@ -89,8 +88,31 @@ fun AppNavigation(
                 onNavigateToQuotes = {
                     navController.navigate(Screen.Quotes.route)
                 },
+                onNavigateToPayments = {
+                    navController.navigate(Screen.Payments.route)
+                },
+                onNavigateToPriceLists = {
+                    navController.navigate(Screen.PriceLists.route)
+                },
                 onNavigateToSync = {
                     navController.navigate(Screen.Settings.route) // Using Settings route for Sync
+                },
+                onNavigateToInventory = {
+                    navController.navigate(Screen.Inventory.route)
+                },
+                onNavigateToOrders = {
+                    navController.navigate(Screen.Orders.route)
+                },
+                onNavigateToSales = {
+                    navController.navigate(Screen.Sales.route)
+                },
+                onNavigateToPurchases = {
+                    navController.navigate(Screen.Purchases.route)
+                },
+                onNavigateToTransfers = {
+                     // StockAdjustment is now a dialog in Inventory, so we navigate to Inventory if we want to show it.
+                     // Or we could pass a flag to auto-open it. For now, just go to Inventory.
+                    navController.navigate(Screen.Inventory.route)
                 },
                 onNavigateToAccountSettings = {
                     navController.navigate(Screen.AccountSettings.route)
@@ -266,11 +288,14 @@ fun AppNavigation(
             val saleId = backStackEntry.arguments?.getInt("saleId") ?: return@composable
             // Placeholder for SaleViewScreen, redirecting to Edit for now or just showing text
             // For now, let's redirect to Edit as View is not implemented yet
-             com.sales.app.presentation.sales.SaleFormScreen(
-                viewModel = viewModel { appContainer.createSaleFormViewModel() },
+            com.sales.app.presentation.sales.SaleViewScreen(
+                viewModel = viewModel { appContainer.createSaleViewViewModel() },
                 accountId = 1, // TODO: Get from auth
                 saleId = saleId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToEdit = { id ->
+                    navController.navigate(Screen.SaleEdit.createRoute(id))
+                }
             )
         }
 
@@ -314,11 +339,14 @@ fun AppNavigation(
             arguments = listOf(navArgument("orderId") { type = NavType.IntType })
         ) { backStackEntry ->
             val orderId = backStackEntry.arguments?.getInt("orderId") ?: return@composable
-             com.sales.app.presentation.orders.OrderFormScreen(
-                viewModel = viewModel { appContainer.createOrderFormViewModel() },
+             com.sales.app.presentation.orders.OrderViewScreen(
+                viewModel = viewModel { appContainer.createOrderViewViewModel() },
                 accountId = 1, // TODO: Get from auth
                 orderId = orderId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToEdit = { id ->
+                    navController.navigate(Screen.OrderEdit.createRoute(id))
+                }
             )
         }
 
@@ -362,11 +390,14 @@ fun AppNavigation(
             arguments = listOf(navArgument("purchaseId") { type = NavType.IntType })
         ) { backStackEntry ->
             val purchaseId = backStackEntry.arguments?.getInt("purchaseId") ?: return@composable
-             com.sales.app.presentation.purchases.PurchaseFormScreen(
-                viewModel = viewModel { appContainer.createPurchaseFormViewModel() },
+             com.sales.app.presentation.purchases.PurchaseViewScreen(
+                viewModel = viewModel { appContainer.createPurchaseViewViewModel() },
                 accountId = 1, // TODO: Get from auth
                 purchaseId = purchaseId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToEdit = { id ->
+                    navController.navigate(Screen.PurchaseEdit.createRoute(id))
+                }
             )
         }
 
@@ -374,20 +405,7 @@ fun AppNavigation(
         composable(Screen.Inventory.route) {
             InventoryScreen(
                 viewModel = viewModel { appContainer.createInventoryViewModel() },
-                accountId = 1, // TODO: Get from auth
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToAdjustment = {
-                    navController.navigate(Screen.StockAdjustment.createRoute(1)) // TODO: accountId
-                }
-            )
-        }
-
-        composable(
-            route = Screen.StockAdjustment.route,
-            arguments = listOf(navArgument("accountId") { type = NavType.IntType })
-        ) {
-            StockAdjustmentScreen(
-                viewModel = viewModel { appContainer.createStockAdjustmentViewModel() },
+                stockAdjustmentViewModel = viewModel { appContainer.createStockAdjustmentViewModel() },
                 accountId = 1, // TODO: Get from auth
                 onNavigateBack = { navController.popBackStack() }
             )
@@ -404,6 +422,51 @@ fun AppNavigation(
         composable(Screen.AccountSettings.route) {
             com.sales.app.presentation.settings.AccountSettingsScreen(
                 viewModel = viewModel { appContainer.createAccountSettingsViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // Payments
+        composable(Screen.Payments.route) {
+            com.sales.app.presentation.payments.PaymentsScreen(
+                viewModel = viewModel { appContainer.createPaymentsViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCreatePayment = {
+                    navController.navigate(Screen.PaymentCreate.route)
+                }
+            )
+        }
+
+        composable(Screen.PaymentCreate.route) {
+            com.sales.app.presentation.payments.PaymentFormScreen(
+                viewModel = viewModel { appContainer.createPaymentFormViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // Price Lists
+        composable(Screen.PriceLists.route) {
+            com.sales.app.presentation.pricelists.PriceListsScreen(
+                viewModel = viewModel { appContainer.createPriceListsViewModel() },
+                accountId = 1, // TODO: Get from auth
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToDetail = { id ->
+                    navController.navigate(Screen.PriceListDetail.createRoute(id))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.PriceListDetail.route,
+            arguments = listOf(navArgument("priceListId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val priceListId = backStackEntry.arguments?.getLong("priceListId") ?: return@composable
+            com.sales.app.presentation.pricelists.PriceListDetailScreen(
+                viewModel = viewModel { appContainer.createPriceListDetailViewModel() },
+                priceListId = priceListId,
                 accountId = 1, // TODO: Get from auth
                 onNavigateBack = { navController.popBackStack() }
             )
