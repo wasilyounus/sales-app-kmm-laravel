@@ -83,6 +83,7 @@ class PurchaseControllerTest extends TestCase
         $data = [
             'party_id' => $this->party->id,
             'date' => '2025-12-07',
+            'invoice_no' => 'INV-TEST-123',
             'account_id' => $this->account->id,
             'log_id' => 1,
             'items' => [
@@ -102,6 +103,11 @@ class PurchaseControllerTest extends TestCase
         $this->assertDatabaseHas('purchase_items', [
             'item_id' => $this->item->id,
             'tax_id' => $this->tax->id,
+        ]);
+
+        $this->assertDatabaseHas('purchases', [
+            'party_id' => $this->party->id,
+            'invoice_no' => 'INV-TEST-123',
         ]);
     }
 

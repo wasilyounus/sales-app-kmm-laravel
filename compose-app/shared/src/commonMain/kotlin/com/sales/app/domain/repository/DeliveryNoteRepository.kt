@@ -19,5 +19,15 @@ interface DeliveryNoteRepository {
         items: List<DeliveryNoteItemRequest>,
         accountId: Int
     ): Result<DeliveryNote>
+    suspend fun updateDeliveryNote(
+        id: Int,
+        saleId: Int,
+        date: String,
+        vehicleNo: String?,
+        lrNo: String?,
+        notes: String?,
+        items: List<DeliveryNoteItemRequest>,
+        accountId: Int
+    ): Result<DeliveryNote>
     suspend fun deleteDeliveryNote(id: Int): Result<Unit>
 }

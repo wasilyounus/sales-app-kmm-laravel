@@ -209,4 +209,32 @@ class SaleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('data.items.0.tax_id', $saleItem->tax_id);
     }
+
+    /** @test */
+    public function it_auto_generates_invoice_no_if_not_provided()
+    {
+        $data = [
+            'party_id' => $this->party->id,
+            'date' => '2025-12-09',
+            // 'invoice_no' => omitted
+            'account_id' => $this->account->id,
+            'log_id' => 1,
+            'items' => [
+                [
+                    'item_id' => $this->item->id,
+                    'price' => 100.00,
+                    'qty' => 1,
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/sales', $data);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('sales', [
+            'party_id' => $this->party->id,
+            'invoice_no' => 'INV-0001',
+        ]);
+    }
 }

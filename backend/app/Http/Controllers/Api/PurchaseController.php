@@ -33,6 +33,7 @@ class PurchaseController extends Controller
         $validated = $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',
+            'invoice_no' => 'nullable|string|max:255',
             'account_id' => 'required|exists:accounts,id',
             'log_id' => 'required|integer',
             'items' => 'required|array|min:1',
@@ -47,9 +48,22 @@ class PurchaseController extends Controller
             $purchase = Purchase::create([
                 'party_id' => $validated['party_id'],
                 'date' => $validated['date'],
+                'invoice_no' => $validated['invoice_no'] ?? null,
                 'account_id' => $validated['account_id'],
                 'log_id' => $validated['log_id'],
             ]);
+
+            foreach ($validated['items'] as $item) {
+                PurchaseItem::create([
+                    'purchase_id' => $purchase->id,
+                    'item_id' => $item['item_id'],
+                    'price' => $item['price'],
+                    'qty' => $item['qty'],
+                    'tax_id' => $item['tax_id'] ?? null,
+                    'account_id' => $validated['account_id'],
+                    'log_id' => $validated['log_id'],
+                ]);
+            }
 
             // Auto-create GRN if enabled
             $account = \App\Models\Account::find($validated['account_id']);
@@ -109,6 +123,7 @@ class PurchaseController extends Controller
         $validated = $request->validate([
             'party_id' => 'sometimes|required|exists:parties,id',
             'date' => 'sometimes|required|date',
+            'invoice_no' => 'nullable|string|max:255',
             'log_id' => 'sometimes|required|integer',
             'items' => 'sometimes|array|min:1',
             'items.*.item_id' => 'required_with:items|exists:items,id',

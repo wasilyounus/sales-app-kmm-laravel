@@ -15,6 +15,7 @@ class Purchase extends Model
         'party_id',
         'tax_id',
         'date',
+        'invoice_no',
         'account_id',
         'log_id',
     ];

@@ -54,7 +54,7 @@ class SaleController extends Controller
             $sale = Sale::create([
                 'party_id' => $validated['party_id'],
                 'date' => $validated['date'],
-                'invoice_no' => $validated['invoice_no'] ?? null,
+                'invoice_no' => $validated['invoice_no'] ?? Sale::generateNumber($validated['account_id']),
                 'account_id' => $validated['account_id'],
                 'log_id' => $validated['log_id'],
             ]);

@@ -19,5 +19,15 @@ interface GrnRepository {
         items: List<GrnItemRequest>,
         accountId: Int
     ): Result<Grn>
+    suspend fun updateGrn(
+        id: Int,
+        purchaseId: Int,
+        date: String,
+        vehicleNo: String?,
+        invoiceNo: String?,
+        notes: String?,
+        items: List<GrnItemRequest>,
+        accountId: Int
+    ): Result<Grn>
     suspend fun deleteGrn(id: Int): Result<Unit>
 }

@@ -39,6 +39,7 @@ class QuoteController extends Controller
         $validated = $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',
+            'quote_no' => 'nullable|string|max:255',
             'account_id' => 'required|exists:accounts,id',
             'items' => 'required|array|min:1',
             'items.*.item_id' => 'required|exists:items,id',
@@ -52,6 +53,7 @@ class QuoteController extends Controller
             $quote = Quote::create([
                 'party_id' => $validated['party_id'],
                 'date' => $validated['date'],
+                'quote_no' => $validated['quote_no'] ?? Quote::generateNumber($validated['account_id']),
                 'account_id' => $validated['account_id'],
             ]);
 
@@ -110,6 +112,7 @@ class QuoteController extends Controller
         $validated = $request->validate([
             'party_id' => 'sometimes|required|exists:parties,id',
             'date' => 'sometimes|required|date',
+            'quote_no' => 'nullable|string|max:255',
             'items' => 'sometimes|array|min:1',
             'items.*.item_id' => 'required_with:items|exists:items,id',
             'items.*.price' => 'required_with:items|numeric|min:0',

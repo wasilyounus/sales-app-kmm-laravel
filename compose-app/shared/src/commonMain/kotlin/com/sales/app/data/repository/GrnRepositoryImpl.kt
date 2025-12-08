@@ -141,6 +141,67 @@ class GrnRepositoryImpl(
             Result.Error("Create failed: ${e.message}", e)
         }
     }
+
+    override suspend fun updateGrn(
+        id: Int,
+        purchaseId: Int,
+        date: String,
+        vehicleNo: String?,
+        invoiceNo: String?,
+        notes: String?,
+        items: List<GrnItemRequest>,
+        accountId: Int
+    ): Result<Grn> {
+        return try {
+            val request = GrnRequest(
+                purchase_id = purchaseId,
+                date = date,
+                vehicle_no = vehicleNo,
+                invoice_no = invoiceNo,
+                notes = notes,
+                items = items
+            )
+            val response = apiService.updateGrn(id, request)
+
+            val dto = response.data
+            // Since response might not include deletedAt, keep it null or handle accordingly
+            val entity = GrnEntity(
+                id = dto.id,
+                purchaseId = dto.purchase_id,
+                grnNumber = dto.grn_number,
+                date = dto.date,
+                vehicleNo = dto.vehicle_no,
+                invoiceNo = dto.invoice_no,
+                notes = dto.notes,
+                accountId = dto.account_id,
+                createdAt = dto.created_at ?: "",
+                updatedAt = dto.updated_at ?: "",
+                deletedAt = dto.deleted_at
+            )
+            grnDao.insertGrn(entity)
+
+            // Update items: Delete old and insert new. 
+            // Simplified approach: Clear old items for this GRN locally and re-insert new ones.
+            // Note: Assuming API returns the fresh state of items.
+            dto.items?.let { items ->
+                val itemEntities = items.map { itemDto ->
+                    GrnItemEntity(
+                        id = itemDto.id,
+                        grnId = itemDto.grn_id,
+                        itemId = itemDto.item_id,
+                        quantity = itemDto.quantity,
+                        createdAt = itemDto.created_at ?: "",
+                        updatedAt = itemDto.updated_at ?: ""
+                    )
+                }
+                grnDao.insertGrnItems(itemEntities)
+            }
+
+            Result.Success(entity.toDomainModel())
+        } catch (e: Exception) {
+            Result.Error("Update failed: ${e.message}", e)
+        }
+    }
     
     override suspend fun deleteGrn(id: Int): Result<Unit> {
         return try {

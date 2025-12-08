@@ -100,4 +100,60 @@ class OrderControllerTest extends TestCase
             'tax_id' => $this->tax->id,
         ]);
     }
+
+    /** @test */
+    public function it_creates_order_with_order_no()
+    {
+        $data = [
+            'party_id' => $this->party->id,
+            'date' => '2025-12-08',
+            'order_no' => 'ORD-TEST-456',
+            'account_id' => $this->account->id,
+            'log_id' => 1,
+            'items' => [
+                [
+                    'item_id' => $this->item->id,
+                    'price' => 100.00,
+                    'qty' => 5,
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/orders', $data);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('orders', [
+            'party_id' => $this->party->id,
+            'order_no' => 'ORD-TEST-456',
+        ]);
+    }
+
+    /** @test */
+    public function it_auto_generates_order_no_if_not_provided()
+    {
+        $data = [
+            'party_id' => $this->party->id,
+            'date' => '2025-12-09',
+            // 'order_no' => omitted
+            'account_id' => $this->account->id,
+            'log_id' => 1,
+            'items' => [
+                [
+                    'item_id' => $this->item->id,
+                    'price' => 100.00,
+                    'qty' => 1,
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/orders', $data);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('orders', [
+            'party_id' => $this->party->id,
+            'order_no' => 'ORD-0001',
+        ]);
+    }
 }

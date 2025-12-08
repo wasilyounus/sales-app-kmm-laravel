@@ -458,6 +458,22 @@ class ApiService(
         }
     }
 
+    suspend fun updateDeliveryNote(id: Int, request: DeliveryNoteRequest): DeliveryNoteResponse {
+        return client.put("delivery-notes/$id") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun updateGrn(id: Int, request: GrnRequest): GrnResponse {
+        return client.put("grns/$id") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+    }
+
     private suspend fun HttpRequestBuilder.addAuthHeader() {
         tokenProvider()?.let { token ->
             header(HttpHeaders.Authorization, "Bearer $token")

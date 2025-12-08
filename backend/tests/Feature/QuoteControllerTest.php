@@ -149,4 +149,60 @@ class QuoteControllerTest extends TestCase
             'tax_id' => null,
         ]);
     }
+
+    /** @test */
+    public function it_creates_quote_with_quote_no()
+    {
+        $data = [
+            'party_id' => $this->party->id,
+            'date' => '2025-12-08',
+            'quote_no' => 'QT-TEST-789',
+            'account_id' => $this->account->id,
+            'log_id' => 1,
+            'items' => [
+                [
+                    'item_id' => $this->item->id,
+                    'price' => 150.00,
+                    'qty' => 3,
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/quotes', $data);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('quotes', [
+            'party_id' => $this->party->id,
+            'quote_no' => 'QT-TEST-789',
+        ]);
+    }
+
+    /** @test */
+    public function it_auto_generates_quote_no_if_not_provided()
+    {
+        $data = [
+            'party_id' => $this->party->id,
+            'date' => '2025-12-09',
+            // 'quote_no' => omitted
+            'account_id' => $this->account->id,
+            'log_id' => 1,
+            'items' => [
+                [
+                    'item_id' => $this->item->id,
+                    'price' => 100.00,
+                    'qty' => 1,
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/quotes', $data);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('quotes', [
+            'party_id' => $this->party->id,
+            'quote_no' => 'QT-0001',
+        ]);
+    }
 }

@@ -33,6 +33,7 @@ class OrderController extends Controller
         $validated = $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',
+            'order_no' => 'nullable|string|max:255',
             'account_id' => 'required|exists:accounts,id',
             'log_id' => 'required|integer',
             'items' => 'required|array|min:1',
@@ -47,6 +48,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'party_id' => $validated['party_id'],
                 'date' => $validated['date'],
+                'order_no' => $validated['order_no'] ?? Order::generateNumber($validated['account_id']),
                 'account_id' => $validated['account_id'],
                 'log_id' => $validated['log_id'],
             ]);
@@ -98,6 +100,7 @@ class OrderController extends Controller
         $validated = $request->validate([
             'party_id' => 'sometimes|required|exists:parties,id',
             'date' => 'sometimes|required|date',
+            'order_no' => 'nullable|string|max:255',
             'log_id' => 'sometimes|required|integer',
             'items' => 'sometimes|array|min:1',
             'items.*.item_id' => 'required_with:items|exists:items,id',
