@@ -9,8 +9,6 @@ class Transaction extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'credit_code',
         'debit_code',

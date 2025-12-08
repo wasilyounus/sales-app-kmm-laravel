@@ -339,9 +339,9 @@ fun AddressFormItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedTextField(
-                    value = address.city,
-                    onValueChange = { onUpdate(address.copy(city = it)) },
-                    label = { Text("City *") },
+                    value = address.place,
+                    onValueChange = { onUpdate(address.copy(place = it)) },
+                    label = { Text("Place *") },
                     modifier = Modifier.weight(1f),
                     singleLine = true
                 )

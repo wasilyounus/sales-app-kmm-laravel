@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasLog;
 
 class Party extends Model
 {
-    use SoftDeletes, \App\Traits\HasLog;
+    use SoftDeletes, HasLog, HasFactory;
 
     public $timestamps = true;
 

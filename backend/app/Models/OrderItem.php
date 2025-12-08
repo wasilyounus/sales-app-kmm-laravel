@@ -9,13 +9,12 @@ class OrderItem extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'order_id',
         'item_id',
         'price',
         'qty',
+        'tax_id',
         'account_id',
         'log_id',
     ];

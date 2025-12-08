@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasLog;
 
 class UserAccountPermission extends Model
 {
+    use HasLog;
     protected $fillable = [
         'user_id',
         'account_id',

@@ -9,8 +9,6 @@ class Tax extends Model
 {
     use SoftDeletes, \App\Traits\HasLog, \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'scheme_name',
         'tax1_name',

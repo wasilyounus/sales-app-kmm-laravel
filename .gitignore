@@ -5,3 +5,6 @@ references/YCo-android-jetpack-compose-app
 .env
 .vscode/settings.json
 compose-app/.kotlin/errors/
+references/
+.DS_Store
+compose-app/shared/src/commonMain/kotlin/com/sales/app/data/repository/*.kt.bak

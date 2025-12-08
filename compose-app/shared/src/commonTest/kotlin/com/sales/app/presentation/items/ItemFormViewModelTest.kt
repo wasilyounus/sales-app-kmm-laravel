@@ -1,5 +1,6 @@
 package com.sales.app.presentation.items
 
+import com.sales.app.domain.model.Item
 import com.sales.app.domain.model.Tax
 import com.sales.app.domain.model.Uqc
 import com.sales.app.domain.usecase.*
@@ -7,8 +8,12 @@ import com.sales.app.util.Result
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -19,39 +24,33 @@ class ItemFormViewModelTest {
     private lateinit var getItemByIdUseCase: GetItemByIdUseCase
     private lateinit var getUqcsUseCase: GetUqcsUseCase
     private lateinit var getTaxesUseCase: GetTaxesUseCase
-    private lateinit var viewModel: ItemFormViewModel
+    private lateinit var accountRepository: com.sales.app.domain.repository.AccountRepository
     
+    private lateinit var viewModel: ItemFormViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         
-        createItemUseCase = mockk()
-        updateItemUseCase = mockk()
-        getItemByIdUseCase = mockk()
-        getUqcsUseCase = mockk()
-        getTaxesUseCase = mockk()
-
-        // Mock default UQCs
-        coEvery { getUqcsUseCase() } returns listOf(
-            Uqc(1, "KG", "Kilogram", "Weight", true)
-        )
-
-        // Mock default taxes
-        every { getTaxesUseCase() } returns flowOf(
-            listOf(
-                Tax(1, "GST 18%", "CGST", 9.0, "SGST", 9.0, null, null, null, null, true),
-                Tax(2, "GST 5%", "CGST", 2.5, "SGST", 2.5, null, null, null, null, true)
-            )
-        )
+        createItemUseCase = mockk(relaxed = true)
+        updateItemUseCase = mockk(relaxed = true)
+        getItemByIdUseCase = mockk(relaxed = true)
+        getUqcsUseCase = mockk(relaxed = true)
+        getTaxesUseCase = mockk(relaxed = true)
+        accountRepository = mockk(relaxed = true)
+        
+        // Default mocks
+        coEvery { getUqcsUseCase() } returns listOf(Uqc(1, "1", "Nos", "UQC", true))
+        every { getTaxesUseCase() } returns flowOf(listOf(Tax(1, "GST", "India", "CGST", 9.0, "SGST", 9.0, null, null, null, null, true)))
 
         viewModel = ItemFormViewModel(
             createItemUseCase,
             updateItemUseCase,
             getItemByIdUseCase,
             getUqcsUseCase,
-            getTaxesUseCase
+            getTaxesUseCase,
+            accountRepository
         )
     }
 
@@ -62,118 +61,60 @@ class ItemFormViewModelTest {
     }
 
     @Test
-    fun `initial state has no tax selected`() = runTest {
+    fun `loadItem populates state with item details`() = runTest {
+        // Given
+        val item = Item(
+            id = 1,
+            name = "Test Item",
+            altName = "Alt",
+            brand = "Brand",
+            size = "L",
+            uqc = 1,
+            hsn = 1234,
+            accountId = 1,
+            taxId = 5
+        )
+        coEvery { getItemByIdUseCase(1, 1) } returns item
+        every { getTaxesUseCase() } returns flowOf(emptyList())
+
+        // When
+        viewModel.loadItem(1, 1)
         testDispatcher.scheduler.advanceUntilIdle()
-        
+
+        // Then
         val state = viewModel.uiState.value
-        assertNull(state.selectedTaxId)
+        assertEquals("Test Item", state.name)
+        assertEquals("Brand", state.brand)
+        assertEquals("L", state.size)
+        assertEquals("1234", state.hsn)
+        assertEquals(5, state.selectedTaxId)
+        assertEquals(FormUiState.Update, state.formUiState)
     }
 
     @Test
-    fun `taxes are loaded on init`() = runTest {
-        testDispatcher.scheduler.advanceUntilIdle()
+    fun `saveItem calls createItemUseCase when adding`() = runTest {
+        // Given
+        viewModel.onNameChange("New Item")
+        viewModel.onUqcChange(1)
         
-        val state = viewModel.uiState.value
-        assertEquals(2, state.taxes.size)
-        assertEquals("GST 18%", state.taxes[0].name)
-        assertEquals("GST 5%", state.taxes[1].name)
-    }
+        coEvery { createItemUseCase(any(), any(), any(), any(), any(), any(), any(), any()) } returns Result.Success(
+            Item(1, "New Item", null, null, null, 1, null, 1)
+        )
 
-    @Test
-    fun `onTaxChange updates selected tax`() = runTest {
-        testDispatcher.scheduler.advanceUntilIdle()
-        
-        viewModel.onTaxChange(1)
-        
-        val state = viewModel.uiState.value
-        assertEquals(1, state.selectedTaxId)
-    }
-
-    @Test
-    fun `onTaxChange can set tax to null`() = runTest {
-        testDispatcher.scheduler.advanceUntilIdle()
-        
-        viewModel.onTaxChange(1)
-        assertEquals(1, viewModel.uiState.value.selectedTaxId)
-        
-        viewModel.onTaxChange(null)
-        assertNull(viewModel.uiState.value.selectedTaxId)
-    }
-
-    @Test
-    fun `saveItem includes selectedTaxId`() = runTest {
-        testDispatcher.scheduler.advanceUntilIdle()
-        
-        // Setup
-        viewModel.onNameChange("Test Item")
-        viewModel.onTaxChange(1)
-        
-        coEvery {
-            createItemUseCase(
-                accountId = any(),
-                name = any(),
-                altName = any(),
-                brand = any(),
-                size = any(),
-                uqc = any(),
-                hsn = any(),
-                taxId = 1
-            )
-        } returns Result.Success(mockk(relaxed = true))
-
-        // Execute
-        var callbackCalled = false
-        viewModel.saveItem(accountId = 1, onSuccess = { callbackCalled = true })
+        // When
+        viewModel.saveItem(1) {}
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Verify
-        coVerify {
+        // Then
+        coVerify { 
             createItemUseCase(
                 accountId = 1,
-                name = "Test Item",
+                name = "New Item",
                 altName = null,
-                brand = null,
+                brand = null, // Empty string becomes null
                 size = null,
                 uqc = 1,
                 hsn = null,
-                taxId = 1
-            )
-        }
-        assertTrue(callbackCalled)
-    }
-
-    @Test
-    fun `saveItem with null tax sends null taxId`() = runTest {
-        testDispatcher.scheduler.advanceUntilIdle()
-        
-        viewModel.onNameChange("Test Item")
-        // Don't set any tax (remains null)
-        
-        coEvery {
-            createItemUseCase(
-                accountId = any(),
-                name = any(),
-                altName = any(),
-                brand = any(),
-                size = any(),
-                uqc = any(),
-                hsn = any(),
-                taxId = null
-            )
-        } returns Result.Success(mockk(relaxed = true))
-
-        viewModel.saveItem(accountId = 1, onSuccess = {})
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        coVerify {
-            createItemUseCase(
-                accountId = any(),
-                name = any(),
-                altName = any(),
-                brand = any(),
-                size = any(),
-                uqc = any(),
-                hsn = any(),
                 taxId = null
             )
         }

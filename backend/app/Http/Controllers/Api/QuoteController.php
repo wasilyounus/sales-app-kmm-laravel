@@ -16,15 +16,15 @@ class QuoteController extends Controller
     public function index(Request $request)
     {
         $accountId = $request->input('account_id');
-        
+
         $query = Quote::with(['party', 'items.item']);
-        
+
         if ($accountId) {
             $query->where('account_id', $accountId);
         }
-        
+
         $quotes = $query->orderBy('date', 'desc')->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $quotes,
@@ -44,6 +44,7 @@ class QuoteController extends Controller
             'items.*.item_id' => 'required|exists:items,id',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.qty' => 'required|numeric|min:0',
+            'items.*.tax_id' => 'nullable|exists:taxes,id',
         ]);
 
         DB::beginTransaction();
@@ -53,7 +54,7 @@ class QuoteController extends Controller
                 'date' => $validated['date'],
                 'account_id' => $validated['account_id'],
             ]);
-            
+
             $quote->refresh(); // Refresh to get auto-generated log_id
 
             foreach ($validated['items'] as $item) {
@@ -62,6 +63,7 @@ class QuoteController extends Controller
                     'item_id' => $item['item_id'],
                     'price' => $item['price'],
                     'qty' => $item['qty'],
+                    'tax_id' => $item['tax_id'] ?? null,
                     'account_id' => $validated['account_id'],
                 ]);
             }
@@ -91,7 +93,7 @@ class QuoteController extends Controller
     public function show($id)
     {
         $quote = Quote::with(['party', 'items.item'])->findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $quote,
@@ -104,7 +106,7 @@ class QuoteController extends Controller
     public function update(Request $request, $id)
     {
         $quote = Quote::findOrFail($id);
-        
+
         $validated = $request->validate([
             'party_id' => 'sometimes|required|exists:parties,id',
             'date' => 'sometimes|required|date',
@@ -121,7 +123,7 @@ class QuoteController extends Controller
             if (isset($validated['items'])) {
                 // Delete existing items
                 QuoteItem::where('quote_id', $quote->id)->delete();
-                
+
                 // Create new items (they will auto-generate their own log_id via HasLog trait)
                 foreach ($validated['items'] as $item) {
                     QuoteItem::create([
@@ -173,15 +175,15 @@ class QuoteController extends Controller
     public function items(Request $request)
     {
         $accountId = $request->input('account_id');
-        
+
         $query = QuoteItem::query();
-        
+
         if ($accountId) {
             $query->where('account_id', $accountId);
         }
-        
+
         $items = $query->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $items,

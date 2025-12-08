@@ -29,6 +29,11 @@ data class TransactionRequest(
     val amount: Double,
     val type: String, // "received" or "paid"
     val method: String, // "cash", "cheque", "upi", "neft"
+    val is_received: Boolean? = null,
+    val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
+    val deleted_at: String? = null,
     @SerialName("party_id") val partyId: Int,
     val comment: String? = null
 )

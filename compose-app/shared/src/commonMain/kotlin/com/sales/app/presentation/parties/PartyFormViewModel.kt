@@ -22,7 +22,7 @@ data class AddressState(
     val id: Int = 0, // 0 for new
     val line1: String = "",
     val line2: String = "",
-    val city: String = "",
+    val place: String = "",
     val state: String = "",
     val pincode: String = "",
     val country: String = "India"
@@ -68,7 +68,7 @@ class PartyFormViewModel(
                             id = addr.id,
                             line1 = addr.line1,
                             line2 = addr.line2 ?: "",
-                            city = addr.city,
+                            place = addr.place,
                             state = addr.state,
                             pincode = addr.pincode,
                             country = addr.country
@@ -152,7 +152,7 @@ class PartyFormViewModel(
                 AddressRequest(
                     line1 = addr.line1,
                     line2 = addr.line2.ifBlank { null },
-                    city = addr.city,
+                    place = addr.place,
                     state = addr.state,
                     pincode = addr.pincode,
                     country = addr.country
@@ -227,7 +227,7 @@ class PartyFormViewModel(
         val isNameValid = _uiState.value.name.isNotBlank()
         // Validate addresses if needed (e.g. required fields)
         val areAddressesValid = _uiState.value.addresses.all { 
-            it.line1.isNotBlank() && it.city.isNotBlank() && it.state.isNotBlank() && it.pincode.isNotBlank()
+            it.line1.isNotBlank() && it.place.isNotBlank() && it.state.isNotBlank() && it.pincode.isNotBlank()
         }
         
         if (!areAddressesValid) {

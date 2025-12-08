@@ -2,7 +2,9 @@ package com.sales.app.presentation.sync
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sales.app.domain.model.SyncType
 import com.sales.app.domain.usecase.FullSyncUseCase
+import com.sales.app.domain.usecase.SyncDataUseCase
 import com.sales.app.domain.usecase.SyncMasterDataUseCase
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +22,42 @@ data class SyncUiState(
 )
 
 class SyncViewModel(
+    private val syncDataUseCase: SyncDataUseCase,
     private val syncMasterDataUseCase: SyncMasterDataUseCase,
     private val fullSyncUseCase: FullSyncUseCase
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(SyncUiState())
     val uiState: StateFlow<SyncUiState> = _uiState.asStateFlow()
+    
+    fun syncData(accountId: Int, types: List<SyncType>) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSyncing = true, error = null, successMessage = null) }
+            
+            when (val result = syncDataUseCase(accountId, types)) {
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isSyncing = false,
+                            successMessage = "Sync completed successfully",
+                            lastSyncTime = Clock.System.now().toEpochMilliseconds().toString()
+                        )
+                    }
+                }
+                is Result.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isSyncing = false,
+                            error = result.message
+                        )
+                    }
+                }
+                is Result.Loading -> {
+                    _uiState.update { it.copy(isSyncing = true) }
+                }
+            }
+        }
+    }
     
     fun syncMasterData(accountId: Int) {
         viewModelScope.launch {

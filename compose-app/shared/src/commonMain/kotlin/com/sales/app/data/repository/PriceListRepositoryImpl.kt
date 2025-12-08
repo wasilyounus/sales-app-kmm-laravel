@@ -19,6 +19,7 @@ class PriceListRepositoryImpl(
 ) : PriceListRepository {
 
     override fun getPriceLists(accountId: Int): Flow<List<PriceList>> {
+        // Data will be populated by centralized sync
         return priceListDao.getPriceLists(accountId).map { entities ->
             entities.map { it.toDomain() }
         }

@@ -18,6 +18,9 @@ interface UqcDao {
     @Query("SELECT * FROM uqcs WHERE id = :id")
     suspend fun getById(id: Int): UqcEntity?
     
+    @Query("SELECT * FROM uqcs WHERE code = :code")
+    suspend fun getByCode(code: String): UqcEntity?
+    
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(uqcs: List<UqcEntity>)
     

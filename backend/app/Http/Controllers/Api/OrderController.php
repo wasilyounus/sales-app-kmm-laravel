@@ -13,15 +13,15 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $accountId = $request->input('account_id');
-        
+
         $query = Order::with(['party', 'items.item']);
-        
+
         if ($accountId) {
             $query->where('account_id', $accountId);
         }
-        
+
         $orders = $query->orderBy('date', 'desc')->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $orders,
@@ -39,6 +39,7 @@ class OrderController extends Controller
             'items.*.item_id' => 'required|exists:items,id',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.qty' => 'required|numeric|min:0',
+            'items.*.tax_id' => 'nullable|exists:taxes,id',
         ]);
 
         DB::beginTransaction();
@@ -56,6 +57,7 @@ class OrderController extends Controller
                     'item_id' => $item['item_id'],
                     'price' => $item['price'],
                     'qty' => $item['qty'],
+                    'tax_id' => $item['tax_id'] ?? null,
                     'account_id' => $validated['account_id'],
                     'log_id' => $validated['log_id'],
                 ]);
@@ -82,7 +84,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::with(['party', 'items.item'])->findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $order,
@@ -92,7 +94,7 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        
+
         $validated = $request->validate([
             'party_id' => 'sometimes|required|exists:parties,id',
             'date' => 'sometimes|required|date',
@@ -109,7 +111,7 @@ class OrderController extends Controller
 
             if (isset($validated['items'])) {
                 OrderItem::where('order_id', $order->id)->delete();
-                
+
                 foreach ($validated['items'] as $item) {
                     OrderItem::create([
                         'order_id' => $order->id,

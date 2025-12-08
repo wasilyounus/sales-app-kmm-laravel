@@ -14,6 +14,10 @@ class ItemSeeder extends Seeder
         $defaultTax = Tax::where('active', true)->first();
         $taxId = $defaultTax?->id;
 
+        // Get Demo Account or default to 1
+        $account = \App\Models\Account::where('name', 'Demo Company')->first();
+        $accountId = $account ? $account->id : 1;
+
         $items = [
             // Electronics
             [
@@ -23,7 +27,7 @@ class ItemSeeder extends Seeder
                 'size' => '24 inch',
                 'uqc' => 'NOS',
                 'hsn' => '8528',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -33,7 +37,7 @@ class ItemSeeder extends Seeder
                 'size' => 'Standard',
                 'uqc' => 'NOS',
                 'hsn' => '8471',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -43,7 +47,7 @@ class ItemSeeder extends Seeder
                 'size' => 'Standard',
                 'uqc' => 'NOS',
                 'hsn' => '8471',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             // Office Supplies
@@ -54,7 +58,7 @@ class ItemSeeder extends Seeder
                 'size' => '500 sheets',
                 'uqc' => 'PAC',
                 'hsn' => '4802',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -64,7 +68,7 @@ class ItemSeeder extends Seeder
                 'size' => '10 pens',
                 'uqc' => 'BOX',
                 'hsn' => '9608',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -74,7 +78,7 @@ class ItemSeeder extends Seeder
                 'size' => 'Medium',
                 'uqc' => 'NOS',
                 'hsn' => '8305',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             // Hardware
@@ -85,7 +89,7 @@ class ItemSeeder extends Seeder
                 'size' => '1 inch x 6 ft',
                 'uqc' => 'MTR',
                 'hsn' => '7306',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -95,7 +99,7 @@ class ItemSeeder extends Seeder
                 'size' => '50 kg',
                 'uqc' => 'BAG',
                 'hsn' => '2523',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -105,7 +109,7 @@ class ItemSeeder extends Seeder
                 'size' => '20 Ltr',
                 'uqc' => 'LTR',
                 'hsn' => '3208',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -115,7 +119,7 @@ class ItemSeeder extends Seeder
                 'size' => '90 mtr coil',
                 'uqc' => 'MTR',
                 'hsn' => '8544',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             // General
@@ -126,7 +130,7 @@ class ItemSeeder extends Seeder
                 'size' => '9 Watt',
                 'uqc' => 'NOS',
                 'hsn' => '8539',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
             [
@@ -136,7 +140,7 @@ class ItemSeeder extends Seeder
                 'size' => '5 mtr',
                 'uqc' => 'NOS',
                 'hsn' => '8536',
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'tax_id' => $taxId,
             ],
         ];

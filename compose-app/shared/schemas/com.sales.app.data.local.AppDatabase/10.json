@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-    "identityHash": "5498f38361d7f0da48fdbfc6b02ff7e9",
+    "identityHash": "55f58c1c43d4dbf65dd5691f5c867f34",
     "entities": [
       {
         "tableName": "users",
@@ -583,7 +583,7 @@
       },
       {
         "tableName": "quote_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `quoteId` INTEGER NOT NULL, `itemId` INTEGER NOT NULL, `price` REAL NOT NULL, `qty` REAL NOT NULL, `accountId` INTEGER NOT NULL, `logId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `quoteId` INTEGER NOT NULL, `itemId` INTEGER NOT NULL, `price` REAL NOT NULL, `qty` REAL NOT NULL, `taxId` INTEGER, `accountId` INTEGER NOT NULL, `logId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -614,6 +614,11 @@
             "columnName": "qty",
             "affinity": "REAL",
             "notNull": true
+          },
+          {
+            "fieldPath": "taxId",
+            "columnName": "taxId",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "accountId",
@@ -707,7 +712,7 @@
       },
       {
         "tableName": "order_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `orderId` INTEGER NOT NULL, `itemId` INTEGER NOT NULL, `price` REAL NOT NULL, `qty` REAL NOT NULL, `accountId` INTEGER NOT NULL, `logId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `orderId` INTEGER NOT NULL, `itemId` INTEGER NOT NULL, `price` REAL NOT NULL, `qty` REAL NOT NULL, `taxId` INTEGER, `accountId` INTEGER NOT NULL, `logId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -738,6 +743,11 @@
             "columnName": "qty",
             "affinity": "REAL",
             "notNull": true
+          },
+          {
+            "fieldPath": "taxId",
+            "columnName": "taxId",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "accountId",
@@ -1310,7 +1320,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5498f38361d7f0da48fdbfc6b02ff7e9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55f58c1c43d4dbf65dd5691f5c867f34')"
     ]
   }
 }

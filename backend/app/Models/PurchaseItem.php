@@ -9,8 +9,6 @@ class PurchaseItem extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'purchase_id',
         'item_id',

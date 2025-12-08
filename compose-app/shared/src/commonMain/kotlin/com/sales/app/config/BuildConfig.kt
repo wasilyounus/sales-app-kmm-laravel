@@ -14,7 +14,7 @@ object BuildConfig {
     
     // API Configuration
     const val API_PROTOCOL: String = "http"
-    const val API_HOST: String = "192.168.1.174"
+    const val API_HOST: String = "192.168.1.131"
     const val API_PORT: String = "8000"
     const val API_BASE_URL: String = "$API_PROTOCOL://$API_HOST:$API_PORT/api/"
 }

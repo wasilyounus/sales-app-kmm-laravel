@@ -9,7 +9,7 @@ data class AddressDto(
     val account_id: Int,
     val line1: String,
     val line2: String? = null,
-    val city: String,
+    val place: String,
     val district: String? = null,
     val state: String,
     val pincode: String,
@@ -24,7 +24,7 @@ data class AddressDto(
 data class AddressRequest(
     val line1: String,
     val line2: String? = null,
-    val city: String,
+    val place: String,
     val state: String,
     val pincode: String,
     val country: String? = "India"

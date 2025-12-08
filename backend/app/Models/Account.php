@@ -9,8 +9,6 @@ class Account extends Model
 {
     use SoftDeletes, \App\Traits\HasLog, \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'name',
         'name_formatted',

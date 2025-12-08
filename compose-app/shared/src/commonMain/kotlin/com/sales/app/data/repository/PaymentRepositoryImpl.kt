@@ -49,7 +49,8 @@ class PaymentRepositoryImpl(
                 type = if (transaction.isReceived) "received" else "paid",
                 method = "cash", // Defaulting to cash for now, need to handle method in domain model
                 partyId = if (transaction.isReceived) transaction.debitCode else transaction.creditCode,
-                comment = transaction.comment
+                comment = transaction.comment,
+                log_id = 0  // Default log_id
             )
             
             apiService.createTransaction(request)

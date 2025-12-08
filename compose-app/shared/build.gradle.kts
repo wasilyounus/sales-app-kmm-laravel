@@ -35,10 +35,12 @@ fun loadEnvConfig(): Map<String, String> {
 
 // Task to generate BuildConfig.kt from .env
 tasks.register("generateBuildConfig") {
+    val envFile = rootProject.file("../.env")
     val envConfig = loadEnvConfig()
     val outputDir = file("src/commonMain/kotlin/com/sales/app/config")
     val outputFile = file("$outputDir/BuildConfig.kt")
     
+    inputs.file(envFile) // Register .env as input so task re-runs on change
     outputs.file(outputFile)
     
     doLast {

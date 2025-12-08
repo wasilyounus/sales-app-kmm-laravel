@@ -49,7 +49,10 @@ data class UqcDto(
     val uqc: String,
     val quantity: String? = null,
     val type: String? = null,
-    val active: Boolean
+    val active: Boolean,
+    val created_at: String? = null,
+    val updated_at: String? = null,
+    val deleted_at: String? = null
 )
 
 @Serializable
@@ -72,6 +75,8 @@ data class TaxDto(
     val tax3_val: Double?,
     val tax4_name: String?,
     val tax4_val: Double?,
-    val active: Boolean
+    val active: Boolean,
+    val created_at: String? = null,
+    val updated_at: String? = null,
+    val deleted_at: String? = null
 )
-

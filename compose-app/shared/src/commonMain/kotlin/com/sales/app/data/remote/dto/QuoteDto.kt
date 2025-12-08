@@ -9,6 +9,8 @@ data class QuoteDto(
     val date: String,
     val account_id: Int,
     val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
     val deleted_at: String? = null,
     val items: List<QuoteItemDto>? = null // Items loaded from backend when requested
 )
@@ -20,8 +22,11 @@ data class QuoteItemDto(
     val item_id: Int,
     val price: Double,
     val qty: Double,
+    val tax_id: Int? = null,
     val account_id: Int,
     val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
     val deleted_at: String? = null
 )
 

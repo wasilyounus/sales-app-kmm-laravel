@@ -12,10 +12,17 @@ class ApiService(
 ) {
     // Authentication
     suspend fun login(request: LoginRequest): AuthResponse {
-        return client.post("login") {
+        val response = client.post("login") {
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }
+        
+        if (response.status == HttpStatusCode.UnprocessableEntity) {
+            val error = response.body<LaravelValidationError>()
+            throw Exception(error.message)
+        }
+        
+        return response.body()
     }
     
     suspend fun register(request: RegisterRequest): AuthResponse {

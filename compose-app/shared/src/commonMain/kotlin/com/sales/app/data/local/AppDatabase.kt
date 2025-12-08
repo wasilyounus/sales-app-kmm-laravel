@@ -28,7 +28,7 @@ import com.sales.app.data.local.entity.*
         PriceListEntity::class,
         PriceListItemEntity::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

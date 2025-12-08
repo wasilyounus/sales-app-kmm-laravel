@@ -9,8 +9,6 @@ class Order extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'party_id',
         'tax_id',

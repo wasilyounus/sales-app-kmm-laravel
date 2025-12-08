@@ -14,15 +14,15 @@ class PartyController extends Controller
     public function index(Request $request)
     {
         $accountId = $request->input('account_id');
-        
+
         $query = Party::with('addresses');
-        
+
         if ($accountId) {
             $query->where('account_id', $accountId);
         }
-        
+
         $parties = $query->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $parties,
@@ -46,7 +46,7 @@ class PartyController extends Controller
             'addresses' => 'nullable|array',
             'addresses.*.line1' => 'required|string|max:255',
             'addresses.*.line2' => 'nullable|string|max:255',
-            'addresses.*.city' => 'required|string|max:255',
+            'addresses.*.place' => 'nullable|string|max:255', // Changed from city
             'addresses.*.state' => 'required|string|max:255',
             'addresses.*.pincode' => 'required|string|max:20',
             'addresses.*.country' => 'nullable|string|max:255',
@@ -68,7 +68,7 @@ class PartyController extends Controller
                         'account_id' => $validated['account_id'],
                         'line1' => $addr['line1'],
                         'line2' => $addr['line2'] ?? null,
-                        'city' => $addr['city'],
+                        'place' => $addr['place'] ?? null,
                         'state' => $addr['state'],
                         'pincode' => $addr['pincode'],
                         'country' => $addr['country'] ?? 'India',
@@ -101,7 +101,7 @@ class PartyController extends Controller
     public function show($id)
     {
         $party = Party::with('addresses')->findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $party,
@@ -114,7 +114,7 @@ class PartyController extends Controller
     public function update(Request $request, $id)
     {
         $party = Party::findOrFail($id);
-        
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'tax_number' => 'nullable|string|max:255',
@@ -123,7 +123,7 @@ class PartyController extends Controller
             'addresses' => 'nullable|array',
             'addresses.*.line1' => 'required_with:addresses|string|max:255',
             'addresses.*.line2' => 'nullable|string|max:255',
-            'addresses.*.city' => 'required_with:addresses|string|max:255',
+            'addresses.*.place' => 'nullable|string|max:255', // Changed from city
             'addresses.*.state' => 'required_with:addresses|string|max:255',
             'addresses.*.pincode' => 'required_with:addresses|string|max:20',
             'addresses.*.country' => 'nullable|string|max:255',
@@ -143,7 +143,7 @@ class PartyController extends Controller
                         'account_id' => $party->account_id,
                         'line1' => $addr['line1'],
                         'line2' => $addr['line2'] ?? null,
-                        'city' => $addr['city'],
+                        'place' => $addr['place'] ?? null,
                         'state' => $addr['state'],
                         'pincode' => $addr['pincode'],
                         'country' => $addr['country'] ?? 'India',

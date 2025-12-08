@@ -9,17 +9,18 @@ class Address extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'party_id',
         'line1',
         'line2',
+        'line2',
         'place',
         'district',
         'state',
+        'country',
         'pincode',
-        'coordinates',
+        'latitude',
+        'longitude',
         'account_id',
         'log_id',
     ];

@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasLog;
 
 class PriceListItem extends Model
 {
+    use HasLog;
     protected $fillable = ['price_list_id', 'item_id', 'price'];
 
     protected $casts = [

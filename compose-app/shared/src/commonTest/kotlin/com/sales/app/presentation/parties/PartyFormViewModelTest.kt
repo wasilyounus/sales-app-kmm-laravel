@@ -71,14 +71,10 @@ class PartyFormViewModelTest {
             createPartyUseCase(
                 accountId = any(),
                 name = any(),
-                tax_number = "TAX456",
-                address = any(),
-                city = any(),
-                pincode = any(),
+                taxNumber = "TAX456",
+                addresses = any(),
                 phone = any(),
-                email = any(),
-                openingBalance = any(),
-                type = any()
+                email = any()
             )
         } returns Result.Success(mockk(relaxed = true))
 
@@ -92,14 +88,10 @@ class PartyFormViewModelTest {
             createPartyUseCase(
                 accountId = 1,
                 name = "Test Party",
-                tax_number = "TAX456",
-                address = null,
-                city = null,
-                pincode = null,
+                taxNumber = "TAX456",
+                addresses = any(),
                 phone = null,
-                email = null,
-                openingBalance = 0.0,
-                type = "customer"
+                email = null
             )
         }
         assertTrue(callbackCalled)
@@ -116,14 +108,10 @@ class PartyFormViewModelTest {
             createPartyUseCase(
                 accountId = any(),
                 name = any(),
-                tax_number = any(),
-                address = any(),
-                city = any(),
-                pincode = any(),
+                taxNumber = any(),
+                addresses = any(),
                 phone = any(),
-                email = any(),
-                openingBalance = any(),
-                type = any()
+                email = any()
             )
         } returns Result.Success(mockk(relaxed = true))
 
@@ -134,14 +122,10 @@ class PartyFormViewModelTest {
             createPartyUseCase(
                 accountId = any(),
                 name = any(),
-                tax_number = any(), // Should be empty string or null
-                address = any(),
-                city = any(),
-                pincode = any(),
+                taxNumber = any(), // Should be empty string or null
+                addresses = any(),
                 phone = any(),
-                email = any(),
-                openingBalance = any(),
-                type = any()
+                email = any()
             )
         }
     }

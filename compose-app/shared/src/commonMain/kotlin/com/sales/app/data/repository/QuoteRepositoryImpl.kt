@@ -48,8 +48,8 @@ class QuoteRepositoryImpl(
                         date = dto.date,
                         accountId = dto.account_id,
                         logId = dto.log_id,
-                        createdAt = "", // Missing in DTO
-                        updatedAt = "", // Missing in DTO
+                        createdAt = dto.created_at ?: "", // Missing in DTO
+                        updatedAt = dto.updated_at ?: "", // Missing in DTO
                         deletedAt = dto.deleted_at
                     )
                 }
@@ -79,10 +79,11 @@ class QuoteRepositoryImpl(
                         itemId = dto.item_id,
                         price = dto.price,
                         qty = dto.qty,
+                        taxId = dto.tax_id,
                         accountId = dto.account_id,
                         logId = dto.log_id,
-                        createdAt = "", // Missing in DTO
-                        updatedAt = "", // Missing in DTO
+                        createdAt = dto.created_at ?: "", // Missing in DTO
+                        updatedAt = dto.updated_at ?: "", // Missing in DTO
                         deletedAt = dto.deleted_at
                     )
                 }
@@ -116,8 +117,8 @@ class QuoteRepositoryImpl(
                     date = dto.date,
                     accountId = dto.account_id,
                     logId = dto.log_id,
-                    createdAt = "",
-                    updatedAt = "",
+                    createdAt = dto.created_at ?: "",
+                    updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
                 )
                 quoteDao.insertQuote(entity)
@@ -131,10 +132,11 @@ class QuoteRepositoryImpl(
                             itemId = itemDto.item_id,
                             price = itemDto.price,
                             qty = itemDto.qty,
+                            taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
                             logId = itemDto.log_id,
-                            createdAt = "",
-                            updatedAt = "",
+                            createdAt = dto.created_at ?: "",
+                            updatedAt = dto.updated_at ?: "",
                             deletedAt = itemDto.deleted_at
                         )
                     }
@@ -175,8 +177,8 @@ class QuoteRepositoryImpl(
                     date = dto.date,
                     accountId = dto.account_id,
                     logId = dto.log_id,
-                    createdAt = "",
-                    updatedAt = "",
+                    createdAt = dto.created_at ?: "",
+                    updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
                 )
                 quoteDao.updateQuote(entity)
@@ -199,10 +201,11 @@ class QuoteRepositoryImpl(
                             itemId = itemDto.item_id,
                             price = itemDto.price,
                             qty = itemDto.qty,
+                            taxId = itemDto.tax_id,
                             accountId = itemDto.account_id,
                             logId = itemDto.log_id,
-                            createdAt = "",
-                            updatedAt = "",
+                            createdAt = dto.created_at ?: "",
+                            updatedAt = dto.updated_at ?: "",
                             deletedAt = itemDto.deleted_at
                         )
                     }

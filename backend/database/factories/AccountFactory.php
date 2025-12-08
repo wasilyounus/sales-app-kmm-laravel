@@ -16,9 +16,10 @@ class AccountFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()->company();
         return [
-            'name' => $this->faker->company(),
-            'name_formatted' => $this->faker->company(),
+            'name' => $name,
+            'name_formatted' => $name, // Use same value for formatted name
             'desc' => $this->faker->sentence(),
             'taxation_type' => 1,
             'address' => $this->faker->address(),

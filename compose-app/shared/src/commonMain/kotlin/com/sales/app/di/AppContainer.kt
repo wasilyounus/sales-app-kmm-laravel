@@ -10,15 +10,21 @@ import com.sales.app.data.local.AccountPreferences
 import com.sales.app.data.remote.ApiService
 import com.sales.app.data.repository.*
 import com.sales.app.domain.usecase.*
-import com.sales.app.presentation.inventory.InventoryViewModel
-import com.sales.app.presentation.inventory.StockAdjustmentViewModel
+import com.sales.app.presentation.inventory.*
+import com.sales.app.presentation.settings.AccountSettingsViewModel
 import com.sales.app.presentation.login.LoginViewModel
 import com.sales.app.presentation.register.RegisterViewModel
 import com.sales.app.presentation.home.HomeViewModel
-import com.sales.app.presentation.items.ItemsViewModel
-import com.sales.app.presentation.items.ItemFormViewModel
-import com.sales.app.presentation.parties.PartiesViewModel
+import com.sales.app.presentation.items.*
+import com.sales.app.presentation.parties.*
 import com.sales.app.presentation.sync.SyncViewModel
+import com.sales.app.domain.repository.*
+import com.sales.app.presentation.quotes.*
+import com.sales.app.presentation.purchases.*
+import com.sales.app.presentation.sales.*
+import com.sales.app.presentation.orders.*
+import com.sales.app.presentation.payments.*
+import com.sales.app.presentation.priceLists.*
 
 class SalesAppContainer(
     private val database: AppDatabase,
@@ -37,19 +43,35 @@ class SalesAppContainer(
     
     // Repositories
     // Repositories
-    val authRepository: com.sales.app.domain.repository.AuthRepository = AuthRepositoryImpl(apiService, database.userDao(), dataStore)
-    val itemRepository: com.sales.app.domain.repository.ItemRepository = ItemRepositoryImpl(apiService, database.itemDao())
-    val partyRepository: com.sales.app.domain.repository.PartyRepository = PartyRepositoryImpl(apiService, database.partyDao(), database.addressDao())
-    val syncRepository: com.sales.app.domain.repository.SyncRepository = SyncRepositoryImpl(apiService, database.itemDao(), database.partyDao(), database.taxDao(), database.uqcDao(), database.syncDao())
-    val quoteRepository: com.sales.app.domain.repository.QuoteRepository = QuoteRepositoryImpl(apiService, database.quoteDao(), database.quoteItemDao())
-    val saleRepository: com.sales.app.domain.repository.SaleRepository = SaleRepositoryImpl(apiService, database.saleDao(), database.saleItemDao())
-    val orderRepository: com.sales.app.domain.repository.OrderRepository = OrderRepositoryImpl(apiService, database.orderDao(), database.orderItemDao())
-    val purchaseRepository: com.sales.app.domain.repository.PurchaseRepository = PurchaseRepositoryImpl(apiService, database.purchaseDao(), database.purchaseItemDao())
-    val accountRepository: com.sales.app.domain.repository.AccountRepository = com.sales.app.data.repository.AccountRepositoryImpl(apiService, database.accountDao())
-    val inventoryRepository: com.sales.app.domain.repository.InventoryRepository = InventoryRepositoryImpl(database.inventoryDao(), database.itemDao())
-    val taxRepository: com.sales.app.domain.repository.TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
-    val paymentRepository: com.sales.app.domain.repository.PaymentRepository = PaymentRepositoryImpl(apiService, database.transactionDao())
-    val priceListRepository: com.sales.app.domain.repository.PriceListRepository = PriceListRepositoryImpl(apiService, database.priceListDao())
+    val authRepository: AuthRepository = AuthRepositoryImpl(apiService, database.userDao(), dataStore)
+    val itemRepository: ItemRepository = ItemRepositoryImpl(apiService, database.itemDao())
+    val partyRepository: PartyRepository = PartyRepositoryImpl(apiService, database.partyDao(), database.addressDao())
+    val syncRepository: SyncRepository = SyncRepositoryImpl(
+        apiService,
+        database.itemDao(),
+        database.partyDao(),
+        database.addressDao(),
+        database.taxDao(),
+        database.uqcDao(),
+        database.saleDao(),
+        database.quoteDao(),
+        database.quoteItemDao(),
+        database.purchaseDao(),
+        database.orderDao(),
+        database.orderItemDao(),
+        database.transactionDao(),
+        database.priceListDao(),
+        database.syncDao()
+    )
+    val quoteRepository: QuoteRepository = QuoteRepositoryImpl(apiService, database.quoteDao(), database.quoteItemDao())
+    val saleRepository: SaleRepository = SaleRepositoryImpl(apiService, database.saleDao(), database.saleItemDao())
+    val orderRepository: OrderRepository = OrderRepositoryImpl(apiService, database.orderDao(), database.orderItemDao())
+    val purchaseRepository: PurchaseRepository = PurchaseRepositoryImpl(apiService, database.purchaseDao(), database.purchaseItemDao())
+    val accountRepository: AccountRepository = AccountRepositoryImpl(apiService, database.accountDao())
+    val inventoryRepository: InventoryRepository = InventoryRepositoryImpl(database.inventoryDao(), database.itemDao())
+    val taxRepository: TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
+    val paymentRepository: PaymentRepository = PaymentRepositoryImpl(apiService, database.transactionDao())
+    val priceListRepository: PriceListRepository = PriceListRepositoryImpl(apiService, database.priceListDao())
 
     // Use Cases
     val loginUseCase = LoginUseCase(authRepository)
@@ -102,6 +124,7 @@ class SalesAppContainer(
     val updateAccountUseCase = UpdateAccountUseCase(accountRepository)
     val fetchAccountUseCase = FetchAccountUseCase(accountRepository)
     
+    val syncDataUseCase = SyncDataUseCase(syncRepository)
     val syncMasterDataUseCase = SyncMasterDataUseCase(syncRepository)
     val fullSyncUseCase = FullSyncUseCase(syncRepository)
     val logoutUseCase = LogoutUseCase(authRepository)
@@ -130,101 +153,101 @@ class SalesAppContainer(
         accountRepository
     )
     fun createPartiesViewModel() = PartiesViewModel(getPartiesUseCase, searchPartiesUseCase)
-    fun createPartyFormViewModel() = com.sales.app.presentation.parties.PartyFormViewModel(
+    fun createPartyFormViewModel() = PartyFormViewModel(
         createPartyUseCase,
         updatePartyUseCase,
         getPartyByIdUseCase
     )
-    fun createQuotesViewModel() = com.sales.app.presentation.quotes.QuotesViewModel(
+    fun createQuotesViewModel() = QuotesViewModel(
         getQuotesUseCase,
         getPartiesUseCase,
         syncQuotesUseCase
     )
-    fun createQuoteFormViewModel() = com.sales.app.presentation.quotes.QuoteFormViewModel(
+    fun createQuoteFormViewModel() = QuoteFormViewModel(
         createQuoteUseCase,
         updateQuoteUseCase,
         getQuoteByIdUseCase,
         getPartiesUseCase,
         getItemsUseCase
     )
-    fun createQuoteViewViewModel() = com.sales.app.presentation.quotes.QuoteViewViewModel(
+    fun createQuoteViewViewModel() = QuoteViewViewModel(
         getQuoteByIdUseCase,
         getPartyByIdUseCase,
         getItemsUseCase
     )
     
     // Sales ViewModels
-    fun createSalesViewModel() = com.sales.app.presentation.sales.SalesViewModel(
+    fun createSalesViewModel() = SalesViewModel(
         getSalesUseCase,
         syncSalesUseCase
     )
-    fun createSaleFormViewModel() = com.sales.app.presentation.sales.SaleFormViewModel(
+    fun createSaleFormViewModel() = SaleFormViewModel(
         createSaleUseCase,
         getSaleByIdUseCase,
         updateSaleUseCase,
         getPartiesUseCase,
         getItemsUseCase
     )
-    fun createSaleViewViewModel() = com.sales.app.presentation.sales.SaleViewViewModel(
+    fun createSaleViewViewModel() = SaleViewViewModel(
         getSaleByIdUseCase,
         getPartyByIdUseCase,
         getItemsUseCase
     )
     
     // Orders ViewModels
-    fun createOrdersViewModel() = com.sales.app.presentation.orders.OrdersViewModel(
+    fun createOrdersViewModel() = OrdersViewModel(
         getOrdersUseCase,
         syncOrdersUseCase
     )
-    fun createOrderFormViewModel() = com.sales.app.presentation.orders.OrderFormViewModel(
+    fun createOrderFormViewModel() = OrderFormViewModel(
         createOrderUseCase,
         getOrderByIdUseCase,
         updateOrderUseCase,
         getPartiesUseCase,
         getItemsUseCase
     )
-    fun createOrderViewViewModel() = com.sales.app.presentation.orders.OrderViewViewModel(
+    fun createOrderViewViewModel() = OrderViewViewModel(
         getOrderByIdUseCase,
         getPartyByIdUseCase,
         getItemsUseCase
     )
 
     // Purchases ViewModels
-    fun createPurchasesViewModel() = com.sales.app.presentation.purchases.PurchasesViewModel(
+    fun createPurchasesViewModel() = PurchasesViewModel(
         getPurchasesUseCase,
         syncPurchasesUseCase
     )
-    fun createPurchaseFormViewModel() = com.sales.app.presentation.purchases.PurchaseFormViewModel(
+    fun createPurchaseFormViewModel() = PurchaseFormViewModel(
         createPurchaseUseCase,
         getPurchaseByIdUseCase,
         updatePurchaseUseCase,
         getPartiesUseCase,
         getItemsUseCase
     )
-    fun createPurchaseViewViewModel() = com.sales.app.presentation.purchases.PurchaseViewViewModel(
+    fun createPurchaseViewViewModel() = PurchaseViewViewModel(
         getPurchaseByIdUseCase,
         getPartyByIdUseCase,
         getItemsUseCase
     )
 
-    fun createAccountSettingsViewModel() = com.sales.app.presentation.settings.AccountSettingsViewModel(
+    fun createAccountSettingsViewModel() = AccountSettingsViewModel(
         getAccountUseCase,
         updateAccountUseCase,
         fetchAccountUseCase,
         getTaxesUseCase
     )
 
-    fun createSyncViewModel() = SyncViewModel(syncMasterDataUseCase, fullSyncUseCase)
+    fun createSyncViewModel() = SyncViewModel(syncDataUseCase, syncMasterDataUseCase, fullSyncUseCase)
     
     // Inventory ViewModels
     fun createInventoryViewModel() = InventoryViewModel(getInventorySummaryUseCase)
     fun createStockAdjustmentViewModel() = StockAdjustmentViewModel(adjustStockUseCase, getItemsUseCase)
 
     // Payments ViewModels
-    fun createPaymentsViewModel() = com.sales.app.presentation.payments.PaymentsViewModel(paymentRepository)
-    fun createPaymentFormViewModel() = com.sales.app.presentation.payments.PaymentFormViewModel(paymentRepository, partyRepository)
+    fun createPaymentsViewModel() = PaymentsViewModel(paymentRepository)
+    fun createPaymentFormViewModel() = PaymentFormViewModel(paymentRepository, partyRepository)
 
     // Price Lists ViewModels
-    fun createPriceListsViewModel() = com.sales.app.presentation.pricelists.PriceListsViewModel(priceListRepository)
-    fun createPriceListDetailViewModel() = com.sales.app.presentation.pricelists.PriceListDetailViewModel(priceListRepository, itemRepository)
+    fun createPriceListsViewModel() = PriceListsViewModel(priceListRepository)
+    fun createPriceListDetailViewModel() = PriceListDetailViewModel(priceListRepository, itemRepository)
 }

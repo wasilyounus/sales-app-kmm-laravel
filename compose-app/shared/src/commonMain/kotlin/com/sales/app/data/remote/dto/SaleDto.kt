@@ -11,6 +11,8 @@ data class SaleDto(
     val tax_id: Int? = null,
     val account_id: Int,
     val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
     val deleted_at: String? = null,
     val items: List<SaleItemDto>? = null
 )
@@ -25,6 +27,8 @@ data class SaleItemDto(
     val tax_id: Int? = null,
     val account_id: Int,
     val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
     val deleted_at: String? = null
 )
 

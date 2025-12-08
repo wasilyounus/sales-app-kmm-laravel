@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasLog;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Uqc extends Model
 {
-    use SoftDeletes, \App\Traits\HasLog;
-
-    public $timestamps = false;
+    use SoftDeletes, HasLog, HasFactory;
 
     protected $fillable = [
         'quantity',

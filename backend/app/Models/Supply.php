@@ -9,7 +9,7 @@ class Supply extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'sale_id',

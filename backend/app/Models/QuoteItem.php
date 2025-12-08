@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasLog;
 
 class QuoteItem extends Model
 {
-    use SoftDeletes, \App\Traits\HasLog;
-
-    public $timestamps = false;
+    use SoftDeletes, HasLog, HasFactory;
 
     protected $fillable = [
         'quote_id',

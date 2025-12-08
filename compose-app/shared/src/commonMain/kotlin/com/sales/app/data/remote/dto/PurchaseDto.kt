@@ -9,6 +9,8 @@ data class PurchaseDto(
     val date: String,
     val account_id: Int,
     val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
     val deleted_at: String? = null,
     val items: List<PurchaseItemDto>? = null
 )
@@ -23,6 +25,8 @@ data class PurchaseItemDto(
     val tax_id: Int? = null,
     val account_id: Int,
     val log_id: Int,
+    val created_at: String? = null,
+    val updated_at: String? = null,
     val deleted_at: String? = null
 )
 

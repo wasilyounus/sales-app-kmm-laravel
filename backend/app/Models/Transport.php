@@ -9,7 +9,7 @@ class Transport extends Model
 {
     use SoftDeletes, \App\Traits\HasLog;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'name',

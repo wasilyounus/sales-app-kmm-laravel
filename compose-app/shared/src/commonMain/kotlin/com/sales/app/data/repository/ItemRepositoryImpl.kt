@@ -1,6 +1,6 @@
 package com.sales.app.data.repository
 
-import com.sales.app.data.local.dao.ItemDao
+import com.sales.app.data.local.dao.*
 import com.sales.app.data.local.entity.ItemEntity
 import com.sales.app.data.remote.ApiService
 import com.sales.app.data.remote.dto.ItemRequest
@@ -14,7 +14,8 @@ import com.sales.app.domain.model.Uqc
 
 class ItemRepositoryImpl(
     private val apiService: ApiService,
-    private val itemDao: ItemDao
+    private val itemDao: ItemDao,
+    private val uqcDao: UqcDao
 ) : ItemRepository {
     override fun getItemsByAccount(accountId: Int): Flow<List<Item>> {
         return itemDao.getItemsByAccount(accountId).map { entities ->
@@ -34,15 +35,20 @@ class ItemRepositoryImpl(
             
             if (response.success) {
                 val entities = response.data.map { dto ->
+                    // Lookup UQC ID from local DB using the code from API
+                    val uqcEntity = uqcDao.getByCode(dto.uqc)
+                    val uqcId = uqcEntity?.id ?: 0 // Default to 0 if not found (shouldn't happen if UQCs synced)
+                    
                     ItemEntity(
                         id = dto.id,
                         name = dto.name,
                         altName = dto.alt_name,
                         brand = dto.brand,
                         size = dto.size,
-                        uqc = dto.uqc,
+                        uqc = uqcId,
                         hsn = dto.hsn,
                         accountId = dto.account_id,
+                        taxId = dto.tax_id,
                         createdAt = dto.created_at,
                         updatedAt = dto.updated_at,
                         deletedAt = dto.deleted_at
