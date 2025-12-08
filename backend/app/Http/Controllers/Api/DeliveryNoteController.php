@@ -10,21 +10,28 @@ use Illuminate\Support\Facades\DB;
 
 class DeliveryNoteController extends Controller
 {
-    public function index($accountId)
+    public function index(Request $request)
     {
-        $deliveryNotes = DeliveryNote::with(['items.item', 'sale.party'])
-            ->where('account_id', $accountId)
-            ->orderBy('date', 'desc')
-            ->get();
+        $accountId = $request->input('account_id');
+
+        $query = DeliveryNote::with(['items.item', 'sale.party'])
+            ->orderBy('date', 'desc');
+
+        if ($accountId) {
+            $query->where('account_id', $accountId);
+        }
+
+        $deliveryNotes = $query->get();
 
         return response()->json([
             'data' => $deliveryNotes
         ]);
     }
 
-    public function store(Request $request, $accountId)
+    public function store(Request $request)
     {
         $validated = $request->validate([
+            'account_id' => 'required|exists:accounts,id',
             'sale_id' => 'required|exists:sales,id',
             'date' => 'required|date',
             'vehicle_no' => 'nullable|string|max:50',
@@ -34,6 +41,8 @@ class DeliveryNoteController extends Controller
             'items.*.item_id' => 'required|exists:items,id',
             'items.*.quantity' => 'required|numeric|min:0.001',
         ]);
+
+        $accountId = $validated['account_id'];
 
         return DB::transaction(function () use ($validated, $accountId) {
             // Create delivery note
@@ -68,10 +77,62 @@ class DeliveryNoteController extends Controller
         });
     }
 
-    public function show($accountId, $id)
+    public function update(Request $request, $id)
+    {
+        $deliveryNote = DeliveryNote::findOrFail($id);
+
+        $validated = $request->validate([
+            'sale_id' => 'sometimes|required|exists:sales,id',
+            'date' => 'sometimes|required|date',
+            'vehicle_no' => 'nullable|string|max:50',
+            'lr_no' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+            'items' => 'sometimes|array|min:1',
+            'items.*.item_id' => 'required_with:items|exists:items,id',
+            'items.*.quantity' => 'required_with:items|numeric|min:0.001',
+        ]);
+
+        return DB::transaction(function () use ($validated, $deliveryNote) {
+            // Reverse stock before updating
+            $deliveryNote->reverseStockAdjustment();
+
+            // Update delivery note details
+            $deliveryNote->update([
+                'date' => $validated['date'] ?? $deliveryNote->date,
+                'vehicle_no' => $validated['vehicle_no'] ?? $deliveryNote->vehicle_no,
+                'lr_no' => $validated['lr_no'] ?? $deliveryNote->lr_no,
+                'notes' => $validated['notes'] ?? $deliveryNote->notes,
+            ]);
+
+            if (isset($validated['items'])) {
+                // Remove old items
+                DeliveryNoteItem::where('delivery_note_id', $deliveryNote->id)->delete();
+
+                // Create new items
+                foreach ($validated['items'] as $item) {
+                    DeliveryNoteItem::create([
+                        'delivery_note_id' => $deliveryNote->id,
+                        'item_id' => $item['item_id'],
+                        'quantity' => $item['quantity'],
+                    ]);
+                }
+            }
+
+            // Adjust stock with new details (decrease for delivery)
+            $deliveryNote->refresh();
+            $deliveryNote->adjustStockDecrease();
+            $deliveryNote->load('items.item', 'sale.party');
+
+            return response()->json([
+                'message' => 'Delivery note updated successfully',
+                'data' => $deliveryNote
+            ]);
+        });
+    }
+
+    public function show($id)
     {
         $deliveryNote = DeliveryNote::with(['items.item', 'sale.party'])
-            ->where('account_id', $accountId)
             ->findOrFail($id);
 
         return response()->json([
@@ -79,10 +140,9 @@ class DeliveryNoteController extends Controller
         ]);
     }
 
-    public function destroy($accountId, $id)
+    public function destroy($id)
     {
         $deliveryNote = DeliveryNote::with('items')
-            ->where('account_id', $accountId)
             ->findOrFail($id);
 
         // Reverse stock before deleting

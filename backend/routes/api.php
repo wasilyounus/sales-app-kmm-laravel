@@ -157,12 +157,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('delivery-notes', [DeliveryNoteController::class, 'index']);
     Route::post('delivery-notes', [DeliveryNoteController::class, 'store']);
     Route::get('delivery-notes/{id}', [DeliveryNoteController::class, 'show']);
+    Route::put('delivery-notes/{id}', [DeliveryNoteController::class, 'update']);
     Route::delete('delivery-notes/{id}', [DeliveryNoteController::class, 'destroy']);
 
     // GRNs (Goods Received Notes)
     Route::get('grns', [GrnController::class, 'index']);
     Route::post('grns', [GrnController::class, 'store']);
     Route::get('grns/{id}', [GrnController::class, 'show']);
+    Route::put('grns/{id}', [GrnController::class, 'update']);
     Route::delete('grns/{id}', [GrnController::class, 'destroy']);
 
     // Test endpoint

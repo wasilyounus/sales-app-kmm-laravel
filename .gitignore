@@ -40,6 +40,7 @@ DerivedData/
 .gradle/
 build/
 local.properties
-compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/.shared-iosMain.cinteropLibraries.json
 references/YCo-android-jetpack-compose-app
 references/YCo-Api-laravel10
+compose-app/.kotlin/
+compose-app/.kotlin

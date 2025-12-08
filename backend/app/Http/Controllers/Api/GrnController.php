@@ -10,21 +10,28 @@ use Illuminate\Support\Facades\DB;
 
 class GrnController extends Controller
 {
-    public function index($accountId)
+    public function index(Request $request)
     {
-        $grns = Grn::with(['items.item', 'purchase.party'])
-            ->where('account_id', $accountId)
-            ->orderBy('date', 'desc')
-            ->get();
+        $accountId = $request->input('account_id');
+
+        $query = Grn::with(['items.item', 'purchase.party'])
+            ->orderBy('date', 'desc');
+
+        if ($accountId) {
+            $query->where('account_id', $accountId);
+        }
+
+        $grns = $query->get();
 
         return response()->json([
             'data' => $grns
         ]);
     }
 
-    public function store(Request $request, $accountId)
+    public function store(Request $request)
     {
         $validated = $request->validate([
+            'account_id' => 'required|exists:accounts,id',
             'purchase_id' => 'required|exists:purchases,id',
             'date' => 'required|date',
             'vehicle_no' => 'nullable|string|max:50',
@@ -34,6 +41,8 @@ class GrnController extends Controller
             'items.*.item_id' => 'required|exists:items,id',
             'items.*.quantity' => 'required|numeric|min:0.001',
         ]);
+
+        $accountId = $validated['account_id'];
 
         return DB::transaction(function () use ($validated, $accountId) {
             // Create GRN
@@ -68,10 +77,62 @@ class GrnController extends Controller
         });
     }
 
-    public function show($accountId, $id)
+    public function update(Request $request, $id)
+    {
+        $grn = Grn::findOrFail($id);
+
+        $validated = $request->validate([
+            'purchase_id' => 'sometimes|required|exists:purchases,id',
+            'date' => 'sometimes|required|date',
+            'vehicle_no' => 'nullable|string|max:50',
+            'invoice_no' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+            'items' => 'sometimes|array|min:1',
+            'items.*.item_id' => 'required_with:items|exists:items,id',
+            'items.*.quantity' => 'required_with:items|numeric|min:0.001',
+        ]);
+
+        return DB::transaction(function () use ($validated, $grn) {
+            // Reverse stock before updating
+            $grn->reverseStockAdjustment();
+
+            // Update GRN details
+            $grn->update([
+                'date' => $validated['date'] ?? $grn->date,
+                'vehicle_no' => $validated['vehicle_no'] ?? $grn->vehicle_no,
+                'invoice_no' => $validated['invoice_no'] ?? $grn->invoice_no,
+                'notes' => $validated['notes'] ?? $grn->notes,
+            ]);
+
+            if (isset($validated['items'])) {
+                // Remove old items
+                GrnItem::where('grn_id', $grn->id)->delete();
+
+                // Create new items
+                foreach ($validated['items'] as $item) {
+                    GrnItem::create([
+                        'grn_id' => $grn->id,
+                        'item_id' => $item['item_id'],
+                        'quantity' => $item['quantity'],
+                    ]);
+                }
+            }
+
+            // Adjust stock with new details (increase for GRN)
+            $grn->refresh();
+            $grn->adjustStockIncrease();
+            $grn->load('items.item', 'purchase.party');
+
+            return response()->json([
+                'message' => 'GRN updated successfully',
+                'data' => $grn
+            ]);
+        });
+    }
+
+    public function show($id)
     {
         $grn = Grn::with(['items.item', 'purchase.party'])
-            ->where('account_id', $accountId)
             ->findOrFail($id);
 
         return response()->json([
@@ -79,10 +140,9 @@ class GrnController extends Controller
         ]);
     }
 
-    public function destroy($accountId, $id)
+    public function destroy($id)
     {
         $grn = Grn::with('items')
-            ->where('account_id', $accountId)
             ->findOrFail($id);
 
         // Reverse stock before deleting
