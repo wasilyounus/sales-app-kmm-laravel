@@ -1,32 +1,32 @@
 [
   {
     "moduleId": "androidx.sqlite:sqlite-bundled:2.5.0-alpha01",
-    "file": "E:\\Android\\sales-app\\compose-app\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\androidx.sqlite-sqlite-bundled-2.5.0-alpha01-nativeMain-cinterop\\androidx.sqlite_sqlite-bundled-cinterop-androidXBundledSqlite-APf96A.klib",
+    "file": "/Users/wasilyounus/Projects/sales-app-kmm-laravel/compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/androidx.sqlite-sqlite-bundled-2.5.0-alpha01-nativeMain-cinterop/androidx.sqlite_sqlite-bundled-cinterop-androidXBundledSqlite-APf96A.klib",
     "sourceSetName": "nativeMain"
   },
   {
     "moduleId": "org.jetbrains.kotlinx:atomicfu:0.23.2",
-    "file": "E:\\Android\\sales-app\\compose-app\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.kotlinx-atomicfu-0.23.2-nativeMain-cinterop\\org.jetbrains.kotlinx_atomicfu-cinterop-interop-yBS35w.klib",
+    "file": "/Users/wasilyounus/Projects/sales-app-kmm-laravel/compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/org.jetbrains.kotlinx-atomicfu-0.23.2-nativeMain-cinterop/org.jetbrains.kotlinx_atomicfu-cinterop-interop-yBS35w.klib",
     "sourceSetName": "nativeMain"
   },
   {
     "moduleId": "androidx.sqlite:sqlite-framework:2.5.0-alpha01",
-    "file": "E:\\Android\\sales-app\\compose-app\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\androidx.sqlite-sqlite-framework-2.5.0-alpha01-nativeMain-cinterop\\androidx.sqlite_sqlite-framework-cinterop-sqlite3-kCTuRQ.klib",
+    "file": "/Users/wasilyounus/Projects/sales-app-kmm-laravel/compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/androidx.sqlite-sqlite-framework-2.5.0-alpha01-nativeMain-cinterop/androidx.sqlite_sqlite-framework-cinterop-sqlite3-kCTuRQ.klib",
     "sourceSetName": "nativeMain"
   },
   {
     "moduleId": "org.jetbrains.compose.ui:ui-uikit:1.7.1",
-    "file": "E:\\Android\\sales-app\\compose-app\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.compose.ui-ui-uikit-1.7.1-uikitMain-cinterop\\org.jetbrains.compose.ui_ui-uikit-cinterop-utils-aNVDjg.klib",
+    "file": "/Users/wasilyounus/Projects/sales-app-kmm-laravel/compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/org.jetbrains.compose.ui-ui-uikit-1.7.1-uikitMain-cinterop/org.jetbrains.compose.ui_ui-uikit-cinterop-utils-aNVDjg.klib",
     "sourceSetName": "uikitMain"
   },
   {
     "moduleId": "io.ktor:ktor-utils:3.0.2",
-    "file": "E:\\Android\\sales-app\\compose-app\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\io.ktor-ktor-utils-3.0.2-iosMain-cinterop\\io.ktor_ktor-utils-cinterop-threadUtils-kGNXpQ.klib",
+    "file": "/Users/wasilyounus/Projects/sales-app-kmm-laravel/compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/io.ktor-ktor-utils-3.0.2-iosMain-cinterop/io.ktor_ktor-utils-cinterop-threadUtils-kGNXpQ.klib",
     "sourceSetName": "iosMain"
   },
   {
     "moduleId": "io.ktor:ktor-io:3.0.2",
-    "file": "E:\\Android\\sales-app\\compose-app\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\io.ktor-ktor-io-3.0.2-iosMain-cinterop\\io.ktor_ktor-io-cinterop-mutex-G8iuZg.klib",
+    "file": "/Users/wasilyounus/Projects/sales-app-kmm-laravel/compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/io.ktor-ktor-io-3.0.2-iosMain-cinterop/io.ktor_ktor-io-cinterop-mutex-G8iuZg.klib",
     "sourceSetName": "iosMain"
   }
 ]

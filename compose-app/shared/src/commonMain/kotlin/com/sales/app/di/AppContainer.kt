@@ -24,7 +24,9 @@ import com.sales.app.presentation.purchases.*
 import com.sales.app.presentation.sales.*
 import com.sales.app.presentation.orders.*
 import com.sales.app.presentation.payments.*
-import com.sales.app.presentation.priceLists.*
+import com.sales.app.presentation.pricelists.*
+import com.sales.app.presentation.deliverynotes.*
+import com.sales.app.presentation.grns.*
 
 class SalesAppContainer(
     private val database: AppDatabase,
@@ -44,7 +46,7 @@ class SalesAppContainer(
     // Repositories
     // Repositories
     val authRepository: AuthRepository = AuthRepositoryImpl(apiService, database.userDao(), dataStore)
-    val itemRepository: ItemRepository = ItemRepositoryImpl(apiService, database.itemDao())
+    val itemRepository: ItemRepository = ItemRepositoryImpl(apiService, database.itemDao(), database.uqcDao())
     val partyRepository: PartyRepository = PartyRepositoryImpl(apiService, database.partyDao(), database.addressDao())
     val syncRepository: SyncRepository = SyncRepositoryImpl(
         apiService,
@@ -72,6 +74,8 @@ class SalesAppContainer(
     val taxRepository: TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
     val paymentRepository: PaymentRepository = PaymentRepositoryImpl(apiService, database.transactionDao())
     val priceListRepository: PriceListRepository = PriceListRepositoryImpl(apiService, database.priceListDao())
+    val deliveryNoteRepository: DeliveryNoteRepository = DeliveryNoteRepositoryImpl(apiService, database.deliveryNoteDao())
+    val grnRepository: GrnRepository = GrnRepositoryImpl(apiService, database.grnDao())
 
     // Use Cases
     val loginUseCase = LoginUseCase(authRepository)
@@ -141,7 +145,8 @@ class SalesAppContainer(
         logoutUseCase,
         getItemsUseCase,
         getPartiesUseCase,
-        getQuotesUseCase
+        getQuotesUseCase,
+        getAccountUseCase
     )
     fun createItemsViewModel() = ItemsViewModel(getItemsUseCase, syncMasterDataUseCase, getUqcsUseCase)
     fun createItemFormViewModel() = ItemFormViewModel(
@@ -240,7 +245,7 @@ class SalesAppContainer(
     fun createSyncViewModel() = SyncViewModel(syncDataUseCase, syncMasterDataUseCase, fullSyncUseCase)
     
     // Inventory ViewModels
-    fun createInventoryViewModel() = InventoryViewModel(getInventorySummaryUseCase)
+    fun createInventoryViewModel() = InventoryViewModel(getInventorySummaryUseCase, syncMasterDataUseCase)
     fun createStockAdjustmentViewModel() = StockAdjustmentViewModel(adjustStockUseCase, getItemsUseCase)
 
     // Payments ViewModels
@@ -250,4 +255,18 @@ class SalesAppContainer(
     // Price Lists ViewModels
     fun createPriceListsViewModel() = PriceListsViewModel(priceListRepository)
     fun createPriceListDetailViewModel() = PriceListDetailViewModel(priceListRepository, itemRepository)
+
+    // Delivery Notes
+    val getDeliveryNotesUseCase = GetDeliveryNotesUseCase(deliveryNoteRepository)
+    val syncDeliveryNotesUseCase = SyncDeliveryNotesUseCase(deliveryNoteRepository)
+    val createDeliveryNoteUseCase = CreateDeliveryNoteUseCase(deliveryNoteRepository)
+    
+    fun createDeliveryNotesViewModel() = DeliveryNotesViewModel(getDeliveryNotesUseCase, syncDeliveryNotesUseCase)
+
+    // GRNs
+    val getGrnsUseCase = GetGrnsUseCase(grnRepository)
+    val syncGrnsUseCase = SyncGrnsUseCase(grnRepository)
+    val createGrnUseCase = CreateGrnUseCase(grnRepository)
+    
+    fun createGrnsViewModel() = GrnsViewModel(getGrnsUseCase, syncGrnsUseCase)
 }

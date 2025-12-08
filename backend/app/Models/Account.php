@@ -27,6 +27,8 @@ class Account extends Model
         'default_tax_id',
         'tax_application_level',
         'visibility',
+        'enable_delivery_notes',
+        'enable_grns',
     ];
 
     public function defaultTax()
@@ -37,6 +39,8 @@ class Account extends Model
     protected $casts = [
         'signature' => 'boolean',
         'tax_application_level' => 'string', // 'account', 'bill', or 'item'
+        'enable_delivery_notes' => 'boolean',
+        'enable_grns' => 'boolean',
     ];
 
     public function users()

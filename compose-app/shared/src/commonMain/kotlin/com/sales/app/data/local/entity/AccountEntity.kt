@@ -23,5 +23,8 @@ data class AccountEntity(
     val taxNumber: String? = null,
     val defaultTaxId: Int? = null,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
+    val deletedAt: String?,
+    val enableDeliveryNotes: Boolean = true,
+    val enableGrns: Boolean = true
 )

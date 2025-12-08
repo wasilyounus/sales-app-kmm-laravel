@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.sales.app.di.SalesAppContainer
 import com.sales.app.presentation.navigation.AppNavigation
-import com.sales.app.presentation.navigation.Screen
+import com.sales.app.presentation.navigation.Login
 import com.sales.app.presentation.theme.SalesAppTheme
 
 @Composable
@@ -14,7 +14,7 @@ fun App(appContainer: SalesAppContainer) {
         
         AppNavigation(
             navController = navController,
-            startDestination = Screen.Login.route,
+            startDestination = Login,
             appContainer = appContainer
         )
     }

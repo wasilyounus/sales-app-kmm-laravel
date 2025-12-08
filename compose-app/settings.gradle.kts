@@ -16,6 +16,7 @@ pluginManagement {
         val kotlinVersion = extra["kotlin.version"] as String
         val agpVersion = extra["agp.version"] as String
         val composeVersion = extra["compose.version"] as String
+        val kspVersion = extra["ksp.version"] as String
 
         kotlin("multiplatform").version(kotlinVersion)
         kotlin("android").version(kotlinVersion)
@@ -26,7 +27,7 @@ pluginManagement {
 
         id("org.jetbrains.compose").version(composeVersion)
         id("org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
-        id("com.google.devtools.ksp").version(kotlinVersion)
+        id("com.google.devtools.ksp").version(kspVersion)
         id("org.jetbrains.kotlin.plugin.compose").version(kotlinVersion)
     }
 }

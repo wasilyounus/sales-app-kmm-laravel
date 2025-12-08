@@ -3,7 +3,7 @@ package com.sales.app.presentation.payments
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -13,14 +13,15 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentFormScreen(
-    viewModel: PaymentFormViewModel,
     accountId: Int,
-    onNavigateBack: () -> Unit
+    paymentId: Int? = null,
+    onNavigateBack: () -> Unit,
+    viewModel: PaymentFormViewModel
 ) {
     val parties by viewModel.parties.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
-
+    
     var selectedPartyId by remember { mutableStateOf<Int?>(null) }
     var amount by remember { mutableStateOf("") }
     var isReceived by remember { mutableStateOf(true) }
@@ -34,10 +35,10 @@ fun PaymentFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("New Payment") },
+                title = { Text(if (paymentId == null) "Record Payment" else "Update Payment") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

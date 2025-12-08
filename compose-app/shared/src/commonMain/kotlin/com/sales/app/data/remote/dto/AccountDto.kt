@@ -22,7 +22,10 @@ data class AccountDto(
     @SerialName("tax_number") val taxNumber: String? = null,
     @SerialName("default_tax_id") val defaultTaxId: Int? = null,
     @SerialName("created_at") val createdAt: String? = null,
-    @SerialName("updated_at") val updatedAt: String? = null
+    @SerialName("updated_at") val updatedAt: String? = null,
+    @SerialName("deleted_at") val deletedAt: String? = null,
+    @SerialName("enable_delivery_notes") val enableDeliveryNotes: Boolean = true,
+    @SerialName("enable_grns") val enableGrns: Boolean = true
 )
 
 @Serializable

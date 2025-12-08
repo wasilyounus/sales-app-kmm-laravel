@@ -13,15 +13,15 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         $accountId = $request->input('account_id');
-        
+
         $query = Purchase::with(['party', 'items.item', 'items.tax']);
-        
+
         if ($accountId) {
             $query->where('account_id', $accountId);
         }
-        
+
         $purchases = $query->orderBy('date', 'desc')->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $purchases,
@@ -51,16 +51,27 @@ class PurchaseController extends Controller
                 'log_id' => $validated['log_id'],
             ]);
 
-            foreach ($validated['items'] as $item) {
-                PurchaseItem::create([
+            // Auto-create GRN if enabled
+            $account = \App\Models\Account::find($validated['account_id']);
+            if (!$account->enable_grns) {
+                // Determine GRN Number (using helper if available or similar logic)
+                // Assuming Grn::generateNumber mirrors DeliveryNote::generateNumber
+                $grn = \App\Models\Grn::create([
                     'purchase_id' => $purchase->id,
-                    'item_id' => $item['item_id'],
-                    'price' => $item['price'],
-                    'qty' => $item['qty'],
-                    'tax_id' => $item['tax_id'] ?? null,
-                    'account_id' => $validated['account_id'],
-                    'log_id' => $validated['log_id'],
+                    'account_id' => $purchase->account_id,
+                    'grn_number' => \App\Models\Grn::generateNumber($purchase->account_id),
+                    'date' => $purchase->date,
                 ]);
+
+                foreach ($validated['items'] as $item) {
+                    \App\Models\GrnItem::create([
+                        'grn_id' => $grn->id,
+                        'item_id' => $item['item_id'],
+                        'qty' => $item['qty'],
+                    ]);
+                }
+
+                $grn->adjustStockIncrease();
             }
 
             DB::commit();
@@ -84,7 +95,7 @@ class PurchaseController extends Controller
     public function show($id)
     {
         $purchase = Purchase::with(['party', 'items.item', 'items.tax'])->findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'data' => $purchase,
@@ -94,7 +105,7 @@ class PurchaseController extends Controller
     public function update(Request $request, $id)
     {
         $purchase = Purchase::findOrFail($id);
-        
+
         $validated = $request->validate([
             'party_id' => 'sometimes|required|exists:parties,id',
             'date' => 'sometimes|required|date',
@@ -112,7 +123,7 @@ class PurchaseController extends Controller
 
             if (isset($validated['items'])) {
                 PurchaseItem::where('purchase_id', $purchase->id)->delete();
-                
+
                 foreach ($validated['items'] as $item) {
                     PurchaseItem::create([
                         'purchase_id' => $purchase->id,
@@ -123,6 +134,50 @@ class PurchaseController extends Controller
                         'account_id' => $purchase->account_id,
                         'log_id' => $validated['log_id'] ?? $purchase->log_id,
                     ]);
+                }
+            }
+
+            // Auto-update GRN if enabled
+            $account = \App\Models\Account::find($purchase->account_id);
+            if (!$account->enable_grns) {
+                // Find existing GRN (1-to-1 assumption for auto mode)
+                $grn = \App\Models\Grn::where('purchase_id', $purchase->id)->first();
+
+                if ($grn) {
+                    $grn->reverseStockAdjustment(); // Revert old stock
+
+                    $grn->update(['date' => $purchase->date]);
+
+                    \App\Models\GrnItem::where('grn_id', $grn->id)->delete();
+
+                    $freshItems = $purchase->items;
+                    foreach ($freshItems as $item) {
+                        \App\Models\GrnItem::create([
+                            'grn_id' => $grn->id,
+                            'item_id' => $item->item_id,
+                            'qty' => $item->qty,
+                        ]);
+                    }
+
+                    $grn->adjustStockIncrease(); // New stock
+                } else {
+                    // Create new if missing
+                    $grn = \App\Models\Grn::create([
+                        'purchase_id' => $purchase->id,
+                        'account_id' => $purchase->account_id,
+                        'grn_number' => \App\Models\Grn::generateNumber($purchase->account_id),
+                        'date' => $purchase->date,
+                    ]);
+
+                    $freshItems = $purchase->items;
+                    foreach ($freshItems as $item) {
+                        \App\Models\GrnItem::create([
+                            'grn_id' => $grn->id,
+                            'item_id' => $item->item_id,
+                            'qty' => $item->qty,
+                        ]);
+                    }
+                    $grn->adjustStockIncrease();
                 }
             }
 
@@ -147,11 +202,34 @@ class PurchaseController extends Controller
     public function destroy($id)
     {
         $purchase = Purchase::findOrFail($id);
-        $purchase->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Purchase deleted successfully',
-        ]);
+        DB::beginTransaction();
+        try {
+            // Auto-delete GRN check
+            $account = \App\Models\Account::find($purchase->account_id);
+            if (!$account->enable_grns) {
+                $grns = \App\Models\Grn::where('purchase_id', $purchase->id)->get();
+                foreach ($grns as $grn) {
+                    $grn->reverseStockAdjustment();
+                    $grn->delete();
+                }
+            }
+
+            $purchase->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Purchase deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete purchase',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

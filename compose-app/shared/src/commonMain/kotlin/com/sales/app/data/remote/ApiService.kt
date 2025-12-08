@@ -400,8 +400,65 @@ class ApiService(
         }
     }
 
-    private suspend fun HttpRequestBuilder.addAuthHeader() {
+    // Delivery Notes
+    suspend fun getDeliveryNotes(accountId: Int): DeliveryNotesResponse {
+        return client.get("delivery-notes") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
 
+    suspend fun getDeliveryNote(id: Int): DeliveryNoteResponse {
+        return client.get("delivery-notes/$id") {
+            addAuthHeader()
+        }.body()
+    }
+
+    suspend fun createDeliveryNote(accountId: Int, request: DeliveryNoteRequest): DeliveryNoteResponse {
+        return client.post("delivery-notes") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            parameter("account_id", accountId)
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun deleteDeliveryNote(id: Int) {
+        client.delete("delivery-notes/$id") {
+            addAuthHeader()
+        }
+    }
+
+    // GRNs (Goods Received Notes)
+    suspend fun getGrns(accountId: Int): GrnsResponse {
+        return client.get("grns") {
+            addAuthHeader()
+            parameter("account_id", accountId)
+        }.body()
+    }
+
+    suspend fun getGrn(id: Int): GrnResponse {
+        return client.get("grns/$id") {
+            addAuthHeader()
+        }.body()
+    }
+
+    suspend fun createGrn(accountId: Int, request: GrnRequest): GrnResponse {
+        return client.post("grns") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            parameter("account_id", accountId)
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun deleteGrn(id: Int) {
+        client.delete("grns/$id") {
+            addAuthHeader()
+        }
+    }
+
+    private suspend fun HttpRequestBuilder.addAuthHeader() {
         tokenProvider()?.let { token ->
             header(HttpHeaders.Authorization, "Bearer $token")
         }

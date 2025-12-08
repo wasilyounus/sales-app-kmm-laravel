@@ -77,7 +77,7 @@ fun TaxSelectionDialog(
                     }
                 }
 
-                Divider()
+                HorizontalDivider()
 
                 // Search Bar
                 OutlinedTextField(

@@ -10,6 +10,8 @@ use App\Models\Quote;
 use App\Models\Order;
 use App\Models\Sale;
 use App\Models\Purchase;
+use App\Models\DeliveryNote;
+use App\Models\Grn;
 use App\Models\Uqc;
 use App\Models\Tax;
 use Illuminate\Http\Request;
@@ -123,6 +125,46 @@ class SyncController extends Controller
         return response()->json([
             'success' => true,
             'data' => $purchases,
+            'timestamp' => now()->toDateTimeString(),
+        ]);
+    }
+
+    /**
+     * Sync delivery notes with items
+     */
+    public function deliveryNotes(Request $request)
+    {
+        $accountId = $request->input('account_id');
+        $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
+
+        $deliveryNotes = DeliveryNote::where('account_id', $accountId)
+            ->where('updated_at', '>', $timestamp)
+            ->with(['sale.party', 'items.item'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $deliveryNotes,
+            'timestamp' => now()->toDateTimeString(),
+        ]);
+    }
+
+    /**
+     * Sync GRNs (Goods Received Notes) with items
+     */
+    public function grns(Request $request)
+    {
+        $accountId = $request->input('account_id');
+        $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
+
+        $grns = Grn::where('account_id', $accountId)
+            ->where('updated_at', '>', $timestamp)
+            ->with(['purchase.party', 'items.item'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $grns,
             'timestamp' => now()->toDateTimeString(),
         ]);
     }

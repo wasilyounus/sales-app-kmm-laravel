@@ -83,6 +83,8 @@ fun AccountSettingsScreen(
                     onWhatsappChange = viewModel::updateWhatsapp,
                     onFooterContentChange = viewModel::updateFooterContent,
                     onSignatureChange = viewModel::updateSignature,
+                    onEnableDeliveryNotesChange = viewModel::updateEnableDeliveryNotes,
+                    onEnableGrnsChange = viewModel::updateEnableGrns,
                     onClearMessages = viewModel::clearMessages,
                     taxes = uiState.taxes
                 )
@@ -106,6 +108,8 @@ private fun AccountSettingsContent(
     onWhatsappChange: (String) -> Unit,
     onFooterContentChange: (String) -> Unit,
     onSignatureChange: (Boolean) -> Unit,
+    onEnableDeliveryNotesChange: (Boolean) -> Unit,
+    onEnableGrnsChange: (Boolean) -> Unit,
     onClearMessages: () -> Unit,
     taxes: List<com.sales.app.domain.model.Tax>
 ) {
@@ -203,6 +207,75 @@ private fun AccountSettingsContent(
                     Switch(
                         checked = account.signature == "1" || account.signature == "true",
                         onCheckedChange = onSignatureChange,
+                        enabled = !isSaving
+                    )
+                }
+            }
+        }
+
+        // Features Section
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Features",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                // Delivery Notes Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Enable Delivery Notes",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "If disabled, Delivery Notes are automatically created with Sales",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = account.enableDeliveryNotes,
+                        onCheckedChange = onEnableDeliveryNotesChange,
+                        enabled = !isSaving
+                    )
+                }
+
+                HorizontalDivider()
+
+                // GRN Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Enable GRN",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "If disabled, GRNs are automatically created with Purchases",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = account.enableGrns,
+                        onCheckedChange = onEnableGrnsChange,
                         enabled = !isSaving
                     )
                 }

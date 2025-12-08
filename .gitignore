@@ -8,3 +8,38 @@ compose-app/.kotlin/errors/
 references/
 .DS_Store
 compose-app/shared/src/commonMain/kotlin/com/sales/app/data/repository/*.kt.bak
+
+# IDE - IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.idea_modules/
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# IDE - Fleet
+.fleet/
+
+# IDE - Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IDE - Xcode
+*.xcworkspace
+*.xcodeproj
+xcuserdata/
+DerivedData/
+
+# Gradle
+.gradle/
+build/
+local.properties
+compose-app/.kotlin/metadata/kotlinTransformedCInteropMetadataLibraries/.shared-iosMain.cinteropLibraries.json
+references/YCo-android-jetpack-compose-app
+references/YCo-Api-laravel10

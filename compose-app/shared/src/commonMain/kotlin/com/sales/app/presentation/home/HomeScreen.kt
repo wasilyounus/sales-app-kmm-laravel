@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sales.app.util.isDesktop
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,9 +39,12 @@ fun HomeScreen(
     onNavigateToPurchases: () -> Unit,
     onNavigateToTransfers: () -> Unit,
     onNavigateToAccountSettings: () -> Unit = {},
+    onNavigateToDeliveryNotes: () -> Unit = {},
+    onNavigateToGrns: () -> Unit = {},
     viewModel: HomeViewModel
 ) {
     val stats by viewModel.stats.collectAsState()
+    val account by viewModel.account.collectAsState()
     
     LaunchedEffect(accountId) {
         viewModel.loadStats(accountId)
@@ -79,6 +84,7 @@ fun HomeScreen(
             DesktopHomeLayout(
                 modifier = Modifier.padding(paddingValues),
                 stats = stats,
+                account = account,
                 onNavigateToItems = onNavigateToItems,
                 onNavigateToParties = onNavigateToParties,
                 onNavigateToQuotes = onNavigateToQuotes,
@@ -90,12 +96,15 @@ fun HomeScreen(
                 onNavigateToSales = onNavigateToSales,
                 onNavigateToPurchases = onNavigateToPurchases,
                 onNavigateToTransfers = onNavigateToTransfers,
-                onNavigateToAccountSettings = onNavigateToAccountSettings
+                onNavigateToAccountSettings = onNavigateToAccountSettings,
+                onNavigateToDeliveryNotes = onNavigateToDeliveryNotes,
+                onNavigateToGrns = onNavigateToGrns
             )
         } else {
             MobileHomeLayout(
                 modifier = Modifier.padding(paddingValues),
                 stats = stats,
+                account = account,
                 onNavigateToItems = onNavigateToItems,
                 onNavigateToParties = onNavigateToParties,
                 onNavigateToQuotes = onNavigateToQuotes,
@@ -107,7 +116,9 @@ fun HomeScreen(
                 onNavigateToSales = onNavigateToSales,
                 onNavigateToPurchases = onNavigateToPurchases,
                 onNavigateToTransfers = onNavigateToTransfers,
-                onNavigateToAccountSettings = onNavigateToAccountSettings
+                onNavigateToAccountSettings = onNavigateToAccountSettings,
+                onNavigateToDeliveryNotes = onNavigateToDeliveryNotes,
+                onNavigateToGrns = onNavigateToGrns
             )
         }
     }
@@ -117,6 +128,7 @@ fun HomeScreen(
 private fun DesktopHomeLayout(
     modifier: Modifier = Modifier,
     stats: HomeStats,
+    account: com.sales.app.domain.model.Account?,
     onNavigateToItems: () -> Unit,
     onNavigateToParties: () -> Unit,
     onNavigateToQuotes: () -> Unit,
@@ -128,7 +140,9 @@ private fun DesktopHomeLayout(
     onNavigateToSales: () -> Unit,
     onNavigateToPurchases: () -> Unit,
     onNavigateToTransfers: () -> Unit,
-    onNavigateToAccountSettings: () -> Unit
+    onNavigateToAccountSettings: () -> Unit,
+    onNavigateToDeliveryNotes: () -> Unit,
+    onNavigateToGrns: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -176,15 +190,29 @@ private fun DesktopHomeLayout(
             )
             
             // Transactions
+            val transactionModules = mutableListOf(
+                ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
+                ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), true, onNavigateToOrders),
+                ModuleData("Sales", "Record sales", Icons.AutoMirrored.Filled.TrendingUp, Color(0xFFC1689B), true, onNavigateToSales),
+                ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), true, onNavigateToPurchases),
+                ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), true, onNavigateToTransfers)
+            )
+            
+            if (account?.enableDeliveryNotes != false) {
+                transactionModules.add(
+                    ModuleData("Delivery Notes", "Manage delivery notes", Icons.Default.LocalShipping, Color(0xFFEF6C00), true, onNavigateToDeliveryNotes)
+                )
+            }
+            
+            if (account?.enableGrns != false) {
+                transactionModules.add(
+                    ModuleData("GRNs", "Goods Received Notes", Icons.Default.Inventory2, Color(0xFF2E7D32), true, onNavigateToGrns)
+                )
+            }
+
             CategorySection(
                 title = "Transactions",
-                modules = listOf(
-                    ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
-                    ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), true, onNavigateToOrders),
-                    ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), true, onNavigateToSales),
-                    ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), true, onNavigateToPurchases),
-                    ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), true, onNavigateToTransfers)
-                )
+                modules = transactionModules
             )
             
             // System
@@ -204,6 +232,7 @@ private fun DesktopHomeLayout(
 private fun MobileHomeLayout(
     modifier: Modifier = Modifier,
     stats: HomeStats,
+    account: com.sales.app.domain.model.Account?,
     onNavigateToItems: () -> Unit,
     onNavigateToParties: () -> Unit,
     onNavigateToQuotes: () -> Unit,
@@ -215,7 +244,9 @@ private fun MobileHomeLayout(
     onNavigateToSales: () -> Unit,
     onNavigateToPurchases: () -> Unit,
     onNavigateToTransfers: () -> Unit,
-    onNavigateToAccountSettings: () -> Unit
+    onNavigateToAccountSettings: () -> Unit,
+    onNavigateToDeliveryNotes: () -> Unit,
+    onNavigateToGrns: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -247,15 +278,29 @@ private fun MobileHomeLayout(
         )
         
         // Transactions
+        val transactionModules = mutableListOf(
+            ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
+            ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), true, onNavigateToOrders),
+            ModuleData("Sales", "Record sales", Icons.AutoMirrored.Filled.TrendingUp, Color(0xFFC1689B), true, onNavigateToSales),
+            ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), true, onNavigateToPurchases),
+            ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), true, onNavigateToTransfers)
+        )
+        
+        if (account?.enableDeliveryNotes != false) {
+            transactionModules.add(
+                ModuleData("Delivery Notes", "Manage delivery notes", Icons.Default.LocalShipping, Color(0xFFEF6C00), true, onNavigateToDeliveryNotes)
+            )
+        }
+        
+        if (account?.enableGrns != false) {
+            transactionModules.add(
+                ModuleData("GRNs", "Goods Received Notes", Icons.Default.Inventory2, Color(0xFF2E7D32), true, onNavigateToGrns)
+            )
+        }
+
         CategorySection(
             title = "Transactions",
-            modules = listOf(
-                ModuleData("Quotes", "Create and manage quotes", Icons.Default.RequestQuote, Color(0xFF8E4585), true, onNavigateToQuotes),
-                ModuleData("Orders", "Manage orders", Icons.Default.ShoppingCart, Color(0xFFAB47BC), true, onNavigateToOrders),
-                ModuleData("Sales", "Record sales", Icons.Default.TrendingUp, Color(0xFFC1689B), true, onNavigateToSales),
-                ModuleData("Purchases", "Track purchases", Icons.Default.ShoppingBag, Color(0xFFAA5A98), true, onNavigateToPurchases),
-                ModuleData("Transfers", "Stock transfers", Icons.Default.MoveDown, Color(0xFF9C4699), true, onNavigateToTransfers)
-            )
+            modules = transactionModules
         )
         
         // System

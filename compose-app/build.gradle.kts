@@ -7,6 +7,6 @@ plugins {
     id("org.jetbrains.compose").apply(false)
     id("org.jetbrains.kotlin.plugin.compose").apply(false)
     id("com.google.dagger.hilt.android") version "2.51.1" apply false
-    id("com.google.devtools.ksp") version "2.0.21-1.0.25" apply false
+    id("com.google.devtools.ksp") version "2.1.20-1.0.31" apply false
     kotlin("plugin.serialization").apply(false)
 }

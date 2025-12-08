@@ -86,6 +86,8 @@ class AccountController extends Controller
             'default_tax_id' => 'nullable|integer|exists:taxes,id',
             'country' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
+            'enable_delivery_notes' => 'sometimes|boolean',
+            'enable_grns' => 'sometimes|boolean',
         ]);
 
         $account->update($validated);

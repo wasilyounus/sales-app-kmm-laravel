@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,10 +19,10 @@ import com.sales.app.domain.model.PriceListItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriceListDetailScreen(
-    viewModel: PriceListDetailViewModel,
-    priceListId: Long,
     accountId: Int,
-    onNavigateBack: () -> Unit
+    priceListId: Long,
+    onNavigateBack: () -> Unit,
+    viewModel: PriceListDetailViewModel
 ) {
     val priceList by viewModel.priceList.collectAsState()
     val availableItems by viewModel.availableItems.collectAsState()
@@ -33,18 +33,20 @@ fun PriceListDetailScreen(
     var priceInput by remember { mutableStateOf("") }
     var itemExpanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(priceListId) {
-        viewModel.loadPriceList(priceListId)
+    LaunchedEffect(accountId, priceListId) {
+        if (priceListId != -1L) {
+            viewModel.loadPriceList(priceListId)
+        }
         viewModel.loadAvailableItems(accountId)
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(priceList?.name ?: "Price List Details") },
+                title = { Text(if (priceListId == -1L) "Create Price List" else "Update Price List") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

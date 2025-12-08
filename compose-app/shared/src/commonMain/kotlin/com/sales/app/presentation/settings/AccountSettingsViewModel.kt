@@ -182,6 +182,14 @@ class AccountSettingsViewModel(
     fun updateSignature(enabled: Boolean) {
         updateAccountField { it.copy(signature = if (enabled) "1" else "0") }
     }
+
+    fun updateEnableDeliveryNotes(enabled: Boolean) {
+        updateAccountField { it.copy(enableDeliveryNotes = enabled) }
+    }
+
+    fun updateEnableGrns(enabled: Boolean) {
+        updateAccountField { it.copy(enableGrns = enabled) }
+    }
     
     private fun updateAccountField(update: (Account) -> Account) {
         val currentAccount = _uiState.value.account ?: return

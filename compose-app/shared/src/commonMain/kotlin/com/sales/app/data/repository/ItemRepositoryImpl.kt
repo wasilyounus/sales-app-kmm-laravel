@@ -35,17 +35,13 @@ class ItemRepositoryImpl(
             
             if (response.success) {
                 val entities = response.data.map { dto ->
-                    // Lookup UQC ID from local DB using the code from API
-                    val uqcEntity = uqcDao.getByCode(dto.uqc)
-                    val uqcId = uqcEntity?.id ?: 0 // Default to 0 if not found (shouldn't happen if UQCs synced)
-                    
                     ItemEntity(
                         id = dto.id,
                         name = dto.name,
                         altName = dto.alt_name,
                         brand = dto.brand,
                         size = dto.size,
-                        uqc = uqcId,
+                        uqc = dto.uqc,
                         hsn = dto.hsn,
                         accountId = dto.account_id,
                         taxId = dto.tax_id,

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sales.app.domain.usecase.GetItemsUseCase
 import com.sales.app.domain.usecase.GetPartiesUseCase
 import com.sales.app.domain.usecase.GetQuotesUseCase
+import com.sales.app.domain.usecase.GetAccountUseCase
 import com.sales.app.domain.usecase.LogoutUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,14 +24,26 @@ class HomeViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val getItemsUseCase: GetItemsUseCase,
     private val getPartiesUseCase: GetPartiesUseCase,
-    private val getQuotesUseCase: GetQuotesUseCase
+    private val getQuotesUseCase: GetQuotesUseCase,
+    private val getAccountUseCase: GetAccountUseCase
 ) : ViewModel() {
     
     private val _stats = MutableStateFlow(HomeStats())
     val stats: StateFlow<HomeStats> = _stats.asStateFlow()
     
+    // We need to expose account settings to the UI
+    private val _account = MutableStateFlow<com.sales.app.domain.model.Account?>(null)
+    val account: StateFlow<com.sales.app.domain.model.Account?> = _account.asStateFlow()
+    
     fun loadStats(accountId: Int) {
         viewModelScope.launch {
+            // Load Account for settings
+            launch {
+                getAccountUseCase(accountId).collect {
+                    _account.value = it
+                }
+            }
+
             combine(
                 getItemsUseCase(accountId),
                 getPartiesUseCase(accountId),

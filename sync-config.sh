@@ -83,15 +83,15 @@ trap cleanup SIGINT
 
 # Run migrations
 echo "🐘 Running migrations and seeds..."
-(php artisan migrate:fresh --seed)
+(cd backend && php artisan migrate:fresh --seed)
 
 # Run npm run dev
-echo "📦 Starting npm run dev..."
-(cd backend && npm run dev) &
+echo "📦 Starting npm run dev (logs -> backend/npm.log)..."
+(cd backend && npm run dev > npm.log 2>&1) &
 
 # Run php artisan serve
-echo "🐘 Starting Laravel Server (${API_HOST}:${API_PORT})..."
-(cd backend && php artisan serve --host=${API_HOST} --port=${API_PORT}) &
+echo "🐘 Starting Laravel Server (${API_HOST}:${API_PORT}) (logs -> backend/laravel.log)..."
+(cd backend && php artisan serve --host=${API_HOST} --port=${API_PORT} > laravel.log 2>&1) &
 
 # Wait a moment for services to spin up
 sleep 3

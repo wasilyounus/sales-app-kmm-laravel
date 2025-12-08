@@ -18,5 +18,10 @@ data class Account(
     val state: String? = null,
     val taxNumber: String? = null,
     val defaultTaxId: Int? = null,
-    val taxApplicationLevel: String = "item"
+    val taxApplicationLevel: String = "item",
+    val enableDeliveryNotes: Boolean = true,
+    val enableGrns: Boolean = true,
+    val createdAt: String? = null,
+    val updatedAt: String? = null,
+    val deletedAt: String? = null
 )

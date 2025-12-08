@@ -73,10 +73,15 @@ private fun com.sales.app.data.remote.dto.AccountDto.toEntity(): AccountEntity {
         state = state,
         taxNumber = taxNumber,
         defaultTaxId = defaultTaxId,
-        createdAt = createdAt ?: "",
-        updatedAt = updatedAt ?: ""
+        createdAt = createdAt ?: kotlinx.datetime.Clock.System.now().toString(),
+        updatedAt = updatedAt ?: kotlinx.datetime.Clock.System.now().toString(),
+        deletedAt = deletedAt,
+        enableDeliveryNotes = enableDeliveryNotes,
+        enableGrns = enableGrns
     )
 }
+
+
 
 private fun AccountEntity.toAccount(): Account {
     return Account(
@@ -96,7 +101,12 @@ private fun AccountEntity.toAccount(): Account {
         country = country,
         state = state,
         taxNumber = taxNumber,
-        defaultTaxId = defaultTaxId
+        defaultTaxId = defaultTaxId,
+        enableDeliveryNotes = enableDeliveryNotes,
+        enableGrns = enableGrns,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        deletedAt = deletedAt
     )
 }
 
@@ -118,6 +128,11 @@ private fun Account.toDto(): com.sales.app.data.remote.dto.AccountDto {
         country = country,
         state = state,
         taxNumber = taxNumber,
-        defaultTaxId = defaultTaxId
+        defaultTaxId = defaultTaxId,
+        enableDeliveryNotes = enableDeliveryNotes,
+        enableGrns = enableGrns,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        deletedAt = deletedAt
     )
 }

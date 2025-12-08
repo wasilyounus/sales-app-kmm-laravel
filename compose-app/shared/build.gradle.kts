@@ -1,11 +1,11 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.compose")
-    id("org.jetbrains.kotlin.plugin.compose") 
-    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
-    id("androidx.room") version "2.7.0-alpha01"
-    kotlin("plugin.serialization") version "2.0.21"
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 room {
@@ -116,28 +116,28 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 
                 // KMP Navigation & Lifecycle
-                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+                implementation(libs.navigation.compose)
+                implementation(libs.lifecycle.viewmodel)
+                implementation(libs.lifecycle.runtime)
 
                 // Coroutines
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+                implementation(libs.coroutines.core)
 
                 // DateTime
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+                implementation(libs.datetime)
 
                 // Ktor
-                implementation("io.ktor:ktor-client-core:3.0.0")
-                implementation("io.ktor:ktor-client-content-negotiation:3.0.0")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
-                implementation("io.ktor:ktor-client-logging:3.0.2")   // ← missing!
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.client.logging)
 
                 // Room
-                implementation("androidx.room:room-runtime:2.7.0-alpha01")
-                implementation("androidx.sqlite:sqlite-bundled:2.5.0-alpha01")
+                implementation(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
                 
                 // DataStore
-                implementation("androidx.datastore:datastore-preferences-core:1.1.0")
+                implementation(libs.datastore.preferences)
             }
         }
         
