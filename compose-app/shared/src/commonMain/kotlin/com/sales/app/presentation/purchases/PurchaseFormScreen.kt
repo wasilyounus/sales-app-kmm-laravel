@@ -201,7 +201,7 @@ fun PurchaseFormScreen(
                     OutlinedTextField(
                         value = uiState.invoiceNo,
                         onValueChange = { viewModel.onInvoiceNoChange(it) },
-                        label = { Text("Invoice No (Optional)") },
+                        label = { Text("Invoice No") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
