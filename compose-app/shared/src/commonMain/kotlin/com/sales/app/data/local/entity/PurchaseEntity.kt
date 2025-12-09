@@ -8,6 +8,8 @@ data class PurchaseEntity(
     @PrimaryKey val id: Int,
     val partyId: Int,
     val date: String,
+
+    val invoiceNo: String? = null,
     val accountId: Int,
     val createdAt: String,
     val updatedAt: String,

@@ -13,14 +13,16 @@ interface PurchaseRepository {
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int
+        accountId: Int,
+        invoiceNo: String? = null
     ): Result<Purchase>
     suspend fun updatePurchase(
         id: Int,
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int
+        accountId: Int,
+        invoiceNo: String? = null
     ): Result<Purchase>
     suspend fun deletePurchase(id: Int): Result<Unit>
 }

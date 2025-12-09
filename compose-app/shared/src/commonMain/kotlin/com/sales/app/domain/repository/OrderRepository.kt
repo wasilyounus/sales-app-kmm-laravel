@@ -13,14 +13,16 @@ interface OrderRepository {
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int
+        accountId: Int,
+        orderNo: String? = null
     ): Result<Order>
     suspend fun updateOrder(
         id: Int,
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int
+        accountId: Int,
+        orderNo: String? = null
     ): Result<Order>
     suspend fun deleteOrder(id: Int): Result<Unit>
 }

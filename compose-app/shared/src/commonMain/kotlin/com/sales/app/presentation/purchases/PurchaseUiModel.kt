@@ -2,6 +2,7 @@ package com.sales.app.presentation.purchases
 
 data class PurchaseUiModel(
     val id: Int,
+    val invoiceNo: String?,
     val partyName: String,
     val date: String,
     val itemsCount: Int,

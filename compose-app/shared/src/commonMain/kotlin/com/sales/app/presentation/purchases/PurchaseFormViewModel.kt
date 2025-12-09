@@ -23,6 +23,7 @@ data class PurchaseFormUiState(
     // Form fields
     val partyId: Int? = null,
     val date: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
+    val invoiceNo: String = "",
     val selectedItems: List<PurchaseItemUiModel> = emptyList(),
     
     // Validation
@@ -80,6 +81,7 @@ class PurchaseFormViewModel(
                         state.copy(
                             partyId = p.partyId,
                             date = p.date,
+                            invoiceNo = p.invoiceNo ?: "",
                             selectedItems = p.items.map { item ->
                                 val itemDetails = state.items.find { it.id == item.itemId }
                                 PurchaseItemUiModel(
@@ -103,6 +105,10 @@ class PurchaseFormViewModel(
     
     fun onDateChange(date: String) {
         _uiState.update { it.copy(date = date, isDateValid = true) }
+    }
+
+    fun onInvoiceNoChange(invoiceNo: String) {
+        _uiState.update { it.copy(invoiceNo = invoiceNo) }
     }
     
     fun onAddItem(item: Item, qty: Double, price: Double) {
@@ -174,7 +180,8 @@ class PurchaseFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId
+                    accountId = accountId,
+                    invoiceNo = state.invoiceNo.takeIf { it.isNotBlank() }
                 )
             } else {
                 updatePurchaseUseCase(
@@ -182,7 +189,8 @@ class PurchaseFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId
+                    accountId = accountId,
+                    invoiceNo = state.invoiceNo.takeIf { it.isNotBlank() }
                 )
             }
             

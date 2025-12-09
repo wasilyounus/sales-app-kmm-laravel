@@ -22,6 +22,7 @@ actual fun createDatabase(context: Any?): AppDatabase {
     )
     .setDriver(BundledSQLiteDriver())
     .setQueryCoroutineContext(kotlinx.coroutines.Dispatchers.Default) // Dispatchers.IO not available on Native? Use Default or custom
+    .fallbackToDestructiveMigration(true)
     .build()
 }
 

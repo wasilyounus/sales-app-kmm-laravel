@@ -23,6 +23,7 @@ data class OrderFormUiState(
     // Form fields
     val partyId: Int? = null,
     val date: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
+    val orderNo: String = "",
     val selectedItems: List<OrderItemUiModel> = emptyList(),
     
     // Validation
@@ -80,6 +81,7 @@ class OrderFormViewModel(
                         state.copy(
                             partyId = o.partyId,
                             date = o.date,
+                            orderNo = o.orderNo ?: "",
                             selectedItems = o.items.map { item ->
                                 val itemDetails = state.items.find { it.id == item.itemId }
                                 OrderItemUiModel(
@@ -102,6 +104,10 @@ class OrderFormViewModel(
     
     fun onDateChange(date: String) {
         _uiState.update { it.copy(date = date, isDateValid = true) }
+    }
+
+    fun onOrderNoChange(orderNo: String) {
+        _uiState.update { it.copy(orderNo = orderNo) }
     }
     
     fun onAddItem(item: Item, qty: Double, price: Double) {
@@ -171,7 +177,8 @@ class OrderFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId
+                    accountId = accountId,
+                    orderNo = state.orderNo.takeIf { it.isNotBlank() }
                 )
             } else {
                 updateOrderUseCase(
@@ -179,7 +186,8 @@ class OrderFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId
+                    accountId = accountId,
+                    orderNo = state.orderNo.takeIf { it.isNotBlank() }
                 )
             }
             

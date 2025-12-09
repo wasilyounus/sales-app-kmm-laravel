@@ -8,6 +8,8 @@ data class QuoteEntity(
     @PrimaryKey val id: Int,
     val partyId: Int,
     val date: String,
+
+    val quoteNo: String? = null,
     val accountId: Int,
     val logId: Int,
     val createdAt: String,

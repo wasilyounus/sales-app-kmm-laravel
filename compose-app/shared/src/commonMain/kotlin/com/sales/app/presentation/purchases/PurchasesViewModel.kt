@@ -27,6 +27,7 @@ class PurchasesViewModel(
                 val uiModels = purchases.map { purchase ->
                     PurchaseUiModel(
                         id = purchase.id,
+                        invoiceNo = purchase.invoiceNo,
                         partyName = "Party ${purchase.partyId}",
                         date = purchase.date,
                         itemsCount = purchase.items.size,

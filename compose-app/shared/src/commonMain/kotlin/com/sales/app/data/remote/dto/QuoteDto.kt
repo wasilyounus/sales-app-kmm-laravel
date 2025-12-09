@@ -9,6 +9,7 @@ data class QuoteDto(
     val date: String,
     val account_id: Int,
     val log_id: Int,
+    val quote_no: String? = null,
     val created_at: String? = null,
     val updated_at: String? = null,
     val deleted_at: String? = null,
@@ -34,6 +35,7 @@ data class QuoteItemDto(
 data class QuoteRequest(
     val party_id: Int,
     val date: String,
+    val quote_no: String? = null,
     val account_id: Int,
     val items: List<QuoteItemRequest>
 )

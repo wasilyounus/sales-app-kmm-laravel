@@ -121,6 +121,23 @@ fun QuoteFormScreen(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
+                    if (uiState.quoteNo.isNotEmpty()) {
+                        OutlinedTextField(
+                            value = uiState.quoteNo,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Quote No") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = false,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    
                     // Date Field
                     val datePickerState = rememberDatePickerState(
                         initialSelectedDateMillis = if (uiState.date.isNotEmpty()) {

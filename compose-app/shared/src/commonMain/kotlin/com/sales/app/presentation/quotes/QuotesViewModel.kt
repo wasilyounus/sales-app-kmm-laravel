@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 
 data class QuoteUiModel(
     val id: Int,
+    val quoteNo: String?,
     val partyName: String,
     val date: String,
     val amount: Double,
@@ -55,6 +56,7 @@ class QuotesViewModel(
                 quotes.map { quote ->
                     QuoteUiModel(
                         id = quote.id,
+                        quoteNo = quote.quoteNo,
                         partyName = partyMap[quote.partyId] ?: "Unknown Party",
                         date = quote.date,
                         amount = quote.items.sumOf { it.price * it.qty },

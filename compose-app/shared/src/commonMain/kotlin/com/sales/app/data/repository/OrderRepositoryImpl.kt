@@ -46,6 +46,7 @@ class OrderRepositoryImpl(
                         id = dto.id,
                         partyId = dto.party_id,
                         date = dto.date,
+                        orderNo = dto.order_no,
                         accountId = dto.account_id,
                         createdAt = dto.created_at ?: "",
                         updatedAt = dto.updated_at ?: "",
@@ -97,12 +98,14 @@ class OrderRepositoryImpl(
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int
+        accountId: Int,
+        orderNo: String?
     ): Result<Order> {
         return try {
             val request = OrderRequest(
                 party_id = partyId,
                 date = date,
+                order_no = orderNo,
                 account_id = accountId,
                 items = items
             )
@@ -114,6 +117,7 @@ class OrderRepositoryImpl(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    orderNo = dto.order_no,
                     accountId = dto.account_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -155,12 +159,14 @@ class OrderRepositoryImpl(
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int
+        accountId: Int,
+        orderNo: String?
     ): Result<Order> {
         return try {
             val request = OrderRequest(
                 party_id = partyId,
                 date = date,
+                order_no = orderNo,
                 account_id = accountId,
                 items = items
             )
@@ -172,6 +178,7 @@ class OrderRepositoryImpl(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    orderNo = dto.order_no,
                     accountId = dto.account_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -221,6 +228,7 @@ class OrderRepositoryImpl(
         id = id,
         partyId = partyId,
         date = date,
+        orderNo = orderNo,
         accountId = accountId,
         items = items
     )

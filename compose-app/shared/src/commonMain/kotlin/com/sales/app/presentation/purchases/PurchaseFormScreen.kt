@@ -194,6 +194,17 @@ fun PurchaseFormScreen(
                             DatePicker(state = datePickerState)
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Invoice No (Optional)
+                    OutlinedTextField(
+                        value = uiState.invoiceNo,
+                        onValueChange = { viewModel.onInvoiceNoChange(it) },
+                        label = { Text("Invoice No (Optional)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
                     
                     Spacer(modifier = Modifier.height(24.dp))
                     

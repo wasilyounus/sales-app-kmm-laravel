@@ -13,14 +13,16 @@ interface QuoteRepository {
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int
+        accountId: Int,
+        quoteNo: String? = null
     ): Result<Quote>
     suspend fun updateQuote(
         id: Int,
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int
+        accountId: Int,
+        quoteNo: String? = null
     ): Result<Quote>
     suspend fun deleteQuote(id: Int): Result<Unit>
 }

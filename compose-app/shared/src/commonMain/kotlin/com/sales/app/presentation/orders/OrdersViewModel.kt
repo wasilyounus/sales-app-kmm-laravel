@@ -27,6 +27,7 @@ class OrdersViewModel(
                 val uiModels = orders.map { order ->
                     OrderUiModel(
                         id = order.id,
+                        orderNo = order.orderNo,
                         partyName = "Party ${order.partyId}",
                         date = order.date,
                         itemsCount = order.items.size,

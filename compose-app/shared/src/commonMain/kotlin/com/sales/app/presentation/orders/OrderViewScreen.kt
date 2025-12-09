@@ -159,6 +159,14 @@ fun OrderViewScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
+                                    if (!order.orderNo.isNullOrBlank()) {
+                                        Text(
+                                            text = "Order No: ${order.orderNo}",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                    }
                                     Text(
                                         text = "Date: ${order.date}",
                                         style = MaterialTheme.typography.bodyLarge,

@@ -29,9 +29,10 @@ class CreateOrderUseCase(
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int
+        accountId: Int,
+        orderNo: String? = null
     ): Result<Order> {
-        return orderRepository.createOrder(partyId, date, items, accountId)
+        return orderRepository.createOrder(partyId, date, items, accountId, orderNo)
     }
 }
 
@@ -43,9 +44,10 @@ class UpdateOrderUseCase(
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int
+        accountId: Int,
+        orderNo: String? = null
     ): Result<Order> {
-        return orderRepository.updateOrder(id, partyId, date, items, accountId)
+        return orderRepository.updateOrder(id, partyId, date, items, accountId, orderNo)
     }
 }
 

@@ -195,6 +195,25 @@ fun OrderFormScreen(
                         }
                     }
                     
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    if (uiState.orderNo.isNotEmpty()) {
+                        OutlinedTextField(
+                            value = uiState.orderNo,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Order No") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = false,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    
                     Spacer(modifier = Modifier.height(24.dp))
                     
                     // Items Section

@@ -159,6 +159,14 @@ fun PurchaseViewScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
+                                    if (!purchase.invoiceNo.isNullOrBlank()) {
+                                        Text(
+                                            text = "Invoice No: ${purchase.invoiceNo}",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                    }
                                     Text(
                                         text = "Date: ${purchase.date}",
                                         style = MaterialTheme.typography.bodyLarge,

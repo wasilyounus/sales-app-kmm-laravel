@@ -8,6 +8,8 @@ data class OrderEntity(
     @PrimaryKey val id: Int,
     val partyId: Int,
     val date: String,
+
+    val orderNo: String? = null,
     val accountId: Int,
     val createdAt: String,
     val updatedAt: String,

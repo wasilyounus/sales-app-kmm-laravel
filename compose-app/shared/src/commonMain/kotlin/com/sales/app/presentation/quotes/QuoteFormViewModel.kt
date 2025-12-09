@@ -17,6 +17,7 @@ data class QuoteFormUiState(
     val error: String? = null,
     val partyId: Int? = null,
     val date: String = "",
+    val quoteNo: String = "", // Added quoteNo
     val items: List<QuoteItemUiModel> = emptyList(),
     val availableParties: List<Party> = emptyList(),
     val availableItems: List<Item> = emptyList(),
@@ -89,6 +90,7 @@ class QuoteFormViewModel(
                             formUiState = FormUiState.Update,
                             partyId = quote.partyId,
                             date = quote.date,
+                            quoteNo = quote.quoteNo ?: "",
                             items = quoteItems
                         )
                     }
@@ -153,20 +155,15 @@ class QuoteFormViewModel(
             }
 
             val result = if (state.formUiState is FormUiState.Update) {
-                // We need the ID for update, but it's not in the state directly, 
-                // we should probably store it or pass it.
-                // For now, let's assume we can't update without ID.
-                // I'll add quoteId to state or pass it.
-                // Actually, I should store quoteId in state.
-                // But wait, loadQuoteDetails sets FormUiState.Update.
-                // I'll add quoteId to QuoteFormUiState.
-                Result.Error("Update not fully implemented in ViewModel") // Placeholder
+                // Should not happen if UI calls updateQuote properly, but handle safe
+                 Result.Error("Use updateQuote for existing quotes")
             } else {
                 createQuoteUseCase(
                     partyId = state.partyId,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId
+                    accountId = accountId,
+                    quoteNo = state.quoteNo.takeIf { it.isNotBlank() }
                 )
             }
 
@@ -204,7 +201,8 @@ class QuoteFormViewModel(
                 partyId = state.partyId,
                 date = state.date,
                 items = itemsRequest,
-                accountId = accountId
+                accountId = accountId,
+                quoteNo = state.quoteNo.takeIf { it.isNotBlank() }
             )
 
             _uiState.update { it.copy(isSaving = false) }

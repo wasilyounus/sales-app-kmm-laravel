@@ -56,6 +56,7 @@ class PurchaseViewViewModel(
                     
                     val purchaseUiModel = PurchaseUiModel(
                         id = purchase.id,
+                        invoiceNo = purchase.invoiceNo,
                         partyName = partyName,
                         date = purchase.date,
                         amount = purchase.items.sumOf { it.price * it.qty }.toString(),

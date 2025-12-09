@@ -58,6 +58,7 @@ class QuoteViewViewModel(
                     
                     val quoteUiModel = QuoteUiModel(
                         id = quote.id,
+                        quoteNo = quote.quoteNo,
                         partyName = partyName,
                         date = quote.date,
                         amount = quote.items.sumOf { it.price * it.qty },

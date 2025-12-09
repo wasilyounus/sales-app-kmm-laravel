@@ -2,6 +2,7 @@ package com.sales.app.presentation.orders
 
 data class OrderUiModel(
     val id: Int,
+    val orderNo: String?,
     val partyName: String,
     val date: String,
     val itemsCount: Int,

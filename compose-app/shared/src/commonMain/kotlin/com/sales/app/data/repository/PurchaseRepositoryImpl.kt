@@ -46,6 +46,7 @@ class PurchaseRepositoryImpl(
                         id = dto.id,
                         partyId = dto.party_id,
                         date = dto.date,
+                        invoiceNo = dto.invoice_no,
                         accountId = dto.account_id,
                         createdAt = "",
                         updatedAt = "",
@@ -97,12 +98,14 @@ class PurchaseRepositoryImpl(
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int
+        accountId: Int,
+        invoiceNo: String?
     ): Result<Purchase> {
         return try {
             val request = PurchaseRequest(
                 party_id = partyId,
                 date = date,
+                invoice_no = invoiceNo,
                 account_id = accountId,
                 items = items
             )
@@ -114,6 +117,7 @@ class PurchaseRepositoryImpl(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    invoiceNo = dto.invoice_no,
                     accountId = dto.account_id,
                     createdAt = "",
                     updatedAt = "",
@@ -155,12 +159,14 @@ class PurchaseRepositoryImpl(
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int
+        accountId: Int,
+        invoiceNo: String?
     ): Result<Purchase> {
         return try {
             val request = PurchaseRequest(
                 party_id = partyId,
                 date = date,
+                invoice_no = invoiceNo,
                 account_id = accountId,
                 items = items
             )
@@ -172,6 +178,7 @@ class PurchaseRepositoryImpl(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    invoiceNo = dto.invoice_no,
                     accountId = dto.account_id,
                     createdAt = "",
                     updatedAt = "",
@@ -221,6 +228,7 @@ class PurchaseRepositoryImpl(
         id = id,
         partyId = partyId,
         date = date,
+        invoiceNo = invoiceNo,
         accountId = accountId,
         items = items
     )

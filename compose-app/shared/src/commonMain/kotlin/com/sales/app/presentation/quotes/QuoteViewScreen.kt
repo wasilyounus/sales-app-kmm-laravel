@@ -161,6 +161,14 @@ fun QuoteViewScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
+                                    if (!quote.quoteNo.isNullOrBlank()) {
+                                        Text(
+                                            text = "Quote No: ${quote.quoteNo}",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                    }
                                     Text(
                                         text = "Date: ${quote.date}",
                                         style = MaterialTheme.typography.bodyLarge,

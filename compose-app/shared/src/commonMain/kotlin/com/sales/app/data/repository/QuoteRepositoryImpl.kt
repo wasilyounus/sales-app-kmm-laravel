@@ -46,6 +46,7 @@ class QuoteRepositoryImpl(
                         id = dto.id,
                         partyId = dto.party_id,
                         date = dto.date,
+                        quoteNo = dto.quote_no,
                         accountId = dto.account_id,
                         logId = dto.log_id,
                         createdAt = dto.created_at ?: "", // Missing in DTO
@@ -98,12 +99,14 @@ class QuoteRepositoryImpl(
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int
+        accountId: Int,
+        quoteNo: String?
     ): Result<Quote> {
         return try {
             val request = QuoteRequest(
                 party_id = partyId,
                 date = date,
+                quote_no = quoteNo,
                 account_id = accountId,
                 items = items
             )
@@ -115,6 +118,7 @@ class QuoteRepositoryImpl(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    quoteNo = dto.quote_no,
                     accountId = dto.account_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
@@ -158,12 +162,14 @@ class QuoteRepositoryImpl(
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int
+        accountId: Int,
+        quoteNo: String?
     ): Result<Quote> {
         return try {
             val request = QuoteRequest(
                 party_id = partyId,
                 date = date,
+                quote_no = quoteNo,
                 account_id = accountId,
                 items = items
             )
@@ -175,6 +181,7 @@ class QuoteRepositoryImpl(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
+                    quoteNo = dto.quote_no,
                     accountId = dto.account_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
@@ -239,6 +246,7 @@ class QuoteRepositoryImpl(
         id = id,
         partyId = partyId,
         date = date,
+        quoteNo = quoteNo,
         accountId = accountId,
         items = items
     )

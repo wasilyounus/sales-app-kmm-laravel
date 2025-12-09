@@ -55,6 +55,7 @@ class OrderViewViewModel(
                     
                     val orderUiModel = OrderUiModel(
                         id = order.id,
+                        orderNo = order.orderNo,
                         partyName = partyName,
                         date = order.date,
                         amount = order.items.sumOf { it.price * it.qty }.toString(),

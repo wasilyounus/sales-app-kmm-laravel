@@ -29,9 +29,10 @@ class CreatePurchaseUseCase(
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int
+        accountId: Int,
+        invoiceNo: String? = null
     ): Result<Purchase> {
-        return purchaseRepository.createPurchase(partyId, date, items, accountId)
+        return purchaseRepository.createPurchase(partyId, date, items, accountId, invoiceNo)
     }
 }
 
@@ -43,9 +44,10 @@ class UpdatePurchaseUseCase(
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int
+        accountId: Int,
+        invoiceNo: String? = null
     ): Result<Purchase> {
-        return purchaseRepository.updatePurchase(id, partyId, date, items, accountId)
+        return purchaseRepository.updatePurchase(id, partyId, date, items, accountId, invoiceNo)
     }
 }
 

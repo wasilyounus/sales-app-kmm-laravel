@@ -29,9 +29,10 @@ class CreateQuoteUseCase(
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int
+        accountId: Int,
+        quoteNo: String? = null
     ): Result<Quote> {
-        return quoteRepository.createQuote(partyId, date, items, accountId)
+        return quoteRepository.createQuote(partyId, date, items, accountId, quoteNo)
     }
 }
 
@@ -43,9 +44,10 @@ class UpdateQuoteUseCase(
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int
+        accountId: Int,
+        quoteNo: String? = null
     ): Result<Quote> {
-        return quoteRepository.updateQuote(id, partyId, date, items, accountId)
+        return quoteRepository.updateQuote(id, partyId, date, items, accountId, quoteNo)
     }
 }
 
