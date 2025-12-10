@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class DeliveryNoteEntity(
     @PrimaryKey val id: Int,
     val saleId: Int,
-    val dnNumber: String?,
+    val dnNo: String?,
     val date: String,
     val vehicleNo: String?,
     val lrNo: String?,

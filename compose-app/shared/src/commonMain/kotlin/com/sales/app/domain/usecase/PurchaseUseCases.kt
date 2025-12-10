@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetPurchasesUseCase(
     private val purchaseRepository: PurchaseRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Purchase>> {
-        return purchaseRepository.getPurchasesByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Purchase>> {
+        return purchaseRepository.getPurchasesByAccount(companyId)
     }
 }
 
@@ -29,10 +29,10 @@ class CreatePurchaseUseCase(
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int,
+        companyId: Int,
         invoiceNo: String? = null
     ): Result<Purchase> {
-        return purchaseRepository.createPurchase(partyId, date, items, accountId, invoiceNo)
+        return purchaseRepository.createPurchase(partyId, date, items, companyId, invoiceNo)
     }
 }
 
@@ -44,10 +44,10 @@ class UpdatePurchaseUseCase(
         partyId: Int,
         date: String,
         items: List<PurchaseItemRequest>,
-        accountId: Int,
+        companyId: Int,
         invoiceNo: String? = null
     ): Result<Purchase> {
-        return purchaseRepository.updatePurchase(id, partyId, date, items, accountId, invoiceNo)
+        return purchaseRepository.updatePurchase(id, partyId, date, items, companyId, invoiceNo)
     }
 }
 
@@ -62,7 +62,7 @@ class DeletePurchaseUseCase(
 class SyncPurchasesUseCase(
     private val purchaseRepository: PurchaseRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return purchaseRepository.syncPurchases(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return purchaseRepository.syncPurchases(companyId)
     }
 }

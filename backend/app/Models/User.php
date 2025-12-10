@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'current_account_id',
+        'current_company_id',
     ];
 
     /**
@@ -50,35 +50,35 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all accounts assigned to this user
+     * Get all companies assigned to this user
      */
-    public function accounts()
+    public function companies()
     {
-        return $this->belongsToMany(Account::class, 'user_account_permissions')
+        return $this->belongsToMany(Company::class, 'user_company_permissions')
             ->withPivot('role')
             ->withTimestamps();
     }
 
     /**
-     * Check if user has any accounts assigned
+     * Check if user has any companies assigned
      */
-    public function hasAccounts(): bool
+    public function hasCompanies(): bool
     {
-        return $this->accounts()->exists();
+        return $this->companies()->exists();
     }
 
     /**
-     * Get accounts for selection (formatted)
+     * Get companies for selection (formatted)
      */
-    public function getAccountsForSelection()
+    public function getCompaniesForSelection()
     {
-        return $this->accounts()->get()->map(function ($account) {
+        return $this->companies()->get()->map(function ($company) {
             return [
-                'id' => $account->id,
-                'name' => $account->name,
-                'name_formatted' => $account->name_formatted,
-                'role' => $account->pivot->role ?? 'user',
-                'visibility' => $account->visibility ?? 'private',
+                'id' => $company->id,
+                'name' => $company->name,
+                'name_formatted' => $company->name_formatted,
+                'role' => $company->pivot->role ?? 'user',
+                'visibility' => $company->visibility ?? 'private',
             ];
         });
     }

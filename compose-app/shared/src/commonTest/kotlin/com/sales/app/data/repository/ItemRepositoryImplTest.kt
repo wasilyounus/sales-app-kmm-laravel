@@ -11,19 +11,22 @@ import io.mockk.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import com.sales.app.data.local.dao.UqcDao
 import kotlin.test.*
 
 class ItemRepositoryImplTest {
 
     private lateinit var itemDao: ItemDao
     private lateinit var apiService: ApiService
+    private lateinit var uqcDao: UqcDao
     private lateinit var repository: ItemRepositoryImpl
 
     @BeforeTest
     fun setup() {
         itemDao = mockk(relaxed = true)
         apiService = mockk(relaxed = true)
-        repository = ItemRepositoryImpl(apiService, itemDao)
+        uqcDao = mockk(relaxed = true)
+        repository = ItemRepositoryImpl(apiService, itemDao, uqcDao)
     }
 
     @AfterTest

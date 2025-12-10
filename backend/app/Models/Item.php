@@ -18,9 +18,10 @@ class Item extends Model
         'size',
         'uqc',
         'hsn',
-        'account_id',
+        'company_id',
         'log_id',
         'tax_id',
+        'price',
     ];
 
     public function tax()
@@ -28,9 +29,9 @@ class Item extends Model
         return $this->belongsTo(Tax::class);
     }
 
-    public function account()
+    public function company()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function stock()

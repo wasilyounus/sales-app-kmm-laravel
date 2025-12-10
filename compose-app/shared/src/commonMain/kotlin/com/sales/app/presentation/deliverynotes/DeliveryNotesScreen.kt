@@ -104,7 +104,7 @@ fun DeliveryNoteCard(deliveryNote: DeliveryNote) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = deliveryNote.dnNumber ?: "DN #${deliveryNote.id}",
+                    text = deliveryNote.dnNo ?: "DN #${deliveryNote.id}",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

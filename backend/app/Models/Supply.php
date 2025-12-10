@@ -17,7 +17,7 @@ class Supply extends Model
         'date',
         'place',
         'transport_gst',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -32,6 +32,6 @@ class Supply extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 }

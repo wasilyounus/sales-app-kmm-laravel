@@ -63,9 +63,9 @@ fun PurchaseViewScreen(
                                     subtitle = "Purchase No: ${purchase.id} | Date: ${purchase.date}",
                                     items = uiState.items.map { 
                                         val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
-                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                        UtilPrintItem(it.itemName, it.qty, it.price, total.toString())
                                     },
-                                    total = "%.2f".format(purchase.amount),
+                                    total = purchase.amount.toString(),
                                     meta = mapOf("Party" to purchase.partyName, "Status" to "Received")
                                 )
                                 getPlatformShare().print(data)
@@ -80,9 +80,9 @@ fun PurchaseViewScreen(
                                     subtitle = "Purchase No: ${purchase.id} | Date: ${purchase.date}",
                                     items = uiState.items.map { 
                                         val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
-                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                        UtilPrintItem(it.itemName, it.qty, it.price, total.toString())
                                     },
-                                    total = "%.2f".format(purchase.amount),
+                                    total = purchase.amount.toString(),
                                     meta = mapOf("Party" to purchase.partyName, "Status" to "Received")
                                 )
                                 getPlatformShare().sharePdf(data)
@@ -134,10 +134,10 @@ fun PurchaseViewScreen(
                                     name = it.itemName,
                                     qty = it.qty,
                                     price = it.price,
-                                    total = "%.2f".format(total)
+                                    total = total.toString()
                                 )
                             },
-                            totalAmount = "₹${"%.2f".format(purchase.amount)}"
+                            totalAmount = "₹${purchase.amount}"
                         )
                     } else {
                         Column(
@@ -194,7 +194,7 @@ fun PurchaseViewScreen(
                                         supportingContent = { Text("Qty: ${item.qty} x ₹${item.price}") },
                                         trailingContent = { 
                                             val total = (item.qty.toDoubleOrNull() ?: 0.0) * (item.price.toDoubleOrNull() ?: 0.0)
-                                            Text("₹${"%.2f".format(total)}", fontWeight = FontWeight.Bold) 
+                                            Text("₹$total", fontWeight = FontWeight.Bold) 
                                         }
                                     )
                                     HorizontalDivider()
@@ -222,7 +222,7 @@ fun PurchaseViewScreen(
                                         color = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                     Text(
-                                        text = "₹${"%.2f".format(purchase.amount)}",
+                                        text = "₹${purchase.amount}",
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer

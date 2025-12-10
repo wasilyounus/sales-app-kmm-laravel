@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetSalesUseCase(
     private val saleRepository: SaleRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Sale>> {
-        return saleRepository.getSalesByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Sale>> {
+        return saleRepository.getSalesByAccount(companyId)
     }
 }
 
@@ -31,9 +31,9 @@ class CreateSaleUseCase(
         invoiceNo: String,
         taxId: Int?,
         items: List<SaleItemRequest>,
-        accountId: Int
+        companyId: Int
     ): Result<Sale> {
-        return saleRepository.createSale(partyId, date, invoiceNo, taxId, items, accountId)
+        return saleRepository.createSale(partyId, date, invoiceNo, taxId, items, companyId)
     }
 }
 
@@ -47,9 +47,9 @@ class UpdateSaleUseCase(
         invoiceNo: String,
         taxId: Int?,
         items: List<SaleItemRequest>,
-        accountId: Int
+        companyId: Int
     ): Result<Sale> {
-        return saleRepository.updateSale(id, partyId, date, invoiceNo, taxId, items, accountId)
+        return saleRepository.updateSale(id, partyId, date, invoiceNo, taxId, items, companyId)
     }
 }
 
@@ -64,7 +64,7 @@ class DeleteSaleUseCase(
 class SyncSalesUseCase(
     private val saleRepository: SaleRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return saleRepository.syncSales(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return saleRepository.syncSales(companyId)
     }
 }

@@ -35,27 +35,51 @@ echo ""
 # ==========================================
 # 2. Target Selection
 # ==========================================
-
+echo ""
 echo "Select Target to Run:"
-echo "1) Desktop"
-echo "2) Android"
-echo "3) iOS"
-read -p "Enter choice [1-3]: " TARGET_CHOICE
+echo "1) Web Only (Backend + Frontend)"
+echo "2) Desktop"
+echo "3) Android"
+echo "4) iOS"
+echo ""
+echo -n "Enter choice [1-4] (default: 1): "
+read -t 3 choice
 
-case $TARGET_CHOICE in
+# Default to option 1 (Web Only) if no input or timeout
+if [ -z "$choice" ]; then
+    choice=1
+    echo "1 (timeout - using Web Only)"
+fi
+
+case $choice in
     1)
-        TARGET="desktop"
-        GRADLE_TASK=":desktopApp:run"
+        target="web"
+        echo ""
+        echo "🚀 Starting Backend Services (web only)..."
+        echo "   (Press Ctrl+C to stop all)"
         ;;
     2)
-        TARGET="android"
-        GRADLE_TASK=":androidApp:installDebug"
-        echo "⚠️  Note: Android target will install the app. Ensure an emulator or device is connected."
+        target="desktop"
+        GRADLE_TASK=":desktopApp:run"
+        echo ""
+        echo "🚀 Starting Services & App (desktop)..."
+        echo "   (Press Ctrl+C to stop all)"
         ;;
     3)
-        TARGET="ios"
+        target="android"
+        GRADLE_TASK=":androidApp:installDebug"
+        echo "⚠️  Note: Android target will install the app. Ensure an emulator or device is connected."
+        echo ""
+        echo "🚀 Starting Services & App (android)..."
+        echo "   (Press Ctrl+C to stop all)"
+        ;;
+    4)
+        target="ios"
         GRADLE_TASK=""
         echo "⚠️  Note: iOS target will open Xcode. Run the app from there."
+        echo ""
+        echo "🚀 Starting Services & App (ios)..."
+        echo "   (Press Ctrl+C to stop all)"
         ;;
     *)
         echo "❌ Invalid choice"
@@ -64,7 +88,6 @@ case $TARGET_CHOICE in
 esac
 
 echo ""
-echo "🚀 Starting Services & App ($TARGET)..."
 echo "   (Press Ctrl+C to stop all)"
 echo ""
 
@@ -87,11 +110,17 @@ echo "🐘 Running migrations and seeds..."
 
 # Run npm run dev
 echo "📦 Starting npm run dev (logs -> backend/npm.log)..."
-(cd backend && npm run dev > npm.log 2>&1) &
+pushd backend > /dev/null
+npm run dev > npm.log 2>&1 &
+NPM_PID=$!
+popd > /dev/null
 
 # Run php artisan serve
 echo "🐘 Starting Laravel Server (${API_HOST}:${API_PORT}) (logs -> backend/laravel.log)..."
-(cd backend && php artisan serve --host=${API_HOST} --port=${API_PORT} > laravel.log 2>&1) &
+pushd backend > /dev/null
+php artisan serve --host=${API_HOST} --port=${API_PORT} > laravel.log 2>&1 &
+LARAVEL_PID=$!
+popd > /dev/null
 
 # Wait a moment for services to spin up
 sleep 3
@@ -100,7 +129,16 @@ sleep 3
 # 4. Run App
 # ==========================================
 
-if [ "$TARGET" == "ios" ]; then
+if [ "$target" == "web" ]; then
+    echo "✅ Backend services running (web only mode)"
+    echo "   Laravel: http://${API_HOST}:${API_PORT}"
+    echo "   Press Ctrl+C to stop services."
+    echo ""
+    # Keep script running indefinitely until Ctrl+C
+    while true; do
+        sleep 1
+    done
+elif [ "$target" == "ios" ]; then
     echo "🍎 Opening iOS Project in Xcode..."
     open compose-app/iosApp/iosApp.xcodeproj
     echo "✅ Xcode opened. Services are running in background."
@@ -113,7 +151,7 @@ else
     ./gradlew $GRADLE_TASK
 
     # Keep script running if gradle finishes (e.g. installDebug) so services stay up
-    if [ "$TARGET" == "android" ]; then
+    if [ "$target" == "android" ]; then
         echo "✅ App Installed. Services are still running."
         echo "   Press Ctrl+C to stop services."
         wait

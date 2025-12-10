@@ -207,3 +207,19 @@ android {
         jvmToolchain(17)
     }
 }
+
+
+
+
+afterEvaluate {
+    val generateTask = tasks.findByName("generateBuildConfig")
+    if (generateTask != null) {
+        tasks.configureEach {
+            if (name == "compileCommonMainKotlinMetadata" || 
+                name == "kspReleaseKotlinAndroid" || 
+                name == "kspDebugKotlinAndroid") {
+                dependsOn(generateTask)
+            }
+        }
+    }
+}

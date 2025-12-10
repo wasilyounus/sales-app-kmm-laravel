@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetInventorySummaryUseCase(
     private val repository: InventoryRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<InventorySummary>> {
-        return repository.getInventorySummary(accountId)
+    operator fun invoke(companyId: Int): Flow<List<InventorySummary>> {
+        return repository.getInventorySummary(companyId)
     }
 }
 
@@ -30,8 +30,8 @@ class AdjustStockUseCase(
         qty: Double,
         type: String,
         reason: String,
-        accountId: Int
+        companyId: Int
     ): Result<Unit> {
-        return repository.adjustStock(itemId, qty, type, reason, accountId)
+        return repository.adjustStock(itemId, qty, type, reason, companyId)
     }
 }

@@ -13,12 +13,12 @@ class DeliveryNote extends Model
 
     protected $fillable = [
         'sale_id',
-        'dn_number',
+        'dn_no',
         'date',
         'vehicle_no',
         'lr_no',
         'notes',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -27,30 +27,46 @@ class DeliveryNote extends Model
     ];
 
     /**
-     * Decrease stock for all items in this delivery note
+     * Adjust stock when delivery note is created (decrease stock)
      */
-    public function adjustStockDecrease()
+    public function adjustStock()
     {
+        if (!$this->location_id) {
+            \Log::warning("DeliveryNote #{$this->id} has no location_id, skipping stock adjustment");
+            return;
+        }
+
         foreach ($this->items as $item) {
             $stock = Stock::firstOrCreate(
-                ['item_id' => $item->item_id, 'account_id' => $this->account_id],
-                ['count' => 0, 'log_id' => $this->log_id]
+                [
+                    'item_id' => $item->item_id,
+                    'location_id' => $this->location_id,
+                ],
+                [
+                    'quantity' => 0,
+                    'company_id' => $this->company_id,
+                ]
             );
-            $stock->decrement('count', $item->quantity);
+
+            $stock->decrement('quantity', $item->quantity);
         }
     }
 
     /**
-     * Reverse stock adjustment (for deletion)
+     * Reverse stock adjustment (for deletion) (increase stock back)
      */
     public function reverseStockAdjustment()
     {
+        if (!$this->location_id) {
+            return;
+        }
+
         foreach ($this->items as $item) {
             $stock = Stock::where('item_id', $item->item_id)
-                ->where('account_id', $this->account_id)
+                ->where('location_id', $this->location_id)
                 ->first();
             if ($stock) {
-                $stock->increment('count', $item->quantity);
+                $stock->increment('quantity', $item->quantity);
             }
         }
     }
@@ -67,15 +83,15 @@ class DeliveryNote extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 
     /**
      * Generate next DN number for account
      */
-    public static function generateNumber($accountId)
+    public static function generateNumber($companyId)
     {
-        $count = self::where('account_id', $accountId)->count() + 1;
+        $count = self::where('company_id', $companyId)->count() + 1;
         return 'DN-' . str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 }

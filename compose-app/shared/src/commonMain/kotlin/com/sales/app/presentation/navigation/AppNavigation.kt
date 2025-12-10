@@ -26,7 +26,7 @@ import com.sales.app.presentation.purchases.PurchasesScreen
 import com.sales.app.presentation.purchases.PurchaseFormScreen
 import com.sales.app.presentation.inventory.InventoryScreen
 import com.sales.app.presentation.sync.SyncScreen
-import com.sales.app.presentation.settings.AccountSettingsScreen
+import com.sales.app.presentation.settings.CompanySettingsScreen
 import com.sales.app.presentation.deliverynotes.DeliveryNotesScreen
 import com.sales.app.presentation.grns.GrnsScreen
 
@@ -87,7 +87,7 @@ fun AppNavigation(
                 onNavigateToInventory = { navController.navigate(Inventory) },
                 onNavigateToSync = { navController.navigate(Settings) },
                 onNavigateToTransfers = { /* TODO: Implement transfers screen */ },
-                onNavigateToAccountSettings = { navController.navigate(AccountSettings) },
+                onNavigateToCompanySettings = { navController.navigate(CompanySettings) },
                 onNavigateToPayments = { navController.navigate(Payments) },
                 onNavigateToPriceLists = { navController.navigate(PriceLists) },
                 onNavigateToDeliveryNotes = { navController.navigate(DeliveryNotes) },
@@ -366,9 +366,9 @@ fun AppNavigation(
             )
         }
         
-        composable<AccountSettings> {
-            AccountSettingsScreen(
-                viewModel = viewModel { appContainer.createAccountSettingsViewModel() },
+        composable<CompanySettings> {
+            CompanySettingsScreen(
+                viewModel = viewModel { appContainer.createCompanySettingsViewModel() },
                 accountId = 1,
                 onNavigateBack = { navController.popBackStack() }
             )

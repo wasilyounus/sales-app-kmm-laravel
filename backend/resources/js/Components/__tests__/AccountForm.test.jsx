@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import AccountForm from '../AccountForm';
+import CompanyForm from '../CompanyForm';
 
-describe('AccountForm', () => {
+describe('CompanyForm', () => {
     const mockAccount = {
         id: 1,
         name: 'Test Account',
@@ -25,7 +25,7 @@ describe('AccountForm', () => {
 
     it('renders tax number field', () => {
         render(
-            <AccountForm 
+            <CompanyForm 
                 account={mockAccount} 
                 taxes={mockTaxes}
                 onSuccess={() => {}}

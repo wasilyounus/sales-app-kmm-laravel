@@ -66,7 +66,7 @@ class PurchaseController extends Controller
             }
 
             // Auto-create GRN if enabled
-            $account = \App\Models\Account::find($validated['account_id']);
+            $account = \App\Models\Company::find($validated['account_id']);
             if (!$account->enable_grns) {
                 // Determine GRN Number (using helper if available or similar logic)
                 // Assuming Grn::generateNumber mirrors DeliveryNote::generateNumber
@@ -153,7 +153,7 @@ class PurchaseController extends Controller
             }
 
             // Auto-update GRN if enabled
-            $account = \App\Models\Account::find($purchase->account_id);
+            $account = \App\Models\Company::find($purchase->account_id);
             if (!$account->enable_grns) {
                 // Find existing GRN (1-to-1 assumption for auto mode)
                 $grn = \App\Models\Grn::where('purchase_id', $purchase->id)->first();
@@ -221,7 +221,7 @@ class PurchaseController extends Controller
         DB::beginTransaction();
         try {
             // Auto-delete GRN check
-            $account = \App\Models\Account::find($purchase->account_id);
+            $account = \App\Models\Company::find($purchase->account_id);
             if (!$account->enable_grns) {
                 $grns = \App\Models\Grn::where('purchase_id', $purchase->id)->get();
                 foreach ($grns as $grn) {

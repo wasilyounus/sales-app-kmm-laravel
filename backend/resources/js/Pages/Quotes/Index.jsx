@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Badge } from "@/Components/ui/badge";
-import { 
+import {
     Search, Plus, FileText, Calendar, DollarSign, Edit, Trash2, X
 } from 'lucide-react';
 import { debounce } from 'lodash';
@@ -101,7 +101,7 @@ export default function Index({ quotes, parties, items, taxes, stats, filters, t
     const updateItem = (index, field, value) => {
         const newItems = [...data.items];
         newItems[index][field] = value;
-        
+
         // Auto-fill tax when item is selected
         if (field === 'item_id') {
             const selectedItem = items.find(i => i.id.toString() === value);
@@ -109,7 +109,7 @@ export default function Index({ quotes, parties, items, taxes, stats, filters, t
                 newItems[index].tax_id = selectedItem.tax_id.toString();
             }
         }
-        
+
         setData('items', newItems);
     };
 
@@ -240,7 +240,10 @@ export default function Index({ quotes, parties, items, taxes, stats, filters, t
                             ) : (
                                 quotes.data.map((quote) => (
                                     <tr key={quote.id} className="bg-white hover:bg-gray-50 group">
-                                        <td className="px-6 py-4 font-medium text-gray-900">#{quote.id}</td>
+                                        <td className="px-6 py-4 font-medium text-gray-900">
+                                            #{quote.id}
+                                            {quote.quote_no && <div className="text-xs text-gray-500">{quote.quote_no}</div>}
+                                        </td>
                                         <td className="px-6 py-4 text-gray-900">{quote.party_name}</td>
                                         <td className="px-6 py-4 text-gray-500">{quote.date}</td>
                                         <td className="px-6 py-4 text-gray-500">{quote.items_count} items</td>
@@ -269,7 +272,8 @@ export default function Index({ quotes, parties, items, taxes, stats, filters, t
                             <div className="flex justify-between items-start mb-3">
                                 <div>
                                     <p className="font-bold text-gray-900">#{quote.id}</p>
-                                    <p className="text-sm text-gray-500">{quote.party_name}</p>
+                                    {quote.quote_no && <p className="text-xs text-gray-500">{quote.quote_no}</p>}
+                                    <p className="text-sm text-gray-500 mt-1">{quote.party_name}</p>
                                 </div>
                                 <Badge variant="outline" className="bg-violet-100 text-violet-700">{quote.items_count} items</Badge>
                             </div>
@@ -320,8 +324,8 @@ export default function Index({ quotes, parties, items, taxes, stats, filters, t
                             <div className="p-4 bg-violet-50 rounded-lg border border-violet-200">
                                 <div className="space-y-2">
                                     <Label>Tax for all items</Label>
-                                    <Select 
-                                        value={data.tax_id || "none"} 
+                                    <Select
+                                        value={data.tax_id || "none"}
                                         onValueChange={(value) => {
                                             const newTaxId = value === 'none' ? '' : value;
                                             setData('tax_id', newTaxId);

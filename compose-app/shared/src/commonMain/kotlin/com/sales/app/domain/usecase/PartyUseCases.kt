@@ -9,19 +9,19 @@ import com.sales.app.data.remote.dto.AddressRequest
 class GetPartiesUseCase(
     private val partyRepository: PartyRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Party>> {
-        return partyRepository.getPartiesByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Party>> {
+        return partyRepository.getPartiesByAccount(companyId)
     }
 }
 
 class SearchPartiesUseCase(
     private val partyRepository: PartyRepository
 ) {
-    operator fun invoke(accountId: Int, query: String): Flow<List<Party>> {
+    operator fun invoke(companyId: Int, query: String): Flow<List<Party>> {
         return if (query.isBlank()) {
-            partyRepository.getPartiesByAccount(accountId)
+            partyRepository.getPartiesByAccount(companyId)
         } else {
-            partyRepository.searchParties(accountId, query)
+            partyRepository.searchParties(companyId, query)
         }
     }
 }
@@ -37,9 +37,9 @@ class CreatePartyUseCase(
         phone: String?,
         email: String?,
         addresses: List<AddressRequest>,
-        accountId: Int
+        companyId: Int
     ): Result<Party> {
-        return partyRepository.createParty(name, taxNumber, phone, email, addresses, accountId)
+        return partyRepository.createParty(name, taxNumber, phone, email, addresses, companyId)
     }
 }
 
@@ -53,16 +53,16 @@ class UpdatePartyUseCase(
         phone: String?,
         email: String?,
         addresses: List<AddressRequest>,
-        accountId: Int
+        companyId: Int
     ): Result<Party> {
-        return partyRepository.updateParty(id, name, taxNumber, phone, email, addresses, accountId)
+        return partyRepository.updateParty(id, name, taxNumber, phone, email, addresses, companyId)
     }
 }
 
 class GetPartyByIdUseCase(
     private val partyRepository: PartyRepository
 ) {
-    operator fun invoke(accountId: Int, partyId: Int): Flow<Party?> {
-        return partyRepository.getPartyById(accountId, partyId)
+    operator fun invoke(companyId: Int, partyId: Int): Flow<Party?> {
+        return partyRepository.getPartyById(companyId, partyId)
     }
 }

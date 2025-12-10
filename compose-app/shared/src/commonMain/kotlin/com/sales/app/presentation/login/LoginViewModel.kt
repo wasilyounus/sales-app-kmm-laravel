@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sales.app.data.local.AccountPreferences
 import com.sales.app.data.remote.ApiService
-import com.sales.app.data.remote.dto.AccountSelectionDto
+import com.sales.app.data.remote.dto.CompanySelectionDto
 import com.sales.app.domain.model.User
 import com.sales.app.domain.usecase.LoginUseCase
 import com.sales.app.util.Result
@@ -19,8 +19,8 @@ data class LoginUiState(
     val user: User? = null,
     val error: String? = null,
     val isSuccess: Boolean = false,
-    val showAccountSelection: Boolean = false,
-    val accounts: List<AccountSelectionDto> = emptyList(),
+    val showCompanySelection: Boolean = false,
+    val accounts: List<CompanySelectionDto> = emptyList(),
     val noAccountsError: Boolean = false
 )
 
@@ -87,7 +87,7 @@ class LoginViewModel(
                 } else {
                     _uiState.update {
                         it.copy(
-                            showAccountSelection = true,
+                            showCompanySelection = true,
                             accounts = accounts
                         )
                     }
@@ -113,7 +113,7 @@ class LoginViewModel(
                 
                 _uiState.update {
                     it.copy(
-                        showAccountSelection = false,
+                        showCompanySelection = false,
                         isSuccess = true
                     )
                 }
@@ -131,7 +131,7 @@ class LoginViewModel(
         _uiState.update { it.copy(error = null) }
     }
     
-    fun dismissAccountSelection() {
-        _uiState.update { it.copy(showAccountSelection = false) }
+    fun dismissCompanySelection() {
+        _uiState.update { it.copy(showCompanySelection = false) }
     }
 }

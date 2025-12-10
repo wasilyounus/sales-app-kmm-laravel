@@ -10,10 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import com.sales.app.util.TimeProvider
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+@OptIn(kotlin.time.ExperimentalTime::class)
 class PaymentFormViewModel(
     private val paymentRepository: PaymentRepository,
     private val partyRepository: PartyRepository
@@ -46,7 +47,7 @@ class PaymentFormViewModel(
     ) {
         viewModelScope.launch {
             _isLoading.value = true
-            val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+            val today = TimeProvider.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
             
             // Determine codes based on type
             // Received: Debit Party, Credit Cash (0)

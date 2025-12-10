@@ -8,7 +8,7 @@ import com.sales.app.data.local.entity.*
 @Database(
     entities = [
         UserEntity::class,
-        AccountEntity::class,
+        CompanyEntity::class,
         ItemEntity::class,
         PartyEntity::class,
         AddressEntity::class,
@@ -37,7 +37,7 @@ import com.sales.app.data.local.entity.*
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-    abstract fun accountDao(): AccountDao
+    abstract fun accountDao(): CompanyDao
     abstract fun itemDao(): ItemDao
     abstract fun partyDao(): PartyDao
     abstract fun quoteDao(): QuoteDao

@@ -13,10 +13,11 @@ class Purchase extends Model
 
     protected $fillable = [
         'party_id',
+        'location_id',
         'tax_id',
         'date',
         'invoice_no',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -36,7 +37,54 @@ class Purchase extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
+    }
+
+    public function transport()
+    {
+        return $this->hasOne(Transport::class);
+    }
+
+    public function journalEntry()
+    {
+        return $this->morphOne(JournalEntry::class, 'source', 'source_type', 'source_id');
+    }
+
+    // ========== Computed Attributes ==========
+
+    public function getSubtotalAttribute()
+    {
+        return $this->items()->sum(\Illuminate\Support\Facades\DB::raw('quantity * price'));
+    }
+
+    public function getTaxAmountAttribute()
+    {
+        if (!$this->tax_id) {
+            return 0;
+        }
+        $tax = $this->tax;
+        return $this->subtotal * ($tax->rate / 100);
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->subtotal + $this->tax_amount;
+    }
+
+    // ========== Events ==========
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($purchase) {
+            // Auto-create journal entry for this purchase
+            try {
+                app(\App\Services\JournalEntryService::class)->createFromPurchase($purchase);
+            } catch (\Exception $e) {
+                \Log::error("Failed to create journal entry for purchase #{$purchase->id}: " . $e->getMessage());
+            }
+        });
     }
 
     public function items()

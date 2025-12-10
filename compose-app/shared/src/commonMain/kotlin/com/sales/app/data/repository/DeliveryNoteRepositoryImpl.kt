@@ -48,7 +48,7 @@ class DeliveryNoteRepositoryImpl(
                 DeliveryNoteEntity(
                     id = dto.id,
                     saleId = dto.sale_id,
-                    dnNumber = dto.dn_number,
+                    dnNo = dto.dn_no,
                     date = dto.date,
                     vehicleNo = dto.vehicle_no,
                     lrNo = dto.lr_no,
@@ -109,7 +109,7 @@ class DeliveryNoteRepositoryImpl(
             val entity = DeliveryNoteEntity(
                 id = dto.id,
                 saleId = dto.sale_id,
-                dnNumber = dto.dn_number,
+                dnNo = dto.dn_no,
                 date = dto.date,
                 vehicleNo = dto.vehicle_no,
                 lrNo = dto.lr_no,
@@ -168,7 +168,7 @@ class DeliveryNoteRepositoryImpl(
             val entity = DeliveryNoteEntity(
                 id = dto.id,
                 saleId = dto.sale_id,
-                dnNumber = dto.dn_number,
+                dnNo = dto.dn_no,
                 date = dto.date,
                 vehicleNo = dto.vehicle_no,
                 lrNo = dto.lr_no,
@@ -217,7 +217,7 @@ class DeliveryNoteRepositoryImpl(
     private fun DeliveryNoteEntity.toDomainModel(items: List<DeliveryNoteItem> = emptyList()) = DeliveryNote(
         id = id,
         saleId = saleId,
-        dnNumber = dnNumber,
+        dnNo = dnNo,
         date = date,
         vehicleNo = vehicleNo,
         lrNo = lrNo,

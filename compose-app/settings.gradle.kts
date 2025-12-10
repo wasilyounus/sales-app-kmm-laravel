@@ -33,7 +33,8 @@ pluginManagement {
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
+    // Commented out due to Gradle cache issues - not essential for build
+    // id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
 }
 
 dependencyResolutionManagement {

@@ -15,7 +15,7 @@ class OrderItem extends Model
         'price',
         'qty',
         'tax_id',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -36,6 +36,6 @@ class OrderItem extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 }

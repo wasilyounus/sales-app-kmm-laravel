@@ -1,3 +1,4 @@
+@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
 package com.sales.app.di
 
 import androidx.datastore.core.DataStore
@@ -13,12 +14,15 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okio.Path.Companion.toPath
 import platform.Foundation.*
-import io.ktor.client.plugins.defaultrequest.*
+import io.ktor.client.plugins.DefaultRequest
+
+import com.sales.app.data.local.getDatabaseFactory
 
 actual fun createDatabase(context: Any?): AppDatabase {
     val dbFilePath = NSHomeDirectory() + "/sales_app.db"
     return Room.databaseBuilder<AppDatabase>(
-        name = dbFilePath
+        name = dbFilePath,
+        factory = { getDatabaseFactory()() }
     )
     .setDriver(BundledSQLiteDriver())
     .setQueryCoroutineContext(kotlinx.coroutines.Dispatchers.Default) // Dispatchers.IO not available on Native? Use Default or custom

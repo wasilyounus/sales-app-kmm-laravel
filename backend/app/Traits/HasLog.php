@@ -28,10 +28,10 @@ trait HasLog
     protected function recordLog($action)
     {
         $user = Auth::user();
-        
-        $accountId = null;
-        if (isset($this->account_id)) {
-            $accountId = $this->account_id;
+
+        $companyId = null;
+        if (isset($this->company_id)) {
+            $companyId = $this->company_id;
         }
 
         $log = Log::create([
@@ -39,13 +39,16 @@ trait HasLog
             'model' => static::class,
             'model_id' => $this->id,
             'user_id' => $user ? $user->id : null,
-            'account_id' => $accountId,
+            'company_id' => $companyId,
             'data' => $this->toArray(),
         ]);
 
         if ($action !== 'delete' || method_exists($this, 'trashed')) {
-             $this->log_id = $log->id;
-             $this->saveQuietly();
+            // Only set log_id if the model has that column
+            if (in_array('log_id', $this->getFillable()) || $this->hasAttribute('log_id') || \Schema::hasColumn($this->getTable(), 'log_id')) {
+                $this->log_id = $log->id;
+                $this->saveQuietly();
+            }
         }
     }
 }

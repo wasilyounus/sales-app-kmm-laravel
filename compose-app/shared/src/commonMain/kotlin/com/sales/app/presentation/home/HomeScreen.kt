@@ -38,7 +38,7 @@ fun HomeScreen(
     onNavigateToSales: () -> Unit,
     onNavigateToPurchases: () -> Unit,
     onNavigateToTransfers: () -> Unit,
-    onNavigateToAccountSettings: () -> Unit = {},
+    onNavigateToCompanySettings: () -> Unit = {},
     onNavigateToDeliveryNotes: () -> Unit = {},
     onNavigateToGrns: () -> Unit = {},
     viewModel: HomeViewModel
@@ -96,7 +96,7 @@ fun HomeScreen(
                 onNavigateToSales = onNavigateToSales,
                 onNavigateToPurchases = onNavigateToPurchases,
                 onNavigateToTransfers = onNavigateToTransfers,
-                onNavigateToAccountSettings = onNavigateToAccountSettings,
+                onNavigateToCompanySettings = onNavigateToCompanySettings,
                 onNavigateToDeliveryNotes = onNavigateToDeliveryNotes,
                 onNavigateToGrns = onNavigateToGrns
             )
@@ -116,7 +116,7 @@ fun HomeScreen(
                 onNavigateToSales = onNavigateToSales,
                 onNavigateToPurchases = onNavigateToPurchases,
                 onNavigateToTransfers = onNavigateToTransfers,
-                onNavigateToAccountSettings = onNavigateToAccountSettings,
+                onNavigateToCompanySettings = onNavigateToCompanySettings,
                 onNavigateToDeliveryNotes = onNavigateToDeliveryNotes,
                 onNavigateToGrns = onNavigateToGrns
             )
@@ -140,7 +140,7 @@ private fun DesktopHomeLayout(
     onNavigateToSales: () -> Unit,
     onNavigateToPurchases: () -> Unit,
     onNavigateToTransfers: () -> Unit,
-    onNavigateToAccountSettings: () -> Unit,
+    onNavigateToCompanySettings: () -> Unit,
     onNavigateToDeliveryNotes: () -> Unit,
     onNavigateToGrns: () -> Unit
 ) {
@@ -220,7 +220,7 @@ private fun DesktopHomeLayout(
                 title = "System",
                 modules = listOf(
                     ModuleData("Sync", "Synchronize with server", Icons.Default.Sync, Color(0xFF5F6368), true, onNavigateToSync),
-                    ModuleData("Account Settings", "Manage account settings", Icons.Default.Settings, Color(0xFF78909C), true, onNavigateToAccountSettings),
+                    ModuleData("Account Settings", "Manage account settings", Icons.Default.Settings, Color(0xFF78909C), true, onNavigateToCompanySettings),
                     ModuleData("Updates", "Check for updates", Icons.Default.Update, Color(0xFF90A4AE), false) {}
                 )
             )
@@ -244,7 +244,7 @@ private fun MobileHomeLayout(
     onNavigateToSales: () -> Unit,
     onNavigateToPurchases: () -> Unit,
     onNavigateToTransfers: () -> Unit,
-    onNavigateToAccountSettings: () -> Unit,
+    onNavigateToCompanySettings: () -> Unit,
     onNavigateToDeliveryNotes: () -> Unit,
     onNavigateToGrns: () -> Unit
 ) {
@@ -308,7 +308,7 @@ private fun MobileHomeLayout(
             title = "System",
             modules = listOf(
                 ModuleData("Sync", "Synchronize with server", Icons.Default.Sync, Color(0xFF5F6368), true, onNavigateToSync),
-                ModuleData("Account Settings", "Manage account settings", Icons.Default.Settings, Color(0xFF78909C), true, onNavigateToAccountSettings),
+                ModuleData("Account Settings", "Manage account settings", Icons.Default.Settings, Color(0xFF78909C), true, onNavigateToCompanySettings),
                 ModuleData("Updates", "Check for updates", Icons.Default.Update, Color(0xFF90A4AE), false) {}
             )
         )

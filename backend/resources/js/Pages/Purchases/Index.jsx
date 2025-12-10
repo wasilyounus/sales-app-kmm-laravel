@@ -22,7 +22,7 @@ export default function Index({ purchases, parties, items, taxes, stats, filters
     const defaultTaxId = taxSettings?.default_tax_id?.toString() || '';
 
     const { data, setData, post, put, processing, reset } = useForm({
-        party_id: '', date: new Date().toISOString().split('T')[0], tax_id: '',
+        party_id: '', date: new Date().toISOString().split('T')[0], invoice_no: '', tax_id: '',
         items: [{ item_id: '', price: '', qty: 1, tax_id: '' }],
     });
 
@@ -36,7 +36,7 @@ export default function Index({ purchases, parties, items, taxes, stats, filters
         reset();
         const initialTaxId = taxLevel === 'account' ? defaultTaxId : '';
         setData({
-            party_id: '', date: new Date().toISOString().split('T')[0],
+            party_id: '', date: new Date().toISOString().split('T')[0], invoice_no: '',
             tax_id: taxLevel === 'bill' ? '' : initialTaxId,
             items: [{ item_id: '', price: '', qty: 1, tax_id: taxLevel === 'item' ? '' : initialTaxId }],
         });
@@ -47,6 +47,7 @@ export default function Index({ purchases, parties, items, taxes, stats, filters
         setEditingPurchase(purchase);
         setData({
             party_id: purchase.party_id.toString(), date: purchase.date,
+            invoice_no: purchase.invoice_no || '',
             tax_id: purchase.tax_id?.toString() || '',
             items: purchase.items.map(item => ({
                 item_id: item.item_id.toString(), price: item.price.toString(),
@@ -136,7 +137,11 @@ export default function Index({ purchases, parties, items, taxes, stats, filters
                     <Card key={purchase.id} className="border-gray-100 shadow-sm bg-white hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                             <div className="flex justify-between items-start mb-3">
-                                <div><p className="font-bold text-gray-900">#{purchase.id}</p><p className="text-sm text-gray-500">{purchase.party_name}</p></div>
+                                <div>
+                                    <p className="font-bold text-gray-900">#{purchase.id}</p>
+                                    <p className="text-sm text-gray-500">{purchase.party_name}</p>
+                                    {purchase.invoice_no && <p className="text-xs text-gray-400 mt-1">Inv: <span className="font-medium text-gray-600">{purchase.invoice_no}</span></p>}
+                                </div>
                                 <Badge variant="outline" className="bg-orange-100 text-orange-700">{purchase.items_count} items</Badge>
                             </div>
                             <div className="flex justify-between items-center pt-3 border-t border-gray-50">
@@ -169,6 +174,10 @@ export default function Index({ purchases, parties, items, taxes, stats, filters
                             <div className="space-y-2">
                                 <Label>Date *</Label>
                                 <Input type="date" value={data.date} onChange={(e) => setData('date', e.target.value)} />
+                            </div>
+                            <div className="col-span-2 space-y-2">
+                                <Label>Invoice No</Label>
+                                <Input type="text" placeholder="Enter invoice number" value={data.invoice_no} onChange={(e) => setData('invoice_no', e.target.value)} />
                             </div>
                         </div>
 

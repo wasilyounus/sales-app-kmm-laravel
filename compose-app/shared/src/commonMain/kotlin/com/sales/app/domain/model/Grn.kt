@@ -3,7 +3,7 @@ package com.sales.app.domain.model
 data class Grn(
     val id: Int,
     val purchaseId: Int,
-    val grnNumber: String?,
+    val grnNo: String?,
     val date: String,
     val vehicleNo: String?,
     val invoiceNo: String?,

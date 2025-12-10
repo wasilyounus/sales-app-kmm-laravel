@@ -16,7 +16,7 @@ class Transaction extends Model
         'amount',
         'date',
         'comment',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -27,7 +27,7 @@ class Transaction extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 
     // Transaction type constants

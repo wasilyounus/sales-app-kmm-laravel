@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class GrnDto(
     val id: Int,
     val purchase_id: Int,
-    val grn_number: String? = null,
+    val grn_no: String? = null,
     val date: String,
     val vehicle_no: String? = null,
     val invoice_no: String? = null,

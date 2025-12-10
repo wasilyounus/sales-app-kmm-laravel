@@ -1,3 +1,4 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
 package com.sales.app.data.repository
 
 import com.sales.app.data.local.dao.*
@@ -461,7 +462,7 @@ class SyncRepositoryImpl(
                     SyncTimestampEntity(
                         key = "master_data",
                         timestamp = response.data.timestamp,
-                        lastSyncedAt = Clock.System.now().toEpochMilliseconds()
+                        lastSyncedAt = com.sales.app.util.TimeProvider.now().toEpochMilliseconds()
                     )
                 )
                 

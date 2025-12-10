@@ -64,9 +64,9 @@ fun QuoteViewScreen(
                                     subtitle = "Quote No: ${quote.id} | Date: ${quote.date}",
                                     items = uiState.items.map { 
                                         val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
-                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                        UtilPrintItem(it.itemName, it.qty, it.price, total.toString())
                                     },
-                                    total = "%.2f".format(quote.amount),
+                                    total = quote.amount.toString(),
                                     meta = mapOf("Party" to quote.partyName, "Status" to "Pending")
                                 )
                                 getPlatformShare().print(data)
@@ -81,9 +81,9 @@ fun QuoteViewScreen(
                                     subtitle = "Quote No: ${quote.id} | Date: ${quote.date}",
                                     items = uiState.items.map { 
                                         val total = (it.qty.toDoubleOrNull() ?: 0.0) * (it.price.toDoubleOrNull() ?: 0.0)
-                                        UtilPrintItem(it.itemName, it.qty, it.price, "%.2f".format(total))
+                                        UtilPrintItem(it.itemName, it.qty, it.price, total.toString())
                                     },
-                                    total = "%.2f".format(quote.amount),
+                                    total = quote.amount.toString(),
                                     meta = mapOf("Party" to quote.partyName, "Status" to "Pending")
                                 )
                                 getPlatformShare().sharePdf(data)
@@ -135,10 +135,10 @@ fun QuoteViewScreen(
                                     name = it.itemName,
                                     qty = it.qty,
                                     price = it.price,
-                                    total = "%.2f".format(total)
+                                    total = total.toString()
                                 )
                             },
-                            totalAmount = "₹${"%.2f".format(quote.amount)}"
+                            totalAmount = "₹${quote.amount}"
                         )
                     } else {
                         Column(
@@ -196,7 +196,7 @@ fun QuoteViewScreen(
                                         supportingContent = { Text("Qty: ${item.qty} x ₹${item.price}") },
                                         trailingContent = { 
                                             val total = (item.qty.toDoubleOrNull() ?: 0.0) * (item.price.toDoubleOrNull() ?: 0.0)
-                                            Text("₹${"%.2f".format(total)}", fontWeight = FontWeight.Bold) 
+                                            Text("₹$total", fontWeight = FontWeight.Bold) 
                                         }
                                     )
                                     HorizontalDivider()
@@ -224,7 +224,7 @@ fun QuoteViewScreen(
                                         color = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                     Text(
-                                        text = "₹${"%.2f".format(quote.amount)}",
+                                        text = "₹${quote.amount}",
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer

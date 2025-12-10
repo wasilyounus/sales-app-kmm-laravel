@@ -29,7 +29,7 @@ import kotlinx.serialization.Serializable
 @Serializable object DeliveryNotes
 @Serializable object Grns
 @Serializable object Settings
-@Serializable object AccountSettings
+@Serializable object CompanySettings
 
 // Screens with arguments
 @Serializable data class ItemEdit(val itemId: Int)
@@ -101,5 +101,5 @@ sealed class Screen(val route: String) {
         fun createRoute(priceListId: Long) = "price-lists/$priceListId"
     }
     object Settings : Screen("settings")
-    object AccountSettings : Screen("account-settings")
+    object CompanySettings : Screen("account-settings")
 }

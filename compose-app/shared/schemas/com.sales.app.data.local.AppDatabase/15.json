@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 15,
-    "identityHash": "fb55d9762c86b1277bfa290b9d6c3cad",
+    "identityHash": "e9be2c43b5155e33450f6684bc9e1c67",
     "entities": [
       {
         "tableName": "users",
@@ -47,7 +47,7 @@
         }
       },
       {
-        "tableName": "accounts",
+        "tableName": "companies",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `nameFormatted` TEXT NOT NULL, `desc` TEXT, `taxationType` INTEGER NOT NULL, `taxRate` INTEGER NOT NULL, `address` TEXT, `call` TEXT, `whatsapp` TEXT, `footerContent` TEXT, `signature` TEXT, `financialYearStart` TEXT, `country` TEXT, `state` TEXT, `taxNumber` TEXT, `defaultTaxId` INTEGER, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, `enableDeliveryNotes` INTEGER NOT NULL, `enableGrns` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
@@ -1351,7 +1351,7 @@
       },
       {
         "tableName": "delivery_notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `saleId` INTEGER NOT NULL, `dnNumber` TEXT, `date` TEXT NOT NULL, `vehicleNo` TEXT, `lrNo` TEXT, `notes` TEXT, `accountId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `saleId` INTEGER NOT NULL, `dnNo` TEXT, `date` TEXT NOT NULL, `vehicleNo` TEXT, `lrNo` TEXT, `notes` TEXT, `accountId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -1366,8 +1366,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "dnNumber",
-            "columnName": "dnNumber",
+            "fieldPath": "dnNo",
+            "columnName": "dnNo",
             "affinity": "TEXT"
           },
           {
@@ -1472,7 +1472,7 @@
       },
       {
         "tableName": "grns",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `purchaseId` INTEGER NOT NULL, `grnNumber` TEXT, `date` TEXT NOT NULL, `vehicleNo` TEXT, `invoiceNo` TEXT, `notes` TEXT, `accountId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `purchaseId` INTEGER NOT NULL, `grnNo` TEXT, `date` TEXT NOT NULL, `vehicleNo` TEXT, `invoiceNo` TEXT, `notes` TEXT, `accountId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `deletedAt` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -1487,8 +1487,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "grnNumber",
-            "columnName": "grnNumber",
+            "fieldPath": "grnNo",
+            "columnName": "grnNo",
             "affinity": "TEXT"
           },
           {
@@ -1594,7 +1594,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fb55d9762c86b1277bfa290b9d6c3cad')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9be2c43b5155e33450f6684bc9e1c67')"
     ]
   }
 }

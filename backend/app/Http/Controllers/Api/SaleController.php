@@ -72,7 +72,7 @@ class SaleController extends Controller
             }
 
             // Auto-create Delivery Note if enabled
-            $account = \App\Models\Account::find($validated['account_id']);
+            $account = \App\Models\Company::find($validated['account_id']);
             if (!$account->enable_delivery_notes) {
                 $dn = \App\Models\DeliveryNote::create([
                     'sale_id' => $sale->id,
@@ -164,7 +164,7 @@ class SaleController extends Controller
             }
 
             // Auto-update Delivery Note if enabled
-            $account = \App\Models\Account::find($sale->account_id);
+            $account = \App\Models\Company::find($sale->account_id);
             if (!$account->enable_delivery_notes) {
                 // Find existing auto-generated DN (assuming 1-to-1 for auto mode)
                 $dn = \App\Models\DeliveryNote::where('sale_id', $sale->id)->first();
@@ -245,7 +245,7 @@ class SaleController extends Controller
         DB::beginTransaction();
         try {
             // Check if we need to auto-delete DN
-            $account = \App\Models\Account::find($sale->account_id);
+            $account = \App\Models\Company::find($sale->account_id);
             // Even if enabled/disabled, if there is a linked DN and we are deleting the sale, 
             // should we delete the DN? 
             // If "auto" mode is active, yes.

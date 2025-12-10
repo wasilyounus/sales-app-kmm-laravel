@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetDeliveryNotesUseCase(
     private val repository: DeliveryNoteRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<DeliveryNote>> {
-        return repository.getDeliveryNotesByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<DeliveryNote>> {
+        return repository.getDeliveryNotesByAccount(companyId)
     }
 }
 
@@ -33,8 +33,8 @@ class GetDeliveryNoteByIdUseCase(
 class SyncDeliveryNotesUseCase(
     private val repository: DeliveryNoteRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return repository.syncDeliveryNotes(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return repository.syncDeliveryNotes(companyId)
     }
 }
 
@@ -48,9 +48,9 @@ class CreateDeliveryNoteUseCase(
         lrNo: String?,
         notes: String?,
         items: List<DeliveryNoteItemRequest>,
-        accountId: Int
+        companyId: Int
     ): Result<DeliveryNote> {
-        return repository.createDeliveryNote(saleId, date, vehicleNo, lrNo, notes, items, accountId)
+        return repository.createDeliveryNote(saleId, date, vehicleNo, lrNo, notes, items, companyId)
     }
 }
 

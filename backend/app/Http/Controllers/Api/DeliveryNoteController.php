@@ -48,7 +48,7 @@ class DeliveryNoteController extends Controller
             // Create delivery note
             $deliveryNote = DeliveryNote::create([
                 'sale_id' => $validated['sale_id'],
-                'dn_number' => DeliveryNote::generateNumber($accountId),
+                'dn_no' => DeliveryNote::generateNumber($accountId),
                 'date' => $validated['date'],
                 'vehicle_no' => $validated['vehicle_no'] ?? null,
                 'lr_no' => $validated['lr_no'] ?? null,

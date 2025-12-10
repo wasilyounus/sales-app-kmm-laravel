@@ -48,7 +48,7 @@ class GrnController extends Controller
             // Create GRN
             $grn = Grn::create([
                 'purchase_id' => $validated['purchase_id'],
-                'grn_number' => Grn::generateNumber($accountId),
+                'grn_no' => Grn::generateNumber($accountId),
                 'date' => $validated['date'],
                 'vehicle_no' => $validated['vehicle_no'] ?? null,
                 'invoice_no' => $validated['invoice_no'] ?? null,

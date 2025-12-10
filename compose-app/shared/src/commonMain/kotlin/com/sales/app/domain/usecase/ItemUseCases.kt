@@ -9,19 +9,19 @@ import kotlinx.coroutines.flow.Flow
 class GetItemsUseCase(
     private val itemRepository: ItemRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Item>> {
-        return itemRepository.getItemsByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Item>> {
+        return itemRepository.getItemsByAccount(companyId)
     }
 }
 
 class SearchItemsUseCase(
     private val itemRepository: ItemRepository
 ) {
-    operator fun invoke(accountId: Int, query: String): Flow<List<Item>> {
+    operator fun invoke(companyId: Int, query: String): Flow<List<Item>> {
         return if (query.isBlank()) {
-            itemRepository.getItemsByAccount(accountId)
+            itemRepository.getItemsByAccount(companyId)
         } else {
-            itemRepository.searchItems(accountId, query)
+            itemRepository.searchItems(companyId, query)
         }
     }
 }
@@ -29,8 +29,8 @@ class SearchItemsUseCase(
 class GetItemByIdUseCase(
     private val itemRepository: ItemRepository
 ) {
-    suspend operator fun invoke(accountId: Int, itemId: Int): Item? {
-        return itemRepository.getItemById(accountId, itemId)
+    suspend operator fun invoke(companyId: Int, itemId: Int): Item? {
+        return itemRepository.getItemById(companyId, itemId)
     }
 }
 
@@ -38,7 +38,7 @@ class CreateItemUseCase(
     private val itemRepository: ItemRepository
 ) {
     suspend operator fun invoke(
-        accountId: Int,
+        companyId: Int,
         name: String,
         altName: String?,
         brand: String?,
@@ -48,7 +48,7 @@ class CreateItemUseCase(
         taxId: Int?
     ): Result<Item> {
         return itemRepository.createItem(
-            accountId = accountId,
+            companyId = companyId,
             name = name,
             altName = altName,
             brand = brand,
@@ -71,7 +71,7 @@ class UpdateItemUseCase(
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int,
+        companyId: Int,
         taxId: Int?
     ): Result<Item> {
         return itemRepository.updateItem(
@@ -82,7 +82,7 @@ class UpdateItemUseCase(
             size = size,
             uqc = uqc,
             hsn = hsn,
-            accountId = accountId,
+            companyId = companyId,
             taxId = taxId
         )
     }

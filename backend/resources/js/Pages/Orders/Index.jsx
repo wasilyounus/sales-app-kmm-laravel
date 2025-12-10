@@ -136,7 +136,11 @@ export default function Index({ orders, parties, items, taxes, stats, filters, t
                     <Card key={order.id} className="border-gray-100 shadow-sm bg-white hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                             <div className="flex justify-between items-start mb-3">
-                                <div><p className="font-bold text-gray-900">#{order.id}</p><p className="text-sm text-gray-500">{order.party_name}</p></div>
+                                <div>
+                                    <p className="font-bold text-gray-900">#{order.id}</p>
+                                    <p className="text-sm text-gray-500">{order.party_name}</p>
+                                    {order.order_no && <p className="text-xs text-gray-400 mt-1">Ord: <span className="font-medium text-gray-600">{order.order_no}</span></p>}
+                                </div>
                                 <Badge variant="outline" className="bg-indigo-100 text-indigo-700">{order.items_count} items</Badge>
                             </div>
                             <div className="flex justify-between items-center pt-3 border-t border-gray-50">

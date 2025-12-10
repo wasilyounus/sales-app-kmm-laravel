@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetQuotesUseCase(
     private val quoteRepository: QuoteRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Quote>> {
-        return quoteRepository.getQuotesByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Quote>> {
+        return quoteRepository.getQuotesByAccount(companyId)
     }
 }
 
@@ -29,10 +29,10 @@ class CreateQuoteUseCase(
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int,
+        companyId: Int,
         quoteNo: String? = null
     ): Result<Quote> {
-        return quoteRepository.createQuote(partyId, date, items, accountId, quoteNo)
+        return quoteRepository.createQuote(partyId, date, items, companyId, quoteNo)
     }
 }
 
@@ -44,10 +44,10 @@ class UpdateQuoteUseCase(
         partyId: Int,
         date: String,
         items: List<QuoteItemRequest>,
-        accountId: Int,
+        companyId: Int,
         quoteNo: String? = null
     ): Result<Quote> {
-        return quoteRepository.updateQuote(id, partyId, date, items, accountId, quoteNo)
+        return quoteRepository.updateQuote(id, partyId, date, items, companyId, quoteNo)
     }
 }
 
@@ -62,7 +62,7 @@ class DeleteQuoteUseCase(
 class SyncQuotesUseCase(
     private val quoteRepository: QuoteRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return quoteRepository.syncQuotes(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return quoteRepository.syncQuotes(companyId)
     }
 }

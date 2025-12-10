@@ -22,7 +22,7 @@ class PurchaseWebController extends Controller
     public function index(Request $request)
     {
         $accountId = $this->getAccountId();
-        
+
         $query = Purchase::query()
             ->with(['party', 'items.item', 'items.tax', 'tax'])
             ->withCount('items')
@@ -30,11 +30,11 @@ class PurchaseWebController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
-                  ->orWhereHas('party', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('party', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -81,8 +81,8 @@ class PurchaseWebController extends Controller
         $parties = Party::where('account_id', $accountId)->orderBy('name')->get(['id', 'name']);
         $items = Item::where('account_id', $accountId)->with('tax')->orderBy('name')->get()
             ->map(fn($item) => ['id' => $item->id, 'name' => $item->name, 'tax_id' => $item->tax_id]);
-        
-        $account = \App\Models\Account::find($accountId);
+        // Get account's country to filter taxes
+        $account = \App\Models\Company::find($accountId);
         $taxes = Tax::where('active', true)
             ->when($account?->country, fn($q, $c) => $q->where('country', $c))->get()
             ->map(fn($t) => ['id' => $t->id, 'name' => $t->scheme_name, 'rate' => ($t->tax1_val ?? 0) + ($t->tax2_val ?? 0)]);
@@ -101,7 +101,7 @@ class PurchaseWebController extends Controller
     public function store(Request $request)
     {
         $accountId = $this->getAccountId();
-        
+
         $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',

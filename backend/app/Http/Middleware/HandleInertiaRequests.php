@@ -4,8 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-
-use App\Models\Account;
+use App\Models\Company;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -41,14 +40,25 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
-            ],
-            'shared' => [
-                'accounts' => Account::select('id', 'name', 'name_formatted')->get(),
+                'availableCompanies' => $request->user()?->getCompaniesForSelection() ?? [],
             ],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
             ],
+            'currentCompany' => function () use ($request) {
+                if (!$request->user()) {
+                    return null;
+                }
+
+                $companyId = $request->user()->current_company_id ?? session('current_company_id');
+
+                if (!$companyId) {
+                    return null;
+                }
+
+                return Company::find($companyId);
+            },
         ];
     }
 }

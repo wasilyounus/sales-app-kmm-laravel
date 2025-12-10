@@ -25,7 +25,7 @@ class SaleWebController extends Controller
     public function index(Request $request)
     {
         $accountId = $this->getAccountId();
-        
+
         $query = Sale::query()
             ->with(['party', 'items.item', 'items.tax', 'tax'])
             ->withCount('items')
@@ -33,11 +33,11 @@ class SaleWebController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('invoice_no', 'like', "%{$search}%")
-                  ->orWhereHas('party', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('party', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -48,7 +48,7 @@ class SaleWebController extends Controller
             $subtotal = $sale->items->sum(function ($item) {
                 return $item->qty * $item->price;
             });
-            
+
             $taxAmount = $sale->items->sum(function ($item) {
                 if ($item->tax) {
                     $lineTotal = $item->qty * $item->price;
@@ -111,13 +111,13 @@ class SaleWebController extends Controller
                     'tax_id' => $item->tax_id,
                 ];
             });
-        
+
         // Get account's country to filter taxes
-        $account = \App\Models\Account::find($accountId);
+        $account = \App\Models\Company::find($accountId);
         $taxCountry = $account?->country;
-        
+
         $taxes = Tax::where('active', true)
-            ->when($taxCountry, function($query) use ($taxCountry) {
+            ->when($taxCountry, function ($query) use ($taxCountry) {
                 return $query->where('country', $taxCountry);
             })
             ->get()
@@ -155,7 +155,7 @@ class SaleWebController extends Controller
     public function store(Request $request)
     {
         $accountId = $this->getAccountId();
-        
+
         $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',

@@ -104,7 +104,7 @@ fun GrnCard(grn: Grn) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = grn.grnNumber ?: "GRN #${grn.id}",
+                    text = grn.grnNo ?: "GRN #${grn.id}",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

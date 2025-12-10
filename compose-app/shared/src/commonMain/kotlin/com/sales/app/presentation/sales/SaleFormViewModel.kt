@@ -1,3 +1,4 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
 package com.sales.app.presentation.sales
 
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import com.sales.app.util.TimeProvider
+import kotlin.time.ExperimentalTime
 
 data class SaleFormUiState(
     val isLoading: Boolean = false,
@@ -22,7 +25,7 @@ data class SaleFormUiState(
     
     // Form fields
     val partyId: Int? = null,
-    val date: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
+    val date: String = TimeProvider.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
     val invoiceNo: String = "",
     val selectedItems: List<SaleItemUiModel> = emptyList(),
     val taxId: Int? = null,
@@ -34,6 +37,9 @@ data class SaleFormUiState(
     val isItemsValid: Boolean = true
 )
 
+
+
+@OptIn(kotlin.time.ExperimentalTime::class)
 class SaleFormViewModel(
     private val createSaleUseCase: CreateSaleUseCase,
     private val getSaleByIdUseCase: GetSaleByIdUseCase,

@@ -14,7 +14,7 @@ class Stock extends Model
     protected $fillable = [
         'item_id',
         'count',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -29,6 +29,6 @@ class Stock extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 }

@@ -209,7 +209,7 @@ class ApiService(
         }.body()
     }
 
-    suspend fun updateAccount(id: Int, request: AccountDto): AccountResponse {
+    suspend fun updateAccount(id: Int, request: CompanyDto): AccountResponse {
         return client.put("accounts/$id") {
             addAuthHeader()
             contentType(ContentType.Application.Json)

@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import com.sales.app.util.TimeProvider
+import kotlinx.datetime.Instant
 
 data class SyncUiState(
     val isSyncing: Boolean = false,
@@ -21,6 +22,7 @@ data class SyncUiState(
     val successMessage: String? = null
 )
 
+@OptIn(kotlin.time.ExperimentalTime::class)
 class SyncViewModel(
     private val syncDataUseCase: SyncDataUseCase,
     private val syncMasterDataUseCase: SyncMasterDataUseCase,
@@ -40,7 +42,7 @@ class SyncViewModel(
                         it.copy(
                             isSyncing = false,
                             successMessage = "Sync completed successfully",
-                            lastSyncTime = Clock.System.now().toEpochMilliseconds().toString()
+                            lastSyncTime = TimeProvider.now().toEpochMilliseconds().toString()
                         )
                     }
                 }
@@ -69,7 +71,7 @@ class SyncViewModel(
                         it.copy(
                             isSyncing = false,
                             successMessage = "Sync completed successfully",
-                            lastSyncTime = Clock.System.now().toEpochMilliseconds().toString()
+                            lastSyncTime = TimeProvider.now().toEpochMilliseconds().toString()
                         )
                     }
                 }
@@ -98,7 +100,7 @@ class SyncViewModel(
                         it.copy(
                             isSyncing = false,
                             successMessage = "Full sync completed successfully",
-                            lastSyncTime = Clock.System.now().toEpochMilliseconds().toString()
+                            lastSyncTime = TimeProvider.now().toEpochMilliseconds().toString()
                         )
                     }
                 }

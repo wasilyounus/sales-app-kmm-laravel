@@ -16,7 +16,7 @@ class Transport extends Model
         'tax_number',
         'contact',
         'active',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -26,6 +26,6 @@ class Transport extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 }

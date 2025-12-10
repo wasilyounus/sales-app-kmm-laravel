@@ -16,7 +16,7 @@ class Quote extends Model
         'tax_id',
         'date',
         'quote_no',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -36,7 +36,7 @@ class Quote extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function items()
@@ -44,9 +44,9 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class);
     }
 
-    public static function generateNumber($accountId)
+    public static function generateNumber($companyId)
     {
-        $count = self::where('account_id', $accountId)->count() + 1;
+        $count = self::where('company_id', $companyId)->count() + 1;
         return 'QT-' . str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 }

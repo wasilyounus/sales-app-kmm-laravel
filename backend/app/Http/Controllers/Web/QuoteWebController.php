@@ -8,6 +8,7 @@ use App\Models\QuoteItem;
 use App\Models\Item;
 use App\Models\Party;
 use App\Models\Tax;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -25,7 +26,7 @@ class QuoteWebController extends Controller
     public function index(Request $request)
     {
         $accountId = $this->getAccountId();
-        
+
         $query = Quote::query()
             ->with(['party', 'items.item', 'items.tax'])
             ->withCount('items')
@@ -33,11 +34,11 @@ class QuoteWebController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
-                  ->orWhereHas('party', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('party', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -48,7 +49,7 @@ class QuoteWebController extends Controller
             $subtotal = $quote->items->sum(function ($item) {
                 return $item->qty * $item->price;
             });
-            
+
             $taxAmount = $quote->items->sum(function ($item) {
                 if ($item->tax) {
                     $lineTotal = $item->qty * $item->price;
@@ -109,13 +110,13 @@ class QuoteWebController extends Controller
                     'tax_id' => $item->tax_id,
                 ];
             });
-        
+
         // Get account's country to filter taxes
-        $account = \App\Models\Account::find($accountId);
+        $account = Company::find($accountId);
         $taxCountry = $account?->country;
-        
+
         $taxes = Tax::where('active', true)
-            ->when($taxCountry, function($query) use ($taxCountry) {
+            ->when($taxCountry, function ($query) use ($taxCountry) {
                 return $query->where('country', $taxCountry);
             })
             ->get()
@@ -153,7 +154,7 @@ class QuoteWebController extends Controller
     public function store(Request $request)
     {
         $accountId = $this->getAccountId();
-        
+
         $validated = $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',
@@ -198,7 +199,7 @@ class QuoteWebController extends Controller
     public function update(Request $request, Quote $quote)
     {
         $accountId = $this->getAccountId();
-        
+
         $validated = $request->validate([
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',

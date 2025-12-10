@@ -24,18 +24,26 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Check if user has accounts
+            // Check if user has companies
             $user = Auth::user();
-            if (!$user->hasAccounts()) {
+            if (!$user->hasCompanies()) {
                 Auth::logout();
                 return back()->withErrors([
-                    'email' => 'No accounts assigned. Please contact your administrator.',
-                ])->onlyInput('email');
+                    'email' => 'You do not have access to any companies.',
+                ]);
             }
 
-            // Check if current_account_id is stored in localStorage (client-side) or session
-            // If not, user will be redirected by middleware to select account
-            
+
+            // Auto-select user's first company if they don't have one selected
+            $user = Auth::user();
+            if (!$user->current_company_id) {
+                $firstCompany = $user->companies()->first();
+                if ($firstCompany) {
+                    $user->update(['current_company_id' => $firstCompany->id]);
+                    session(['current_company_id' => $firstCompany->id]);
+                }
+            }
+
             return redirect()->intended(route('admin.dashboard'));
         }
 

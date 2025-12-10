@@ -11,7 +11,7 @@ class Log extends Model
         'model',
         'model_id',
         'user_id',
-        'account_id',
+        'company_id',
         'data',
     ];
 
@@ -26,6 +26,6 @@ class Log extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 }

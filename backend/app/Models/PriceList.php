@@ -10,7 +10,7 @@ class PriceList extends Model
 {
     use SoftDeletes, HasLog;
 
-    protected $fillable = ['name', 'account_id'];
+    protected $fillable = ['name', 'company_id'];
 
     public function items()
     {
@@ -19,6 +19,6 @@ class PriceList extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 }

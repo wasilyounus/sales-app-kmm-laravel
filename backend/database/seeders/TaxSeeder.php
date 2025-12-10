@@ -9,345 +9,197 @@ class TaxSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * 
+     * Taxes are UNIVERSAL (system-level), not company-specific.
+     * Government tax rates apply to all companies in that country.
+     * 
+     * Supports: India (with GST combinations), UAE, Saudi Arabia, Qatar, Oman, Bahrain
      */
     public function run(): void
     {
-        $schemes = [
+        $taxes = [
+            // Global/No Tax
             [
-                'id' => 1,
-                'scheme_name' => 'No Tax',
-                'country' => null,  // Global - available everywhere
-                'tax1_name' => null,
-                'tax1_val' => 0,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'name' => 'No Tax',
+                'rate' => 0.00,
+                'country' => null,
+                'is_default' => false,
             ],
 
-            // India GST 5% - All Scenarios
+            // ========================================
+            // INDIA GST - Proper Combinations
+            // ========================================
+
+            // GST 5% - Intrastate (CGST 2.5% + SGST 2.5%)
             [
-                'id' => 2,
-                'scheme_name' => 'India GST 5% (Intrastate - CGST+SGST)',
+                'name' => 'GST 5% (CGST 2.5% + SGST 2.5%)',
+                'rate' => 5.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 2.5,
-                'tax2_name' => 'SGST',
-                'tax2_val' => 2.5,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 5% - Interstate (IGST 5%)
             [
-                'id' => 3,
-                'scheme_name' => 'India GST 5% (Interstate - IGST)',
+                'name' => 'GST 5% (IGST 5%)',
+                'rate' => 5.00,
                 'country' => 'India',
-                'tax1_name' => 'IGST',
-                'tax1_val' => 5,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 5% - Union Territory (CGST 2.5% + UTGST 2.5%)
             [
-                'id' => 4,
-                'scheme_name' => 'India GST 5% (UT - CGST+UTGST)',
+                'name' => 'GST 5% (CGST 2.5% + UTGST 2.5%)',
+                'rate' => 5.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 2.5,
-                'tax2_name' => 'UTGST',
-                'tax2_val' => 2.5,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
 
-            // India GST 12% - All Scenarios
+            // GST 12% - Intrastate (CGST 6% + SGST 6%)
             [
-                'id' => 5,
-                'scheme_name' => 'India GST 12% (Intrastate - CGST+SGST)',
+                'name' => 'GST 12% (CGST 6% + SGST 6%)',
+                'rate' => 12.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 6,
-                'tax2_name' => 'SGST',
-                'tax2_val' => 6,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 12% - Interstate (IGST 12%)
             [
-                'id' => 6,
-                'scheme_name' => 'India GST 12% (Interstate - IGST)',
+                'name' => 'GST 12% (IGST 12%)',
+                'rate' => 12.00,
                 'country' => 'India',
-                'tax1_name' => 'IGST',
-                'tax1_val' => 12,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 12% - Union Territory (CGST 6% + UTGST 6%)
             [
-                'id' => 7,
-                'scheme_name' => 'India GST 12% (UT - CGST+UTGST)',
+                'name' => 'GST 12% (CGST 6% + UTGST 6%)',
+                'rate' => 12.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 6,
-                'tax2_name' => 'UTGST',
-                'tax2_val' => 6,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
 
-            // India GST 18% - All Scenarios
+            // GST 18% - Intrastate (CGST 9% + SGST 9%) - MOST COMMON
             [
-                'id' => 8,
-                'scheme_name' => 'India GST 18% (Intrastate - CGST+SGST)',
+                'name' => 'GST 18% (CGST 9% + SGST 9%)',
+                'rate' => 18.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 9,
-                'tax2_name' => 'SGST',
-                'tax2_val' => 9,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => true, // Most common in India
             ],
+            // GST 18% - Interstate (IGST 18%)
             [
-                'id' => 9,
-                'scheme_name' => 'India GST 18% (Interstate - IGST)',
+                'name' => 'GST 18% (IGST 18%)',
+                'rate' => 18.00,
                 'country' => 'India',
-                'tax1_name' => 'IGST',
-                'tax1_val' => 18,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 18% - Union Territory (CGST 9% + UTGST 9%)
             [
-                'id' => 10,
-                'scheme_name' => 'India GST 18% (UT - CGST+UTGST)',
+                'name' => 'GST 18% (CGST 9% + UTGST 9%)',
+                'rate' => 18.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 9,
-                'tax2_name' => 'UTGST',
-                'tax2_val' => 9,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
 
-            // India GST 28% - All Scenarios
+            // GST 28% - Intrastate (CGST 14% + SGST 14%)
             [
-                'id' => 11,
-                'scheme_name' => 'India GST 28% (Intrastate - CGST+SGST)',
+                'name' => 'GST 28% (CGST 14% + SGST 14%)',
+                'rate' => 28.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 14,
-                'tax2_name' => 'SGST',
-                'tax2_val' => 14,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 28% - Interstate (IGST 28%)
             [
-                'id' => 12,
-                'scheme_name' => 'India GST 28% (Interstate - IGST)',
+                'name' => 'GST 28% (IGST 28%)',
+                'rate' => 28.00,
                 'country' => 'India',
-                'tax1_name' => 'IGST',
-                'tax1_val' => 28,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
+            // GST 28% - Union Territory (CGST 14% + UTGST 14%)
             [
-                'id' => 13,
-                'scheme_name' => 'India GST 28% (UT - CGST+UTGST)',
+                'name' => 'GST 28% (CGST 14% + UTGST 14%)',
+                'rate' => 28.00,
                 'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 14,
-                'tax2_name' => 'UTGST',
-                'tax2_val' => 14,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
-            ],
-            [
-                'id' => 14,
-                'scheme_name' => 'India GST 28% + Cess (Luxury/Sin Goods)',
-                'country' => 'India',
-                'tax1_name' => 'CGST',
-                'tax1_val' => 14,
-                'tax2_name' => 'SGST',
-                'tax2_val' => 14,
-                'tax3_name' => 'Compensation Cess',
-                'tax3_val' => 15,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
 
-            // Saudi Arabia VAT
-            [
-                'id' => 15,
-                'scheme_name' => 'Saudi VAT 15% (Standard)',
-                'country' => 'Saudi Arabia',
-                'tax1_name' => 'VAT',
-                'tax1_val' => 15,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
-            ],
-            [
-                'id' => 16,
-                'scheme_name' => 'Saudi VAT 0% (Zero-rated - Exports)',
-                'country' => 'Saudi Arabia',
-                'tax1_name' => 'VAT',
-                'tax1_val' => 0,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
-            ],
-            [
-                'id' => 17,
-                'scheme_name' => 'Saudi VAT Exempt (Financial Services)',
-                'country' => 'Saudi Arabia',
-                'tax1_name' => null,
-                'tax1_val' => 0,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
-            ],
-
+            // ========================================
             // UAE VAT
+            // ========================================
             [
-                'id' => 18,
-                'scheme_name' => 'UAE VAT 5% (Standard)',
+                'name' => 'VAT 5%',
+                'rate' => 5.00,
                 'country' => 'UAE',
-                'tax1_name' => 'VAT',
-                'tax1_val' => 5,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => true,
             ],
             [
-                'id' => 19,
-                'scheme_name' => 'UAE VAT 0% (Zero-rated - Exports)',
+                'name' => 'VAT 0% (Zero-rated)',
+                'rate' => 0.00,
                 'country' => 'UAE',
-                'tax1_name' => 'VAT',
-                'tax1_val' => 0,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
-            ],
-            [
-                'id' => 20,
-                'scheme_name' => 'UAE VAT Exempt (Financial Services)',
-                'country' => 'UAE',
-                'tax1_name' => null,
-                'tax1_val' => 0,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => false,
             ],
 
-            // Qatar VAT
+            // ========================================
+            // SAUDI ARABIA VAT
+            // ========================================
             [
-                'id' => 21,
-                'scheme_name' => 'Qatar VAT 0%',
+                'name' => 'VAT 15%',
+                'rate' => 15.00,
+                'country' => 'Saudi Arabia',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'VAT 0% (Zero-rated)',
+                'rate' => 0.00,
+                'country' => 'Saudi Arabia',
+                'is_default' => false,
+            ],
+
+            // ========================================
+            // QATAR VAT
+            // ========================================
+            [
+                'name' => 'VAT 0%',
+                'rate' => 0.00,
                 'country' => 'Qatar',
-                'tax1_name' => 'VAT',
-                'tax1_val' => 0,
-                'tax2_name' => null,
-                'tax2_val' => 0,
-                'tax3_name' => null,
-                'tax3_val' => 0,
-                'tax4_name' => null,
-                'tax4_val' => 0,
-                'active' => true,
-                'log_id' => 1,
+                'is_default' => true,
+            ],
+
+            // ========================================
+            // OMAN VAT
+            // ========================================
+            [
+                'name' => 'VAT 5%',
+                'rate' => 5.00,
+                'country' => 'Oman',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'VAT 0% (Zero-rated)',
+                'rate' => 0.00,
+                'country' => 'Oman',
+                'is_default' => false,
+            ],
+
+            // ========================================
+            // BAHRAIN VAT
+            // ========================================
+            [
+                'name' => 'VAT 10%',
+                'rate' => 10.00,
+                'country' => 'Bahrain',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'VAT 0% (Zero-rated)',
+                'rate' => 0.00,
+                'country' => 'Bahrain',
+                'is_default' => false,
             ],
         ];
 
-        foreach ($schemes as $scheme) {
-            Tax::updateOrCreate(
-                ['id' => $scheme['id']],
-                $scheme
+        foreach ($taxes as $tax) {
+            Tax::firstOrCreate(
+                [
+                    'name' => $tax['name'],
+                    'country' => $tax['country'],
+                ],
+                $tax
             );
         }
     }

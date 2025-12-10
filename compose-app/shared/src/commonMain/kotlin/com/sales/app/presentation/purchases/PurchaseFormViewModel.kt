@@ -1,3 +1,4 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
 package com.sales.app.presentation.purchases
 
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,7 @@ import com.sales.app.domain.usecase.*
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import com.sales.app.util.TimeProvider
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -22,7 +23,7 @@ data class PurchaseFormUiState(
     
     // Form fields
     val partyId: Int? = null,
-    val date: String = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
+    val date: String = TimeProvider.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString(),
     val invoiceNo: String = "",
     val selectedItems: List<PurchaseItemUiModel> = emptyList(),
     
@@ -32,6 +33,7 @@ data class PurchaseFormUiState(
     val isItemsValid: Boolean = true
 )
 
+@OptIn(kotlin.time.ExperimentalTime::class)
 class PurchaseFormViewModel(
     private val createPurchaseUseCase: CreatePurchaseUseCase,
     private val getPurchaseByIdUseCase: GetPurchaseByIdUseCase,

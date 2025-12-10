@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,7 +95,7 @@ fun PriceListDetailScreen(
                                 label = { Text("Item") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itemExpanded) },
                                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-                                modifier = Modifier.menuAnchor().fillMaxWidth()
+                                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth()
                             )
                             ExposedDropdownMenu(
                                 expanded = itemExpanded,

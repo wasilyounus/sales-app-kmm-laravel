@@ -11,25 +11,28 @@ import {
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
-import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2, PackageOpen, ClipboardList, Wallet, Tags } from 'lucide-react';
-import AccountSwitcher from '@/Components/AccountSwitcher';
-import AccountSelectionModal from '@/Components/AccountSelectionModal';
+import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2, PackageOpen, ClipboardList, Wallet, Tags, Truck, Archive } from 'lucide-react';
+import CompanySwitcher from '@/Components/CompanySwitcher';
+import CompanySelectionModal from '@/Components/CompanySelectionModal';
 
 export default function AdminLayout({ children, title }) {
-    const { shared, flash } = usePage().props;
-    const accounts = shared?.accounts || [];
-    const [showAccountModal, setShowAccountModal] = useState(false);
+    const { currentCompany, flash, auth } = usePage().props;
+    const [showCompanyModal, setShowCompanyModal] = useState(false);
 
     useEffect(() => {
-        // Show account selection modal if flagged by backend
-        if (flash?.show_account_selection) {
-            setShowAccountModal(true);
+        // Show company selection modal if no company is selected
+        if (!currentCompany && auth?.user) {
+            setShowCompanyModal(true);
         }
-    }, [flash]);
+        // Also show if flagged by backend
+        if (flash?.show_company_selection) {
+            setShowCompanyModal(true);
+        }
+    }, [currentCompany, flash, auth]);
 
-    const handleAccountSelected = (accountId) => {
-        setShowAccountModal(false);
-        // Reload the page to apply the new account
+    const handleCompanySelected = (companyId) => {
+        setShowCompanyModal(false);
+        // Reload the page to apply the new company
         router.reload();
     };
 
@@ -37,14 +40,16 @@ export default function AdminLayout({ children, title }) {
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Quotes', href: '/admin/quotes', icon: FileText },
         { name: 'Sales', href: '/admin/sales', icon: ShoppingCart },
+        ...(currentCompany?.enable_delivery_notes ? [{ name: 'Delivery Notes', href: '/admin/delivery-notes', icon: Truck }] : []),
         { name: 'Purchases', href: '/admin/purchases', icon: PackageOpen },
+        ...(currentCompany?.enable_grns ? [{ name: 'GRNs', href: '/admin/grns', icon: Archive }] : []),
         { name: 'Orders', href: '/admin/orders', icon: ClipboardList },
         { name: 'Payments', href: '/admin/payments', icon: Wallet },
         { name: 'Price Lists', href: '/admin/price-lists', icon: Tags },
         { name: 'Inventory', href: '/admin/inventory', icon: Package },
         { name: 'Items', href: '/admin/items', icon: Package },
         { name: 'Parties', href: '/admin/parties', icon: Users },
-        { name: 'Accounts', href: '/admin/accounts', icon: Building2 },
+        { name: 'Companies', href: '/admin/companies', icon: Building2 },
         { name: 'Reports', href: '/admin/reports', icon: Layers },
     ];
 
@@ -71,11 +76,10 @@ export default function AdminLayout({ children, title }) {
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                                isActive
-                                    ? 'bg-lime-50 text-lime-600 font-semibold'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                            }`}
+                            className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                                ? 'bg-lime-50 text-lime-600 font-semibold'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
                         >
                             <Icon className={`w-5 h-5 ${isActive ? 'text-lime-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
                             <span>{item.name}</span>
@@ -86,15 +90,15 @@ export default function AdminLayout({ children, title }) {
 
             {/* User Profile */}
             <div className="p-4 border-t border-gray-100">
-                <Link 
-                    href="/admin/settings" 
+                <Link
+                    href="/admin/settings"
                     className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 mb-2"
                 >
                     <Settings className="w-5 h-5" />
                     <span className="font-medium">Settings</span>
                 </Link>
-                
-                <button 
+
+                <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200 mb-4"
                 >
@@ -143,15 +147,15 @@ export default function AdminLayout({ children, title }) {
                     </div>
 
                     <div className="hidden lg:block">
-                        <AccountSwitcher accounts={accounts} />
+                        <CompanySwitcher currentCompany={currentCompany} />
                     </div>
 
                     <div className="flex items-center gap-4 ml-auto">
                         <div className="hidden md:flex items-center bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-100 w-80">
                             <Search className="w-4 h-4 text-gray-400 mr-2" />
-                            <input 
-                                type="text" 
-                                placeholder="Search..." 
+                            <input
+                                type="text"
+                                placeholder="Search..."
                                 className="bg-transparent border-0 focus:ring-0 text-sm w-full p-0 placeholder:text-gray-400"
                             />
                         </div>
@@ -168,10 +172,10 @@ export default function AdminLayout({ children, title }) {
                 </main>
             </div>
 
-            {/* Account Selection Modal */}
-            <AccountSelectionModal
-                open={showAccountModal}
-                onAccountSelected={handleAccountSelected}
+            {/* Company Selection Modal */}
+            <CompanySelectionModal
+                open={showCompanyModal}
+                onCompanySelected={handleCompanySelected}
             />
         </div>
     );

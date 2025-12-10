@@ -24,7 +24,7 @@ class AccountSeeder extends Seeder
         ]);
 
         // Create default account
-        Account::create([
+        Company::create([
             'id' => 1,
             'name' => 'Default Account',
             'name_formatted' => 'Default Account',

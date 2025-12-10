@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetGrnsUseCase(
     private val repository: GrnRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Grn>> {
-        return repository.getGrnsByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Grn>> {
+        return repository.getGrnsByAccount(companyId)
     }
 }
 
@@ -33,8 +33,8 @@ class GetGrnByIdUseCase(
 class SyncGrnsUseCase(
     private val repository: GrnRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return repository.syncGrns(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return repository.syncGrns(companyId)
     }
 }
 
@@ -48,9 +48,9 @@ class CreateGrnUseCase(
         invoiceNo: String?,
         notes: String?,
         items: List<GrnItemRequest>,
-        accountId: Int
+        companyId: Int
     ): Result<Grn> {
-        return repository.createGrn(purchaseId, date, vehicleNo, invoiceNo, notes, items, accountId)
+        return repository.createGrn(purchaseId, date, vehicleNo, invoiceNo, notes, items, companyId)
     }
 }
 

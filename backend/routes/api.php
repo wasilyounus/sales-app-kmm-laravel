@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\PartyController;
 use App\Http\Controllers\Api\QuoteController;
@@ -36,16 +36,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Account Selection
     Route::prefix('admin')->group(function () {
-        Route::get('select-account', [App\Http\Controllers\Web\AccountSelectionController::class, 'index']);
-        Route::post('select-account', [App\Http\Controllers\Web\AccountSelectionController::class, 'store']);
+        Route::get('select-account', [App\Http\Controllers\Web\CompanySelectionController::class, 'index']);
+        Route::post('select-account', [App\Http\Controllers\Web\CompanySelectionController::class, 'store']);
     });
 
-    // Accounts
-    Route::get('accounts', [AccountController::class, 'index']);
-    Route::post('accounts', [AccountController::class, 'store']);
-    Route::get('accounts/{id}', [AccountController::class, 'show']);
-    Route::put('accounts/{id}', [AccountController::class, 'update']);
-    Route::post('accounts/{id}', [AccountController::class, 'update']); // For mobile compatibility
+    // Companies
+    Route::get('companies', [CompanyController::class, 'index']);
+    Route::post('companies', [CompanyController::class, 'store']);
+    Route::get('companies/{id}', [CompanyController::class, 'show']);
+    Route::put('companies/{id}', [CompanyController::class, 'update']);
+    Route::post('companies/{id}', [CompanyController::class, 'update']); // For mobile compatibility
 
     // Items
     Route::get('items', [ItemController::class, 'index']);

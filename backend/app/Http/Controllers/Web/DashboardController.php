@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Account;
+use App\Models\Company;
 use App\Models\Item;
 use App\Models\Party;
 use App\Models\Sale;
@@ -14,7 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
         $stats = [
-            'accounts' => Account::count(),
+            'accounts' => Company::count(),
             'items' => Item::count(),
             'parties' => Party::count(),
             'sales' => Sale::count(),

@@ -50,7 +50,8 @@ class AccountRepositoryTest {
             taxNumber = "GSTIN123",
             defaultTaxId = 10,
             createdAt = "2024-01-01",
-            updatedAt = "2024-01-01"
+            updatedAt = "2024-01-01",
+            deletedAt = null
         )
         every { accountDao.getAllAccounts() } returns flowOf(listOf(entity))
 

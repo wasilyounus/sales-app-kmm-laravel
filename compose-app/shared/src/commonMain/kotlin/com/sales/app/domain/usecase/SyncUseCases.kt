@@ -7,23 +7,23 @@ import com.sales.app.util.Result
 class SyncDataUseCase(
     private val syncRepository: SyncRepository
 ) {
-    suspend operator fun invoke(accountId: Int, types: List<SyncType>): Result<Unit> {
-        return syncRepository.sync(accountId, types)
+    suspend operator fun invoke(companyId: Int, types: List<SyncType>): Result<Unit> {
+        return syncRepository.sync(companyId, types)
     }
 }
 
 class SyncMasterDataUseCase(
     private val syncRepository: SyncRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return syncRepository.syncMasterData(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return syncRepository.syncMasterData(companyId)
     }
 }
 
 class FullSyncUseCase(
     private val syncRepository: SyncRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return syncRepository.fullSync(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return syncRepository.fullSync(companyId)
     }
 }

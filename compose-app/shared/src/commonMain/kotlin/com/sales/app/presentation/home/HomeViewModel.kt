@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sales.app.domain.usecase.GetItemsUseCase
 import com.sales.app.domain.usecase.GetPartiesUseCase
 import com.sales.app.domain.usecase.GetQuotesUseCase
-import com.sales.app.domain.usecase.GetAccountUseCase
+import com.sales.app.domain.usecase.GetCompanyUseCase
 import com.sales.app.domain.usecase.LogoutUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +25,7 @@ class HomeViewModel(
     private val getItemsUseCase: GetItemsUseCase,
     private val getPartiesUseCase: GetPartiesUseCase,
     private val getQuotesUseCase: GetQuotesUseCase,
-    private val getAccountUseCase: GetAccountUseCase
+    private val getAccountUseCase: GetCompanyUseCase
 ) : ViewModel() {
     
     private val _stats = MutableStateFlow(HomeStats())

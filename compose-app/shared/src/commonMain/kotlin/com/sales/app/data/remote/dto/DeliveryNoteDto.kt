@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class DeliveryNoteDto(
     val id: Int,
     val sale_id: Int,
-    val dn_number: String? = null,
+    val dn_no: String? = null,
     val date: String,
     val vehicle_no: String? = null,
     val lr_no: String? = null,

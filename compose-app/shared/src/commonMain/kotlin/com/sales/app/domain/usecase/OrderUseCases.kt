@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class GetOrdersUseCase(
     private val orderRepository: OrderRepository
 ) {
-    operator fun invoke(accountId: Int): Flow<List<Order>> {
-        return orderRepository.getOrdersByAccount(accountId)
+    operator fun invoke(companyId: Int): Flow<List<Order>> {
+        return orderRepository.getOrdersByAccount(companyId)
     }
 }
 
@@ -29,10 +29,10 @@ class CreateOrderUseCase(
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int,
+        companyId: Int,
         orderNo: String? = null
     ): Result<Order> {
-        return orderRepository.createOrder(partyId, date, items, accountId, orderNo)
+        return orderRepository.createOrder(partyId, date, items, companyId, orderNo)
     }
 }
 
@@ -44,10 +44,10 @@ class UpdateOrderUseCase(
         partyId: Int,
         date: String,
         items: List<OrderItemRequest>,
-        accountId: Int,
+        companyId: Int,
         orderNo: String? = null
     ): Result<Order> {
-        return orderRepository.updateOrder(id, partyId, date, items, accountId, orderNo)
+        return orderRepository.updateOrder(id, partyId, date, items, companyId, orderNo)
     }
 }
 
@@ -62,7 +62,7 @@ class DeleteOrderUseCase(
 class SyncOrdersUseCase(
     private val orderRepository: OrderRepository
 ) {
-    suspend operator fun invoke(accountId: Int): Result<Unit> {
-        return orderRepository.syncOrders(accountId)
+    suspend operator fun invoke(companyId: Int): Result<Unit> {
+        return orderRepository.syncOrders(companyId)
     }
 }

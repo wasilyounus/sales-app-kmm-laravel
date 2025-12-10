@@ -18,13 +18,13 @@ class Party extends Model
         'tax_number',
         'phone',
         'email',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
-    public function account()
+    public function company()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function addresses()

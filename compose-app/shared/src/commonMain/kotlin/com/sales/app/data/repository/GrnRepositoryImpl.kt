@@ -48,7 +48,7 @@ class GrnRepositoryImpl(
                 GrnEntity(
                     id = dto.id,
                     purchaseId = dto.purchase_id,
-                    grnNumber = dto.grn_number,
+                    grnNo = dto.grn_no,
                     date = dto.date,
                     vehicleNo = dto.vehicle_no,
                     invoiceNo = dto.invoice_no,
@@ -109,7 +109,7 @@ class GrnRepositoryImpl(
             val entity = GrnEntity(
                 id = dto.id,
                 purchaseId = dto.purchase_id,
-                grnNumber = dto.grn_number,
+                grnNo = dto.grn_no,
                 date = dto.date,
                 vehicleNo = dto.vehicle_no,
                 invoiceNo = dto.invoice_no,
@@ -168,7 +168,7 @@ class GrnRepositoryImpl(
             val entity = GrnEntity(
                 id = dto.id,
                 purchaseId = dto.purchase_id,
-                grnNumber = dto.grn_number,
+                grnNo = dto.grn_no,
                 date = dto.date,
                 vehicleNo = dto.vehicle_no,
                 invoiceNo = dto.invoice_no,
@@ -215,7 +215,7 @@ class GrnRepositoryImpl(
     private fun GrnEntity.toDomainModel(items: List<GrnItem> = emptyList()) = Grn(
         id = id,
         purchaseId = purchaseId,
-        grnNumber = grnNumber,
+        grnNo = grnNo,
         date = date,
         vehicleNo = vehicleNo,
         invoiceNo = invoiceNo,

@@ -1,3 +1,4 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
 package com.sales.app.data.repository
 
 import com.sales.app.data.local.dao.InventoryDao
@@ -56,7 +57,7 @@ class InventoryRepositoryImpl(
         accountId: Int
     ): Result<Unit> {
         return try {
-            val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toString()
+            val now = com.sales.app.util.TimeProvider.now().toLocalDateTime(TimeZone.currentSystemDefault()).toString()
             val entity = StockMovementEntity(
                 itemId = itemId,
                 qty = qty,

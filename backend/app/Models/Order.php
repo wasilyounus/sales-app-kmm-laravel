@@ -14,7 +14,7 @@ class Order extends Model
         'tax_id',
         'date',
         'order_no',
-        'account_id',
+        'company_id',
         'log_id',
     ];
 
@@ -34,7 +34,7 @@ class Order extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function items()
@@ -42,9 +42,9 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public static function generateNumber($accountId)
+    public static function generateNumber($companyId)
     {
-        $count = self::where('account_id', $accountId)->count() + 1;
+        $count = self::where('company_id', $companyId)->count() + 1;
         return 'ORD-' . str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 }
