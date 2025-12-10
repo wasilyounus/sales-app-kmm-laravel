@@ -14,7 +14,7 @@ class CompanyController extends Controller
     public function index()
     {
         $user = auth()->user();
-        
+
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -22,7 +22,7 @@ class CompanyController extends Controller
                 'data' => [],
             ], 401);
         }
-        
+
         $companies = $user->getCompaniesForSelection();
 
         return response()->json([
@@ -65,7 +65,7 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        $company = Company::findOrFail($id);
+        $company = Company::with('contacts')->findOrFail($id);
 
         return response()->json([
             'success' => true,

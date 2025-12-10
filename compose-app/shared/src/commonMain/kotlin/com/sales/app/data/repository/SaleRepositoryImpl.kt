@@ -178,43 +178,46 @@ class SaleRepositoryImpl(
             )
             val response = apiService.updateSale(id, request)
             
-            if (response.success) {
-                val dto = response.data
-                val entity = SaleEntity(
-                    id = dto.id,
-                    partyId = dto.party_id,
-                    date = dto.date,
-                    invoiceNo = dto.invoice_no,
-                    taxId = dto.tax_id,
-                    accountId = dto.account_id,
-                    createdAt = "",
-                    updatedAt = "",
-                    deletedAt = dto.deleted_at
-                )
-                saleDao.updateSale(entity)
-                
-                // Save items from response if present
-                dto.items?.let { items ->
-                    val itemEntities = items.map { itemDto ->
-                        SaleItemEntity(
-                            id = itemDto.id,
-                            saleId = itemDto.sale_id,
-                            itemId = itemDto.item_id,
-                            price = itemDto.price,
-                            qty = itemDto.qty,
-                            taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
-                            logId = 0,
-                            createdAt = "",
-                            updatedAt = "",
-                            deletedAt = null
-                        )
+                if (response.success) {
+                    val dto = response.data
+                    val entity = SaleEntity(
+                        id = dto.id,
+                        partyId = dto.party_id,
+                        date = dto.date,
+                        invoiceNo = dto.invoice_no,
+                        accountId = dto.account_id,
+                        taxId = dto.tax_id,
+                        createdAt = dto.created_at ?: "",
+                        updatedAt = dto.updated_at ?: "",
+                        deletedAt = dto.deleted_at
+                    )
+                    saleDao.updateSale(entity)
+                    
+                    // Delete old items first to prevent ghosts
+                    saleItemDao.deleteSaleItems(dto.id)
+                    
+                    // Save items from response if present
+                    dto.items?.let { items ->
+                        val itemEntities = items.map { itemDto ->
+                            SaleItemEntity(
+                                id = itemDto.id,
+                                saleId = itemDto.sale_id,
+                                itemId = itemDto.item_id,
+                                price = itemDto.price,
+                                qty = itemDto.qty,
+                                taxId = itemDto.tax_id,
+                                accountId = itemDto.account_id,
+                                logId = itemDto.log_id,
+                                createdAt = dto.created_at ?: "",
+                                updatedAt = dto.updated_at ?: "",
+                                deletedAt = itemDto.deleted_at
+                            )
+                        }
+                        saleItemDao.insertSaleItems(itemEntities)
                     }
-                    saleItemDao.insertSaleItems(itemEntities)
-                }
-                
-                Result.Success(entity.toDomainModel())
-            } else {
+                    
+                    Result.Success(entity.toDomainModel())
+                } else {
                 Result.Error("Failed to update sale")
             }
         } catch (e: Exception) {

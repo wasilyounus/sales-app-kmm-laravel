@@ -26,7 +26,8 @@ data class CompanyDto(
     @SerialName("deleted_at") val deletedAt: String? = null,
     @SerialName("tax_application_level") val taxApplicationLevel: String = "item",
     @SerialName("enable_delivery_notes") val enableDeliveryNotes: Boolean = true,
-    @SerialName("enable_grns") val enableGrns: Boolean = true
+    @SerialName("enable_grns") val enableGrns: Boolean = true,
+    val contacts: List<ContactDto> = emptyList()
 )
 
 @Serializable

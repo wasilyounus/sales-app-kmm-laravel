@@ -180,11 +180,11 @@ class DeliveryNoteRepositoryImpl(
             )
             deliveryNoteDao.insertDeliveryNote(entity)
 
-            // Update items: Delete old and insert new. Room @Transaction in DAO is better, but here we manually handle.
+            // Update items: Delete old and insert new.
             // Simplified approach: Clear old items for this DN locally and re-insert new ones.
-            // Note: A dedicated deleteItemsByDnId in DAO would be cleaner, but we can reuse insert which replaces on conflict if ID matches.
-            // However, items might have new IDs. Safest for local cache is to rely on sync or clear-insert.
-            // For now, let's just insert new ones. The backend handles the real data source of truth.
+            // This is crucial to avoid ghost items if items were removed on server.
+            deliveryNoteDao.deleteDeliveryNoteItems(dto.id)
+
             dto.items?.let { items ->
                 val itemEntities = items.map { itemDto ->
                     DeliveryNoteItemEntity(

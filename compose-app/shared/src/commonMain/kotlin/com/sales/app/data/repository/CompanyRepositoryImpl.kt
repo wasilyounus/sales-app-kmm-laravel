@@ -12,17 +12,32 @@ import kotlinx.coroutines.flow.map
 
 class CompanyRepositoryImpl(
     private val apiService: ApiService,
-    private val companyDao: CompanyDao
+    private val companyDao: CompanyDao,
+    private val contactDao: com.sales.app.data.local.dao.ContactDao
 ) : CompanyRepository {
     
     override fun getCompany(): Flow<Company?> {
         return companyDao.getAllCompanies().map { companies ->
-            companies.firstOrNull()?.toCompany()
+            val companyEntity = companies.firstOrNull()
+            if (companyEntity != null) {
+                // Merge in query logic: Fetch contacts for this company
+                val contacts = contactDao.getContactsForCompany(companyEntity.id)
+                companyEntity.toCompany(contacts)
+            } else {
+                null
+            }
         }
     }
     
     override fun getCompanyById(id: Int): Flow<Company?> {
-        return companyDao.getCompanyById(id).map { it?.toCompany() }
+        return companyDao.getCompanyById(id).map { entity ->
+            if (entity != null) {
+                val contacts = contactDao.getContactsForCompany(entity.id)
+                entity.toCompany(contacts)
+            } else {
+                null
+            }
+        }
     }
     
     override suspend fun fetchCompany(id: Int) {
@@ -31,6 +46,10 @@ class CompanyRepositoryImpl(
             if (response.success && response.data != null) {
                 val entity = response.data.toEntity()
                 companyDao.insertCompany(entity)
+                
+                // Sync in isolation: Save contacts separately
+                val contactEntities = response.data.contacts.map { it.toEntity(entity.id) }
+                contactDao.syncContacts(entity.id, contactEntities)
             }
         } catch (e: Exception) {
             // Handle error silently or log
@@ -45,7 +64,14 @@ class CompanyRepositoryImpl(
             if (response.success && response.data != null) {
                 val entity = response.data.toEntity()
                 companyDao.insertCompany(entity)
-                Result.Success(entity.toCompany())
+                
+                // Sync in isolation: Save contacts separately
+                val contactEntities = response.data.contacts.map { it.toEntity(entity.id) }
+                contactDao.syncContacts(entity.id, contactEntities)
+                
+                // Fetch fresh contacts to return complete object
+                val contacts = contactDao.getContactsForCompany(entity.id)
+                Result.Success(entity.toCompany(contacts))
             } else {
                 Result.Error(response.message ?: "Failed to update company")
             }
@@ -83,7 +109,7 @@ private fun com.sales.app.data.remote.dto.CompanyDto.toEntity(): CompanyEntity {
     )
 }
 
-private fun CompanyEntity.toCompany(): Company {
+private fun CompanyEntity.toCompany(contacts: List<com.sales.app.data.local.entity.ContactEntity> = emptyList()): Company {
     return Company(
         id = id,
         name = name,
@@ -107,7 +133,29 @@ private fun CompanyEntity.toCompany(): Company {
         taxApplicationLevel = taxApplicationLevel,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        deletedAt = deletedAt
+        deletedAt = deletedAt,
+        contacts = contacts.map {
+            com.sales.app.domain.model.Contact(
+                id = it.id,
+                name = it.name,
+                phone = it.phone,
+                email = it.email,
+                designation = it.designation,
+                isPrimary = it.isPrimary
+            )
+        }
+    )
+}
+
+private fun com.sales.app.data.remote.dto.ContactDto.toEntity(companyId: Int): com.sales.app.data.local.entity.ContactEntity {
+    return com.sales.app.data.local.entity.ContactEntity(
+        id = id,
+        companyId = companyId,
+        name = name,
+        phone = phone,
+        email = email,
+        designation = designation,
+        isPrimary = isPrimary
     )
 }
 
@@ -135,6 +183,16 @@ private fun Company.toDto(): com.sales.app.data.remote.dto.CompanyDto {
         taxApplicationLevel = taxApplicationLevel,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        deletedAt = deletedAt
+        deletedAt = deletedAt,
+        contacts = contacts.map {
+            com.sales.app.data.remote.dto.ContactDto(
+                id = it.id,
+                name = it.name,
+                phone = it.phone,
+                email = it.email,
+                designation = it.designation,
+                isPrimary = it.isPrimary
+            )
+        }
     )
 }

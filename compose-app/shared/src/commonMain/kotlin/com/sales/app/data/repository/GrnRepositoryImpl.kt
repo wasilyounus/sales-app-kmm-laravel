@@ -182,7 +182,9 @@ class GrnRepositoryImpl(
 
             // Update items: Delete old and insert new. 
             // Simplified approach: Clear old items for this GRN locally and re-insert new ones.
-            // Note: Assuming API returns the fresh state of items.
+            // This prevents ghost items.
+            grnDao.deleteGrnItems(dto.id)
+
             dto.items?.let { items ->
                 val itemEntities = items.map { itemDto ->
                     GrnItemEntity(

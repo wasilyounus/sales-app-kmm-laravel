@@ -23,5 +23,6 @@ data class Company(
     val enableGrns: Boolean = true,
     val createdAt: String? = null,
     val updatedAt: String? = null,
-    val deletedAt: String? = null
+    val deletedAt: String? = null,
+    val contacts: List<Contact> = emptyList()
 )

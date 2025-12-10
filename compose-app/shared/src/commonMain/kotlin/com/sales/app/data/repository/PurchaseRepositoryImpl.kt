@@ -186,6 +186,9 @@ class PurchaseRepositoryImpl(
                 )
                 purchaseDao.updatePurchase(entity)
                 
+                // Delete old items first to prevent ghosts
+                purchaseDao.deletePurchaseItems(dto.id)
+                
                 // Save items from response if present
                 dto.items?.let { items ->
                     val itemEntities = items.map { itemDto ->

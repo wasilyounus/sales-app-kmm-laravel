@@ -69,7 +69,7 @@ class SalesAppContainer(
     val saleRepository: SaleRepository = SaleRepositoryImpl(apiService, database.saleDao(), database.saleItemDao())
     val orderRepository: OrderRepository = OrderRepositoryImpl(apiService, database.orderDao(), database.orderItemDao())
     val purchaseRepository: PurchaseRepository = PurchaseRepositoryImpl(apiService, database.purchaseDao(), database.purchaseItemDao())
-    val accountRepository: AccountRepository = AccountRepositoryImpl(apiService, database.accountDao())
+    val accountRepository: AccountRepository = AccountRepositoryImpl(apiService, database.accountDao(), database.contactDao())
     val inventoryRepository: InventoryRepository = InventoryRepositoryImpl(database.inventoryDao(), database.itemDao())
     val taxRepository: TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
     val paymentRepository: PaymentRepository = PaymentRepositoryImpl(apiService, database.transactionDao())
