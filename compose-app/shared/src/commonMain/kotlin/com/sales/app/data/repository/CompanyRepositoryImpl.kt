@@ -19,9 +19,9 @@ class CompanyRepositoryImpl(
     
     override fun getCompany(): Flow<Company?> {
         return companyDao.getAllCompanies().map { companies ->
-            // For now, return the first company as default if no ID is specified
             val companyEntity = companies.firstOrNull()
             if (companyEntity != null) {
+                // Merge in query logic: Fetch contacts for this company
                 val contacts = contactDao.getContactsForCompany(companyEntity.id)
                 companyEntity.toCompany(contacts)
             } else {
@@ -29,19 +29,7 @@ class CompanyRepositoryImpl(
             }
         }
     }
-
-    override fun getCompanies(): Flow<List<Company>> {
-        return companyDao.getAllCompanies().map { entities ->
-            entities.map { entity ->
-                // We might want to load contacts for all companies, or maybe just basic info is enough for list
-                // Loading contacts for list might be N+1 query issue if not careful, 
-                // but with Room it's locally fast.
-                // For switcher, names are enough.
-                entity.toCompany()
-            }
-        }
-    }
-
+    
     override fun getCompanyById(id: Int): Flow<Company?> {
         return companyDao.getCompanyById(id).map { entity ->
             if (entity != null) {
@@ -49,6 +37,20 @@ class CompanyRepositoryImpl(
                 entity.toCompany(contacts)
             } else {
                 null
+            }
+        }
+    }
+    
+    override suspend fun fetchCompany(id: Int) {
+        try {
+            val response = apiService.getAccount(id)
+            if (response.success && response.data != null) {
+                val entity = response.data.toEntity()
+                companyDao.insertCompany(entity)
+                
+                // Sync in isolation: Save contacts separately
+                val contactEntities = response.data.contacts.map { it.toEntity(entity.id) }
+                contactDao.syncContacts(entity.id, contactEntities)
             }
         }
     }
