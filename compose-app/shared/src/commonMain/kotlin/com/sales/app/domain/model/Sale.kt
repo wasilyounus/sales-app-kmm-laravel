@@ -6,6 +6,6 @@ data class Sale(
     val date: String,
     val invoiceNo: String,
     val taxId: Int?,
-    val accountId: Int,
+    val companyId: Int,
     val items: List<SaleItem> = emptyList()
 )

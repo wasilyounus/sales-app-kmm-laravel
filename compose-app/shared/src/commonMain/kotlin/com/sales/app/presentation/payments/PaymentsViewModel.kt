@@ -22,11 +22,11 @@ class PaymentsViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    fun loadTransactions(accountId: Int) {
+    fun loadTransactions(companyId: Int) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                paymentRepository.getTransactions(accountId).collect {
+                paymentRepository.getTransactions(companyId).collect {
                     _transactions.value = it
                 }
             } catch (e: Exception) {

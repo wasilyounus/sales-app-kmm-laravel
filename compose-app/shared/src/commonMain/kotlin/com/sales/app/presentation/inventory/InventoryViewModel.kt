@@ -26,13 +26,13 @@ class InventoryViewModel(
     private val _uiState = MutableStateFlow(InventoryUiState())
     val uiState: StateFlow<InventoryUiState> = _uiState.asStateFlow()
 
-    fun loadInventory(accountId: Int) {
+    fun loadInventory(companyId: Int) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             // Trigger sync in background
             launch {
                 try {
-                    syncMasterDataUseCase(accountId)
+                    syncMasterDataUseCase(companyId)
                 } catch (e: Exception) {
                     // Ignore sync errors, just show local data
                     e.printStackTrace()
@@ -40,7 +40,7 @@ class InventoryViewModel(
             }
             
             try {
-                getInventorySummaryUseCase(accountId).collect { items ->
+                getInventorySummaryUseCase(companyId).collect { items ->
                     _uiState.update { 
                         it.copy(
                             items = items,
@@ -61,10 +61,10 @@ class InventoryViewModel(
         }
     }
     
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
-            loadInventory(accountId)
+            loadInventory(companyId)
         }
     }
     

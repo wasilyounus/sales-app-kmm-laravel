@@ -13,12 +13,12 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $query = Item::query();
 
-        if ($accountId) {
-            $query->where('account_id', $accountId);
+        if ($companyId) {
+            $query->where('company_id', $companyId);
         }
 
         $items = $query->get();
@@ -44,7 +44,7 @@ class ItemController extends Controller
             'uqc' => 'required|integer',
             'hsn' => 'nullable|integer',
             'tax_id' => 'nullable|integer|exists:taxes,id',
-            'account_id' => 'required|exists:accounts,id',
+            'company_id' => 'required|exists:companies,id',
         ]);
 
         $item = Item::create($validated);

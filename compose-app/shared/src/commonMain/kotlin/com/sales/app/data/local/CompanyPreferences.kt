@@ -7,36 +7,36 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class AccountPreferences(private val dataStore: DataStore<Preferences>) {
+class CompanyPreferences(private val dataStore: DataStore<Preferences>) {
     
     companion object {
-        private val CURRENT_ACCOUNT_ID = intPreferencesKey("current_account_id")
+        private val CURRENT_COMPANY_ID = intPreferencesKey("current_company_id")
     }
     
     /**
-     * Save the current account ID
+     * Save the current company ID
      */
-    suspend fun saveCurrentAccount(accountId: Int) {
+    suspend fun saveCurrentCompany(companyId: Int) {
         dataStore.edit { preferences ->
-            preferences[CURRENT_ACCOUNT_ID] = accountId
+            preferences[CURRENT_COMPANY_ID] = companyId
         }
     }
     
     /**
-     * Get the current account ID as a Flow
+     * Get the current company ID as a Flow
      */
-    fun getCurrentAccount(): Flow<Int?> {
+    fun getCurrentCompany(): Flow<Int?> {
         return dataStore.data.map { preferences ->
-            preferences[CURRENT_ACCOUNT_ID]
+            preferences[CURRENT_COMPANY_ID]
         }
     }
     
     /**
-     * Clear the current account
+     * Clear the current company
      */
-    suspend fun clearCurrentAccount() {
+    suspend fun clearCurrentCompany() {
         dataStore.edit { preferences ->
-            preferences.remove(CURRENT_ACCOUNT_ID)
+            preferences.remove(CURRENT_COMPANY_ID)
         }
     }
 }

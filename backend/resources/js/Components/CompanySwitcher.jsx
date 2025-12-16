@@ -30,13 +30,17 @@ export default function CompanySwitcher({ currentCompany }) {
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="outline"
-                    className="h-10 px-4 border-gray-200 hover:bg-lime-50 hover:border-lime-300 hover:text-lime-700 transition-all duration-200 gap-2"
+                    className="w-full justify-between h-12 px-3 border-border hover:bg-muted/50 transition-all duration-200 group"
                 >
-                    <Building2 className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium text-sm max-w-[150px] truncate">
-                        {currentCompany ? currentCompany.name : 'Select Company'}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary">
+                            <Building2 className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="font-bold text-sm truncate">
+                            {currentCompany ? currentCompany.name : 'Select Company'}
+                        </span>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-72">

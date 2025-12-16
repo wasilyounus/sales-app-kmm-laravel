@@ -8,6 +8,6 @@ data class PriceListEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Long,
     val name: String,
-    val accountId: Int,
+    val companyId: Int,
     val itemsCount: Int = 0
 )

@@ -20,7 +20,7 @@ import com.sales.app.domain.model.PriceListItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriceListDetailScreen(
-    accountId: Int,
+    companyId: Int,
     priceListId: Long,
     onNavigateBack: () -> Unit,
     viewModel: PriceListDetailViewModel
@@ -34,11 +34,11 @@ fun PriceListDetailScreen(
     var priceInput by remember { mutableStateOf("") }
     var itemExpanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(accountId, priceListId) {
+    LaunchedEffect(companyId, priceListId) {
         if (priceListId != -1L) {
             viewModel.loadPriceList(priceListId)
         }
-        viewModel.loadAvailableItems(accountId)
+        viewModel.loadAvailableItems(companyId)
     }
 
     Scaffold(

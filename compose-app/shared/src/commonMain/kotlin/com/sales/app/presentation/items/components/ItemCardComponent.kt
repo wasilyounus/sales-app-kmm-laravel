@@ -1,35 +1,41 @@
 package com.sales.app.presentation.items.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sales.app.presentation.items.model.ItemUiModel
 
-/**
- * Item card component matching the reference app design
- * Background color: #F0F0D9 (cream/yellow)
- */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemCardComponent(
     modifier: Modifier = Modifier,
     itemUiModel: ItemUiModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null
 ) {
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
     val cardColor = if (isDark) MaterialTheme.colorScheme.surfaceVariant else Color(0xFFF0F0D9)
     
     Card(
-        onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = cardColor),
         modifier = modifier
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .fillMaxWidth()
+            .clip(CardDefaults.shape)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
     ) {
         Column(
             horizontalAlignment = Alignment.Start,

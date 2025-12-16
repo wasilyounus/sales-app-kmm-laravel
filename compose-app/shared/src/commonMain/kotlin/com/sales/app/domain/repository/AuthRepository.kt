@@ -14,5 +14,7 @@ interface AuthRepository {
     ): Result<User>
     suspend fun logout(): Result<Unit>
     fun getToken(): Flow<String?>
+    fun currentUser(): Flow<User?>
     suspend fun isLoggedIn(): Boolean
+    suspend fun selectCompany(companyId: Int): Result<Unit>
 }

@@ -21,7 +21,9 @@ data class Company(
     val taxApplicationLevel: String = "item",
     val enableDeliveryNotes: Boolean = true,
     val enableGrns: Boolean = true,
+    val darkMode: Boolean = false,
     val createdAt: String? = null,
     val updatedAt: String? = null,
-    val deletedAt: String? = null
+    val deletedAt: String? = null,
+    val contacts: List<Contact> = emptyList()
 )

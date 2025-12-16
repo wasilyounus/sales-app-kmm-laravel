@@ -6,7 +6,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface PurchaseRepository {
-    fun getPurchasesByAccount(accountId: Int): Flow<List<Purchase>>
+    fun getPurchasesByAccount(companyId: Int): Flow<List<Purchase>>
     fun getPurchaseById(purchaseId: Int): Flow<Purchase?>
     suspend fun syncPurchases(accountId: Int): Result<Unit>
     suspend fun createPurchase(

@@ -56,12 +56,12 @@ class PartyFormViewModel(
     
     private var currentPartyId: Int? = null
 
-    fun loadParty(accountId: Int, partyId: Int) {
+    fun loadParty(companyId: Int, partyId: Int) {
         currentPartyId = partyId
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, formUiState = PartyFormUiState.Update) }
             
-            getPartyByIdUseCase(accountId, partyId).collect { party ->
+            getPartyByIdUseCase(companyId, partyId).collect { party ->
                 if (party != null) {
                     val addressStates = party.addresses.map { addr ->
                         AddressState(
@@ -142,7 +142,7 @@ class PartyFormViewModel(
         }
     }
 
-    fun saveParty(accountId: Int, onSuccess: () -> Unit) {
+    fun saveParty(companyId: Int, onSuccess: () -> Unit) {
         if (!validateForm()) return
         
         viewModelScope.launch {
@@ -161,7 +161,7 @@ class PartyFormViewModel(
             
             val result = if (_uiState.value.formUiState is PartyFormUiState.Add) {
                 createPartyUseCase(
-                    accountId = accountId,
+                    companyId = companyId,
                     name = _uiState.value.name,
                     taxNumber = _uiState.value.taxNumber.ifBlank { null },
                     phone = _uiState.value.phone.ifBlank { null },
@@ -177,7 +177,7 @@ class PartyFormViewModel(
                         phone = _uiState.value.phone.ifBlank { null },
                         email = _uiState.value.email.ifBlank { null },
                         addresses = addressRequests,
-                        accountId = accountId
+                        companyId = companyId
                     )
                 } ?: Result.Error("Party ID not found")
             }
@@ -202,8 +202,8 @@ class PartyFormViewModel(
         }
     }
     
-    fun saveAndAdd(accountId: Int) {
-        saveParty(accountId) {
+    fun saveAndAdd(companyId: Int) {
+        saveParty(companyId) {
             resetForm()
         }
     }

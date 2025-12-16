@@ -26,11 +26,13 @@ data class CompanyDto(
     @SerialName("deleted_at") val deletedAt: String? = null,
     @SerialName("tax_application_level") val taxApplicationLevel: String = "item",
     @SerialName("enable_delivery_notes") val enableDeliveryNotes: Boolean = true,
-    @SerialName("enable_grns") val enableGrns: Boolean = true
+    @SerialName("enable_grns") val enableGrns: Boolean = true,
+    @SerialName("dark_mode") val darkMode: Boolean = false,
+    val contacts: List<ContactDto> = emptyList()
 )
 
 @Serializable
-data class AccountResponse(
+data class CompanyResponse(
     val success: Boolean,
     val message: String? = null,
     val data: CompanyDto? = null

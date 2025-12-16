@@ -29,9 +29,9 @@ class PriceListController extends Controller
      */
     public function getEffectivePrice(Request $request)
     {
-        $accountId = $request->header('X-Account-ID');
-        if (!$accountId) {
-            return response()->json(['error' => 'Account ID header missing'], 400);
+        $companyId = $request->header('X-Company-ID');
+        if (!$companyId) {
+            return response()->json(['error' => 'Company ID header missing'], 400);
         }
 
         $request->validate([
@@ -49,7 +49,7 @@ class PriceListController extends Controller
         // 1. Check Sales / Purchases History
         if ($type === 'SALE') {
             $latestSaleItem = SaleItem::join('sales', 'sales.id', '=', 'sale_items.sale_id')
-                ->where('sales.account_id', $accountId)
+                ->where('sales.company_id', $companyId)
                 ->where('sales.party_id', $partyId)
                 ->where('sale_items.item_id', $itemId)
                 ->orderBy('sales.date', 'desc')
@@ -66,7 +66,7 @@ class PriceListController extends Controller
 
             // Check Quotes
             $latestQuoteItem = QuoteItem::join('quotes', 'quotes.id', '=', 'quote_items.quote_id')
-                ->where('quotes.account_id', $accountId)
+                ->where('quotes.company_id', $companyId)
                 ->where('quotes.party_id', $partyId)
                 ->where('quote_items.item_id', $itemId)
                 ->orderBy('quotes.date', 'desc')
@@ -82,8 +82,8 @@ class PriceListController extends Controller
             }
 
         } else if ($type === 'PURCHASE') {
-             $latestPurchaseItem = PurchaseItem::join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
-                ->where('purchases.account_id', $accountId)
+            $latestPurchaseItem = PurchaseItem::join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
+                ->where('purchases.company_id', $companyId)
                 ->where('purchases.party_id', $partyId)
                 ->where('purchase_items.item_id', $itemId)
                 ->orderBy('purchases.date', 'desc')
@@ -105,15 +105,15 @@ class PriceListController extends Controller
         // Let's find any price list item for this product.
         // In a complex system, we would check if the Party has a specific price_list_id assigned.
         // For now, we query all price lists valid for this item.
-        
+
         $priceListItems = PriceListItem::join('price_lists', 'price_lists.id', '=', 'price_list_items.price_list_id')
-            ->where('price_lists.account_id', $accountId)
+            ->where('price_lists.company_id', $companyId)
             ->where('price_list_items.item_id', $itemId)
             ->select('price_list_items.price', 'price_lists.updated_at as date', 'price_lists.name')
             ->get();
 
         foreach ($priceListItems as $pli) {
-             $candidates[] = [
+            $candidates[] = [
                 'source' => 'Price List: ' . $pli->name,
                 'price' => $pli->price,
                 'date' => $pli->date // Price List update date
@@ -137,8 +137,8 @@ class PriceListController extends Controller
 
     public function index(Request $request)
     {
-        $accountId = $request->header('X-Account-ID');
-        $query = PriceList::where('account_id', $accountId)->withCount('items');
+        $companyId = $request->header('X-Company-ID');
+        $query = PriceList::where('company_id', $companyId)->withCount('items');
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
@@ -147,7 +147,7 @@ class PriceListController extends Controller
 
     public function store(Request $request)
     {
-        $accountId = $request->header('X-Account-ID');
+        $accountId = $request->header('X-Company-ID');
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -165,14 +165,14 @@ class PriceListController extends Controller
         $priceList = PriceList::with('items.item')->findOrFail($id);
         return response()->json($priceList);
     }
-    
+
     public function update(Request $request, $id)
     {
         $priceList = PriceList::findOrFail($id);
         $priceList->update($request->only('name'));
         return response()->json($priceList);
     }
-    
+
     public function destroy($id)
     {
         $priceList = PriceList::findOrFail($id);
@@ -200,7 +200,7 @@ class PriceListController extends Controller
                 ['price' => $itemData['price']]
             );
         }
-        
+
         // Touch the price list to update 'updated_at' so it becomes the latest price source
         $priceList->touch();
 

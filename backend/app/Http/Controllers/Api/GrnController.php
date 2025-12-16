@@ -12,13 +12,13 @@ class GrnController extends Controller
 {
     public function index(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $query = Grn::with(['items.item', 'purchase.party'])
             ->orderBy('date', 'desc');
 
-        if ($accountId) {
-            $query->where('account_id', $accountId);
+        if ($companyId) {
+            $query->where('company_id', $companyId);
         }
 
         $grns = $query->get();
@@ -31,7 +31,7 @@ class GrnController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'account_id' => 'required|exists:accounts,id',
+            'company_id' => 'required|exists:companies,id',
             'purchase_id' => 'required|exists:purchases,id',
             'date' => 'required|date',
             'vehicle_no' => 'nullable|string|max:50',
@@ -53,7 +53,7 @@ class GrnController extends Controller
                 'vehicle_no' => $validated['vehicle_no'] ?? null,
                 'invoice_no' => $validated['invoice_no'] ?? null,
                 'notes' => $validated['notes'] ?? null,
-                'account_id' => $accountId,
+                'company_id' => $accountId,
             ]);
 
             // Create items

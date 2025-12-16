@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemDao {
-    @Query("SELECT * FROM items WHERE accountId = :accountId AND deletedAt IS NULL ORDER BY name ASC")
-    fun getItemsByAccount(accountId: Int): Flow<List<ItemEntity>>
+    @Query("SELECT * FROM items WHERE companyId = :companyId AND deletedAt IS NULL ORDER BY name ASC")
+    fun getItemsByAccount(companyId: Int): Flow<List<ItemEntity>>
     
     @Query("SELECT * FROM items WHERE id = :id")
     fun getItemById(id: Int): Flow<ItemEntity?>
     
-    @Query("SELECT * FROM items WHERE accountId = :accountId AND name LIKE '%' || :query || '%' AND deletedAt IS NULL")
-    fun searchItems(accountId: Int, query: String): Flow<List<ItemEntity>>
+    @Query("SELECT * FROM items WHERE companyId = :companyId AND name LIKE '%' || :query || '%' AND deletedAt IS NULL")
+    fun searchItems(companyId: Int, query: String): Flow<List<ItemEntity>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: ItemEntity)
@@ -27,6 +27,6 @@ interface ItemDao {
     @Delete
     suspend fun deleteItem(item: ItemEntity)
     
-    @Query("DELETE FROM items WHERE accountId = :accountId")
-    suspend fun deleteItemsByAccount(accountId: Int)
+    @Query("DELETE FROM items WHERE companyId = :companyId")
+    suspend fun deleteItemsByAccount(companyId: Int)
 }

@@ -6,8 +6,8 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface SyncRepository {
-    suspend fun sync(accountId: Int, types: List<SyncType>): Result<Unit>
-    suspend fun syncMasterData(accountId: Int): Result<Unit>
-    suspend fun fullSync(accountId: Int): Result<Unit>
+    suspend fun sync(companyId: Int, types: List<SyncType>): Result<Unit>
+    suspend fun syncMasterData(companyId: Int): Result<Unit>
+    suspend fun fullSync(companyId: Int): Result<Unit>
     fun getSyncStatus(): Flow<SyncTimestampEntity?>
 }

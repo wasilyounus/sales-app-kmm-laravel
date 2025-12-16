@@ -45,10 +45,10 @@ class ApiService(
     }
     
     // Items
-    suspend fun getItems(accountId: Int): ItemsResponse {
+    suspend fun getItems(companyId: Int): ItemsResponse {
         return client.get("items") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
@@ -86,11 +86,17 @@ class ApiService(
         }.body()
     }
     
+    suspend fun getTaxes(): TaxesResponse {
+        return client.get("taxes") {
+            addAuthHeader()
+        }.body()
+    }
+    
     // Parties
-    suspend fun getParties(accountId: Int): PartiesResponse {
+    suspend fun getParties(companyId: Int): PartiesResponse {
         return client.get("parties") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
@@ -123,33 +129,33 @@ class ApiService(
     }
     
     // Sync
-    suspend fun syncMasterData(accountId: Int, timestamp: String): SyncResponse {
+    suspend fun syncMasterData(companyId: Int, timestamp: String): SyncResponse {
         return client.get("sync/master-data") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
             parameter("timestamp", timestamp)
         }.body()
     }
     
-    suspend fun fullSync(accountId: Int): SyncResponse {
+    suspend fun fullSync(companyId: Int): SyncResponse {
         return client.get("sync/full") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
-    suspend fun getSyncStatus(accountId: Int): SyncStatusResponse {
+    suspend fun getSyncStatus(companyId: Int): SyncStatusResponse {
         return client.get("sync/status") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
     // Quotes
-    suspend fun getQuotes(accountId: Int): QuotesResponse {
+    suspend fun getQuotes(companyId: Int): QuotesResponse {
         return client.get("quotes") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
@@ -181,36 +187,43 @@ class ApiService(
         }
     }
     
-    suspend fun getQuoteItems(accountId: Int): QuoteItemsResponse {
+    suspend fun getQuoteItems(companyId: Int): QuoteItemsResponse {
         return client.get("quoteItems") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
     // Accounts
-    suspend fun getAccount(id: Int): AccountResponse {
-        return client.get("accounts/$id") {
+    suspend fun getCompany(id: Int): CompanyResponse {
+        return client.get("companies/$id") {
             addAuthHeader()
         }.body()
     }
 
-    suspend fun getUserAccounts(): AccountSelectionResponse {
+    suspend fun getCompanies(): CompanySelectionResponse {
         return client.get("admin/select-account") {
             addAuthHeader()
         }.body()
     }
-
-    suspend fun selectAccount(accountId: Int): SelectAccountResponse {
-        return client.post("admin/select-account") {
+    
+    // Modules
+    suspend fun getModules(): List<ModuleDto> {
+        return client.get("modules") {
             addAuthHeader()
-            contentType(ContentType.Application.Json)
-            setBody(SelectAccountRequest(accountId))
         }.body()
     }
 
-    suspend fun updateAccount(id: Int, request: CompanyDto): AccountResponse {
-        return client.put("accounts/$id") {
+    suspend fun selectCompany(companyId: Int): SelectCompanyResponse {
+        return client.post("admin/select-account") {
+            addAuthHeader()
+            contentType(ContentType.Application.Json)
+            setBody(SelectCompanyRequest(companyId))
+        }.body()
+    }
+
+    suspend fun updateCompany(id: Int, request: CompanyDto): CompanyResponse {
+        return client.put("companies/$id") {
             addAuthHeader()
             contentType(ContentType.Application.Json)
             setBody(request)
@@ -218,10 +231,10 @@ class ApiService(
     }
 
     // Sales
-    suspend fun getSales(accountId: Int): SalesResponse {
+    suspend fun getSales(companyId: Int): SalesResponse {
         return client.get("sales") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
@@ -253,18 +266,18 @@ class ApiService(
         }
     }
     
-    suspend fun getSaleItems(accountId: Int): SaleItemsResponse {
+    suspend fun getSaleItems(companyId: Int): SaleItemsResponse {
         return client.get("saleItems") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
     // Orders
-    suspend fun getOrders(accountId: Int): OrdersResponse {
+    suspend fun getOrders(companyId: Int): OrdersResponse {
         return client.get("orders") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
@@ -296,18 +309,18 @@ class ApiService(
         }
     }
     
-    suspend fun getOrderItems(accountId: Int): OrderItemsResponse {
+    suspend fun getOrderItems(companyId: Int): OrderItemsResponse {
         return client.get("orderItems") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
     // Purchases
-    suspend fun getPurchases(accountId: Int): PurchasesResponse {
+    suspend fun getPurchases(companyId: Int): PurchasesResponse {
         return client.get("purchases") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
     
@@ -339,18 +352,18 @@ class ApiService(
         }
     }
     
-    suspend fun getPurchaseItems(accountId: Int): PurchaseItemsResponse {
+    suspend fun getPurchaseItems(companyId: Int): PurchaseItemsResponse {
         return client.get("purchaseItems") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
     // Payments
-    suspend fun getTransactions(accountId: Int, page: Int = 1, search: String? = null): TransactionsResponse {
+    suspend fun getTransactions(companyId: Int, page: Int = 1, search: String? = null): TransactionsResponse {
         return client.get("payments") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
             parameter("page", page)
             if (search != null) parameter("search", search)
         }.body()
@@ -365,10 +378,10 @@ class ApiService(
     }
 
     // Price Lists
-    suspend fun getPriceLists(accountId: Int): PriceListsResponse {
+    suspend fun getPriceLists(companyId: Int): PriceListsResponse {
         return client.get("price-lists") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
@@ -401,10 +414,10 @@ class ApiService(
     }
 
     // Delivery Notes
-    suspend fun getDeliveryNotes(accountId: Int): DeliveryNotesResponse {
+    suspend fun getDeliveryNotes(companyId: Int): DeliveryNotesResponse {
         return client.get("delivery-notes") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
@@ -414,11 +427,11 @@ class ApiService(
         }.body()
     }
 
-    suspend fun createDeliveryNote(accountId: Int, request: DeliveryNoteRequest): DeliveryNoteResponse {
+    suspend fun createDeliveryNote(companyId: Int, request: DeliveryNoteRequest): DeliveryNoteResponse {
         return client.post("delivery-notes") {
             addAuthHeader()
             contentType(ContentType.Application.Json)
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
             setBody(request)
         }.body()
     }
@@ -430,10 +443,10 @@ class ApiService(
     }
 
     // GRNs (Goods Received Notes)
-    suspend fun getGrns(accountId: Int): GrnsResponse {
+    suspend fun getGrns(companyId: Int): GrnsResponse {
         return client.get("grns") {
             addAuthHeader()
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
         }.body()
     }
 
@@ -443,11 +456,11 @@ class ApiService(
         }.body()
     }
 
-    suspend fun createGrn(accountId: Int, request: GrnRequest): GrnResponse {
+    suspend fun createGrn(companyId: Int, request: GrnRequest): GrnResponse {
         return client.post("grns") {
             addAuthHeader()
             contentType(ContentType.Application.Json)
-            parameter("account_id", accountId)
+            parameter("company_id", companyId)
             setBody(request)
         }.body()
     }

@@ -6,13 +6,13 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface InventoryRepository {
-    fun getInventorySummary(accountId: Int): Flow<List<InventorySummary>>
+    fun getInventorySummary(companyId: Int): Flow<List<InventorySummary>>
     fun getStockMovements(itemId: Int): Flow<List<StockMovement>>
     suspend fun adjustStock(
         itemId: Int,
         qty: Double,
         type: String,
         reason: String,
-        accountId: Int
+        companyId: Int
     ): Result<Unit>
 }

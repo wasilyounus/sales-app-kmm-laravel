@@ -34,14 +34,14 @@ class QuotesViewModel(
     private val _uiState = MutableStateFlow(QuotesUiState())
     val uiState: StateFlow<QuotesUiState> = _uiState.asStateFlow()
 
-    fun loadQuotes(accountId: Int) {
+    fun loadQuotes(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             // Trigger sync
             launch {
                 try {
-                    syncQuotesUseCase(accountId)
+                    syncQuotesUseCase(companyId)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -49,8 +49,8 @@ class QuotesViewModel(
 
             // Combine quotes and parties to create UI model
             combine(
-                getQuotesUseCase(accountId),
-                getPartiesUseCase(accountId)
+                getQuotesUseCase(companyId),
+                getPartiesUseCase(companyId)
             ) { quotes, parties ->
                 val partyMap = parties.associate { it.id to it.name }
                 quotes.map { quote ->
@@ -86,10 +86,10 @@ class QuotesViewModel(
         }
     }
 
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
-            loadQuotes(accountId)
+            loadQuotes(companyId)
         }
     }
     

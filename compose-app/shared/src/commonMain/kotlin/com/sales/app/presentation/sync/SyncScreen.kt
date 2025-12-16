@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import com.sales.app.util.isDesktop
@@ -22,7 +22,7 @@ import com.sales.app.util.isDesktop
 @OptIn(ExperimentalMaterial3Api::class, kotlin.time.ExperimentalTime::class)
 @Composable
 fun SyncScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     viewModel: SyncViewModel
 ) {
@@ -111,7 +111,7 @@ fun SyncScreen(
                         uiState.lastSyncTime?.let { timestamp ->
                             val instant = Instant.fromEpochMilliseconds(timestamp.toLong())
                             val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-                            val formattedDate = "${dateTime.month.name} ${dateTime.dayOfMonth}, ${dateTime.year} ${dateTime.hour}:${dateTime.minute}"
+                            val formattedDate = "${dateTime.month.name} ${dateTime.day}, ${dateTime.year} ${dateTime.hour}:${dateTime.minute}"
                             
                             Text(
                                 text = "Last synced: $formattedDate",
@@ -138,8 +138,8 @@ fun SyncScreen(
                         ) {
                             SyncOptionsContent(
                                 uiState = uiState,
-                                onIncrementalSync = { viewModel.syncMasterData(accountId) },
-                                onFullSync = { viewModel.fullSync(accountId) }
+                                onIncrementalSync = { viewModel.syncMasterData(companyId) },
+                                onFullSync = { viewModel.fullSync(companyId) }
                             )
                         }
                         
@@ -164,8 +164,8 @@ fun SyncScreen(
                     ) {
                         SyncOptionsContent(
                             uiState = uiState,
-                            onIncrementalSync = { viewModel.syncMasterData(accountId) },
-                            onFullSync = { viewModel.fullSync(accountId) }
+                            onIncrementalSync = { viewModel.syncMasterData(companyId) },
+                            onFullSync = { viewModel.fullSync(companyId) }
                         )
                     }
                     

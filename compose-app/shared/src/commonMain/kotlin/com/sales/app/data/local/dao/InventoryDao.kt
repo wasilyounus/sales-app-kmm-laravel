@@ -15,6 +15,6 @@ interface InventoryDao {
     @Query("SELECT * FROM stock_movements WHERE itemId = :itemId ORDER BY date DESC")
     fun getStockMovements(itemId: Int): Flow<List<StockMovementEntity>>
 
-    @Query("SELECT * FROM stock_movements WHERE accountId = :accountId")
-    fun getAllStockMovements(accountId: Int): Flow<List<StockMovementEntity>>
+    @Query("SELECT * FROM stock_movements WHERE companyId = :companyId")
+    fun getAllStockMovements(companyId: Int): Flow<List<StockMovementEntity>>
 }

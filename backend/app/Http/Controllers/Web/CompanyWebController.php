@@ -14,7 +14,7 @@ class CompanyWebController extends Controller
      */
     public function index()
     {
-        $companies = Company::orderBy('id', 'desc')->get();
+        $companies = Company::with('contacts')->orderBy('id', 'desc')->get();
         $taxes = \App\Models\Tax::all();
 
         return Inertia::render('Companies/Index', [

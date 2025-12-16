@@ -35,20 +35,44 @@ echo ""
 # ==========================================
 # 2. Target Selection
 # ==========================================
-echo ""
-echo "Select Target to Run:"
-echo "1) Web Only (Backend + Frontend)"
-echo "2) Desktop"
-echo "3) Android"
-echo "4) iOS"
-echo ""
-echo -n "Enter choice [1-4] (default: 1): "
-read -t 3 choice
+
+# Parse arguments for target and migration mode
+MIGRATION_MODE="standard"
+choice=""
+
+for arg in "$@"; do
+    case $arg in
+        1|2|3|4)
+            choice=$arg
+            ;;
+        fresh)
+            MIGRATION_MODE="fresh"
+            ;;
+    esac
+done
+
+# Only show menu if no choice was passed as argument
+if [ -z "$choice" ]; then
+    echo ""
+    echo "Select Target to Run:"
+    echo "1) Web Only (Backend + Frontend)"
+    echo "2) Desktop"
+    echo "3) Android"
+    echo "4) iOS"
+    echo ""
+    echo -n "Enter choice [1-4] (default: 1): "
+    read input_choice
+    
+    # Use input_choice if provided, otherwise default to existing choice (empty) causing fallback to 1 below
+    if [ -n "$input_choice" ]; then
+        choice=$input_choice
+    fi
+fi
 
 # Default to option 1 (Web Only) if no input or timeout
 if [ -z "$choice" ]; then
     choice=1
-    echo "1 (timeout - using Web Only)"
+    echo "Using default: 1 (Web Only)"
 fi
 
 case $choice in
@@ -60,7 +84,7 @@ case $choice in
         ;;
     2)
         target="desktop"
-        GRADLE_TASK=":desktopApp:run"
+        GRADLE_TASK=":desktopApp:run --continuous"
         echo ""
         echo "🚀 Starting Services & App (desktop)..."
         echo "   (Press Ctrl+C to stop all)"
@@ -105,8 +129,14 @@ cleanup() {
 trap cleanup SIGINT
 
 # Run migrations
-echo "🐘 Running migrations and seeds..."
-(cd backend && php artisan migrate:fresh --seed)
+echo "🐘 Checks for migration mode..."
+if [ "$MIGRATION_MODE" == "fresh" ]; then
+    echo "⚠️  FRESH MIGRATION REQUESTED: Wiping database and seeding..."
+    (cd backend && php artisan migrate:fresh --seed)
+else
+    echo "🐘 Running standard migration..."
+    (cd backend && php artisan migrate)
+fi
 
 # Run npm run dev
 echo "📦 Starting npm run dev (logs -> backend/npm.log)..."
@@ -121,9 +151,6 @@ pushd backend > /dev/null
 php artisan serve --host=${API_HOST} --port=${API_PORT} > laravel.log 2>&1 &
 LARAVEL_PID=$!
 popd > /dev/null
-
-# Wait a moment for services to spin up
-sleep 3
 
 # ==========================================
 # 4. Run App

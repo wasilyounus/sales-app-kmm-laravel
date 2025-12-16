@@ -42,9 +42,9 @@ class PriceListDetailViewModel(
         }
     }
 
-    fun loadAvailableItems(accountId: Int) {
+    fun loadAvailableItems(companyId: Int) {
         viewModelScope.launch {
-            itemRepository.getItemsByAccount(accountId).collect {
+            itemRepository.getItemsByAccount(companyId).collect {
                 _availableItems.value = it
             }
         }

@@ -24,6 +24,6 @@ interface SaleItemDao {
     @Query("DELETE FROM sale_items WHERE saleId = :saleId")
     suspend fun deleteSaleItemsBySaleId(saleId: Int)
     
-    @Query("DELETE FROM sale_items WHERE accountId = :accountId")
-    suspend fun deleteSaleItemsByAccount(accountId: Int)
+    @Query("DELETE FROM sale_items WHERE companyId = :companyId")
+    suspend fun deleteSaleItemsByAccount(companyId: Int)
 }

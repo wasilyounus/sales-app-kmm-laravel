@@ -8,7 +8,7 @@ data class Grn(
     val vehicleNo: String?,
     val invoiceNo: String?,
     val notes: String?,
-    val accountId: Int,
+    val companyId: Int,
     val items: List<GrnItem> = emptyList()
 )
 

@@ -36,10 +36,10 @@ class StockAdjustmentViewModel(
     private val _uiState = MutableStateFlow(StockAdjustmentUiState())
     val uiState: StateFlow<StockAdjustmentUiState> = _uiState.asStateFlow()
 
-    fun loadItems(accountId: Int) {
+    fun loadItems(companyId: Int) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            getItemsUseCase(accountId).collect { items ->
+            getItemsUseCase(companyId).collect { items ->
                 _uiState.update { 
                     it.copy(
                         items = items,
@@ -49,6 +49,7 @@ class StockAdjustmentViewModel(
             }
         }
     }
+
 
     fun onItemChange(itemId: Int) {
         _uiState.update { it.copy(itemId = itemId, isItemValid = true) }
@@ -66,7 +67,7 @@ class StockAdjustmentViewModel(
         _uiState.update { it.copy(reason = reason) }
     }
 
-    fun saveAdjustment(accountId: Int, onSuccess: () -> Unit) {
+    fun saveAdjustment(companyId: Int, onSuccess: () -> Unit) {
         val state = uiState.value
         
         val isItemValid = state.itemId != null
@@ -91,7 +92,7 @@ class StockAdjustmentViewModel(
                 qty = state.qty.toDouble(),
                 type = state.type,
                 reason = state.reason,
-                accountId = accountId
+                companyId = companyId
             )
 
             when (result) {

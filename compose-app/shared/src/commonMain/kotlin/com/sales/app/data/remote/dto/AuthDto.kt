@@ -36,5 +36,6 @@ data class UserDto(
     val name: String,
     val email: String,
     val created_at: String,
-    val updated_at: String
+    val updated_at: String,
+    val current_company_id: Int? = null
 )

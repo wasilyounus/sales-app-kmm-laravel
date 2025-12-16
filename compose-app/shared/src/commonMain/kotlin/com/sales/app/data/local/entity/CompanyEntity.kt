@@ -27,5 +27,6 @@ data class CompanyEntity(
     val deletedAt: String?,
     val enableDeliveryNotes: Boolean = true,
     val enableGrns: Boolean = true,
+    val darkMode: Boolean = false,
     val taxApplicationLevel: String = "item"
 )

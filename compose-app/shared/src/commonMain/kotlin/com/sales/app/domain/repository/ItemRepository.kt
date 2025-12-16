@@ -6,9 +6,9 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface ItemRepository {
-    fun getItemsByAccount(accountId: Int): Flow<List<Item>>
-    fun searchItems(accountId: Int, query: String): Flow<List<Item>>
-    suspend fun syncItems(accountId: Int): Result<Unit>
+    fun getItemsByAccount(companyId: Int): Flow<List<Item>>
+    fun searchItems(companyId: Int, query: String): Flow<List<Item>>
+    suspend fun syncItems(companyId: Int): Result<Unit>
     suspend fun createItem(
         name: String,
         altName: String?,
@@ -16,7 +16,7 @@ interface ItemRepository {
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int,
+        companyId: Int,
         taxId: Int? = null
     ): Result<Item>
     suspend fun updateItem(
@@ -27,10 +27,10 @@ interface ItemRepository {
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int,
+        companyId: Int,
         taxId: Int? = null
     ): Result<Item>
     suspend fun deleteItem(id: Int): Result<Unit>
-    suspend fun getItemById(accountId: Int, itemId: Int): Item?
+    suspend fun getItemById(companyId: Int, itemId: Int): Item?
     suspend fun getUqcs(): List<Uqc>
 }

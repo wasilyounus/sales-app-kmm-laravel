@@ -7,7 +7,7 @@ data class OrderDto(
     val id: Int,
     val party_id: Int,
     val date: String,
-    val account_id: Int,
+    val company_id: Int,
     val log_id: Int,
     val order_no: String? = null,
     val created_at: String? = null,
@@ -24,7 +24,7 @@ data class OrderItemDto(
     val price: Double,
     val qty: Double,
     val tax_id: Int? = null,
-    val account_id: Int,
+    val company_id: Int,
     val log_id: Int,
     val created_at: String? = null,
     val updated_at: String? = null,
@@ -36,7 +36,7 @@ data class OrderRequest(
     val party_id: Int,
     val date: String,
     val order_no: String? = null,
-    val account_id: Int,
+    val company_id: Int,
     val items: List<OrderItemRequest>
 )
 

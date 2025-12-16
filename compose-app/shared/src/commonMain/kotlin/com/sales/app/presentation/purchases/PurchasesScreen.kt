@@ -20,12 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.sales.app.presentation.components.SalesAppExtendedFab
 import com.sales.app.util.isDesktop
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun PurchasesScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToCreatePurchase: () -> Unit,
     onNavigateToPurchaseDetails: (Int) -> Unit,
@@ -33,13 +34,13 @@ fun PurchasesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    LaunchedEffect(accountId) {
-        viewModel.loadPurchases(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadPurchases(companyId)
     }
     
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isRefreshing,
-        onRefresh = { viewModel.onRefresh(accountId) }
+        onRefresh = { viewModel.onRefresh(companyId) }
     )
     
     Scaffold(
@@ -65,10 +66,10 @@ fun PurchasesScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            SalesAppExtendedFab(
                 onClick = onNavigateToCreatePurchase,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text(if (isDesktop()) "Create Purchase" else "Create") }
+                icon = Icons.Default.Add,
+                text = if (isDesktop()) "Create Purchase" else "Create"
             )
         }
     ) { paddingValues ->
@@ -89,7 +90,7 @@ fun PurchasesScreen(
                             text = uiState.error ?: "Unknown error",
                             color = MaterialTheme.colorScheme.error
                         )
-                        Button(onClick = { viewModel.loadPurchases(accountId) }) {
+                        Button(onClick = { viewModel.loadPurchases(companyId) }) {
                             Text("Retry")
                         }
                     }

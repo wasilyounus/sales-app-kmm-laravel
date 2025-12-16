@@ -10,7 +10,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -20,9 +20,9 @@ class InventoryRepositoryImpl(
     private val inventoryDao: InventoryDao,
     private val itemDao: ItemDao
 ) : InventoryRepository {
-    override fun getInventorySummary(accountId: Int): Flow<List<InventorySummary>> {
-        val itemsFlow = itemDao.getItemsByAccount(accountId)
-        val movementsFlow = inventoryDao.getAllStockMovements(accountId)
+    override fun getInventorySummary(companyId: Int): Flow<List<InventorySummary>> {
+        val itemsFlow = itemDao.getItemsByAccount(companyId)
+        val movementsFlow = inventoryDao.getAllStockMovements(companyId)
 
         return combine(itemsFlow, movementsFlow) { items, movements ->
             items.map { item ->
@@ -54,7 +54,7 @@ class InventoryRepositoryImpl(
         qty: Double,
         type: String,
         reason: String,
-        accountId: Int
+        companyId: Int
     ): Result<Unit> {
         return try {
             val now = com.sales.app.util.TimeProvider.now().toLocalDateTime(TimeZone.currentSystemDefault()).toString()
@@ -66,7 +66,7 @@ class InventoryRepositoryImpl(
                 referenceId = null,
                 referenceType = "ADJUSTMENT",
                 reason = reason,
-                accountId = accountId,
+                companyId = companyId,
                 createdAt = now,
                 updatedAt = now
             )
@@ -86,6 +86,6 @@ class InventoryRepositoryImpl(
         referenceId = referenceId,
         referenceType = referenceType,
         reason = reason,
-        accountId = accountId
+        companyId = companyId
     )
 }

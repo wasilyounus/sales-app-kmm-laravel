@@ -24,16 +24,16 @@ class PurchaseViewViewModel(
     private val _uiState = MutableStateFlow(PurchaseViewUiState())
     val uiState: StateFlow<PurchaseViewUiState> = _uiState.asStateFlow()
 
-    fun loadPurchase(accountId: Int, purchaseId: Int) {
+    fun loadPurchase(companyId: Int, purchaseId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             combine(
                 getPurchaseByIdUseCase(purchaseId),
-                getItemsUseCase(accountId)
+                getItemsUseCase(companyId)
             ) { purchase, allItems ->
                 if (purchase != null) {
-                    val party = getPartyByIdUseCase(accountId, purchase.partyId).firstOrNull()
+                    val party = getPartyByIdUseCase(companyId, purchase.partyId).firstOrNull()
                     Triple(purchase, party, allItems)
                 } else {
                     null

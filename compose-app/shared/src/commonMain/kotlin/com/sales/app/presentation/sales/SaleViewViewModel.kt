@@ -25,16 +25,16 @@ class SaleViewViewModel(
     private val _uiState = MutableStateFlow(SaleViewUiState())
     val uiState: StateFlow<SaleViewUiState> = _uiState.asStateFlow()
 
-    fun loadSale(accountId: Int, saleId: Int) {
+    fun loadSale(companyId: Int, saleId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             combine(
                 getSaleByIdUseCase(saleId),
-                getItemsUseCase(accountId)
+                getItemsUseCase(companyId)
             ) { sale, allItems ->
                 if (sale != null) {
-                    val party = getPartyByIdUseCase(accountId, sale.partyId).firstOrNull()
+                    val party = getPartyByIdUseCase(companyId, sale.partyId).firstOrNull()
                     Triple(sale, party, allItems)
                 } else {
                     null

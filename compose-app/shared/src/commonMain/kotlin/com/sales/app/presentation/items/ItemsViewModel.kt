@@ -29,14 +29,14 @@ class ItemsViewModel(
     private val _uiState = MutableStateFlow(ItemsUiState())
     val uiState: StateFlow<ItemsUiState> = _uiState.asStateFlow()
     
-    fun loadItems(accountId: Int) {
+    fun loadItems(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             // Trigger sync in background
             launch {
                 try {
-                    syncMasterDataUseCase(accountId)
+                    syncMasterDataUseCase(companyId)
                 } catch (e: Exception) {
                     // Ignore sync errors for now, just show local data
                     e.printStackTrace()
@@ -51,7 +51,7 @@ class ItemsViewModel(
             }
             val uqcMap = uqcs.associate { it.id to it.uqc }
             
-            getItemsUseCase(accountId)
+            getItemsUseCase(companyId)
                 .catch { e ->
                     _uiState.update { 
                         it.copy(
@@ -85,10 +85,10 @@ class ItemsViewModel(
         }
     }
     
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
-            loadItems(accountId)
+            loadItems(companyId)
         }
     }
     

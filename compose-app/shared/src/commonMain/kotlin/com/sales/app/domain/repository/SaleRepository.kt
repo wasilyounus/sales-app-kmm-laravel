@@ -6,7 +6,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface SaleRepository {
-    fun getSalesByAccount(accountId: Int): Flow<List<Sale>>
+    fun getSalesByAccount(companyId: Int): Flow<List<Sale>>
     fun getSaleById(saleId: Int): Flow<Sale?>
     suspend fun syncSales(accountId: Int): Result<Unit>
     suspend fun createSale(

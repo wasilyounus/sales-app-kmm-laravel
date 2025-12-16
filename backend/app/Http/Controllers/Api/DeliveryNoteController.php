@@ -12,13 +12,13 @@ class DeliveryNoteController extends Controller
 {
     public function index(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $query = DeliveryNote::with(['items.item', 'sale.party'])
             ->orderBy('date', 'desc');
 
-        if ($accountId) {
-            $query->where('account_id', $accountId);
+        if ($companyId) {
+            $query->where('company_id', $companyId);
         }
 
         $deliveryNotes = $query->get();
@@ -31,7 +31,7 @@ class DeliveryNoteController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'account_id' => 'required|exists:accounts,id',
+            'company_id' => 'required|exists:companies,id',
             'sale_id' => 'required|exists:sales,id',
             'date' => 'required|date',
             'vehicle_no' => 'nullable|string|max:50',
@@ -53,7 +53,7 @@ class DeliveryNoteController extends Controller
                 'vehicle_no' => $validated['vehicle_no'] ?? null,
                 'lr_no' => $validated['lr_no'] ?? null,
                 'notes' => $validated['notes'] ?? null,
-                'account_id' => $accountId,
+                'company_id' => $accountId,
             ]);
 
             // Create items

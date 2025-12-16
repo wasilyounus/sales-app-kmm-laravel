@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.map
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.sales.app.data.local.AppDatabase
-import com.sales.app.data.local.AccountPreferences
+import com.sales.app.data.local.CompanyPreferences
 import com.sales.app.data.remote.ApiService
 import com.sales.app.data.repository.*
 import com.sales.app.domain.usecase.*
 import com.sales.app.presentation.inventory.*
-import com.sales.app.presentation.settings.AccountSettingsViewModel
+import com.sales.app.presentation.settings.CompanySettingsViewModel
 import com.sales.app.presentation.login.LoginViewModel
 import com.sales.app.presentation.register.RegisterViewModel
 import com.sales.app.presentation.home.HomeViewModel
@@ -29,9 +29,9 @@ import com.sales.app.presentation.deliverynotes.*
 import com.sales.app.presentation.grns.*
 
 class SalesAppContainer(
-    private val database: AppDatabase,
+    val database: AppDatabase,
     private val httpClient: HttpClient,
-    private val dataStore: DataStore<Preferences>
+    val dataStore: DataStore<Preferences>
 ) {
     // Services
     private val apiService = ApiService(httpClient) {
@@ -41,7 +41,7 @@ class SalesAppContainer(
         }.firstOrNull()
     }
     
-    private val accountPreferences = AccountPreferences(dataStore)
+    val companyPreferences = CompanyPreferences(dataStore)
     
     // Repositories
     // Repositories
@@ -69,13 +69,14 @@ class SalesAppContainer(
     val saleRepository: SaleRepository = SaleRepositoryImpl(apiService, database.saleDao(), database.saleItemDao())
     val orderRepository: OrderRepository = OrderRepositoryImpl(apiService, database.orderDao(), database.orderItemDao())
     val purchaseRepository: PurchaseRepository = PurchaseRepositoryImpl(apiService, database.purchaseDao(), database.purchaseItemDao())
-    val accountRepository: AccountRepository = AccountRepositoryImpl(apiService, database.accountDao())
+    val companyRepository: CompanyRepository = CompanyRepositoryImpl(apiService, database.companyDao(), database.contactDao())
     val inventoryRepository: InventoryRepository = InventoryRepositoryImpl(database.inventoryDao(), database.itemDao())
     val taxRepository: TaxRepository = TaxRepositoryImpl(apiService, database.taxDao())
     val paymentRepository: PaymentRepository = PaymentRepositoryImpl(apiService, database.transactionDao())
     val priceListRepository: PriceListRepository = PriceListRepositoryImpl(apiService, database.priceListDao())
     val deliveryNoteRepository: DeliveryNoteRepository = DeliveryNoteRepositoryImpl(apiService, database.deliveryNoteDao())
     val grnRepository: GrnRepository = GrnRepositoryImpl(apiService, database.grnDao())
+    val moduleRepository: ModuleRepository = ModuleRepositoryImpl(apiService)
 
     // Use Cases
     val loginUseCase = LoginUseCase(authRepository)
@@ -124,9 +125,9 @@ class SalesAppContainer(
     val deletePurchaseUseCase = DeletePurchaseUseCase(purchaseRepository)
     val syncPurchasesUseCase = SyncPurchasesUseCase(purchaseRepository)
     
-    val getAccountUseCase = GetAccountUseCase(accountRepository)
-    val updateAccountUseCase = UpdateAccountUseCase(accountRepository)
-    val fetchAccountUseCase = FetchAccountUseCase(accountRepository)
+    val getCompanyUseCase = GetCompanyUseCase(companyRepository)
+    val updateCompanyUseCase = UpdateCompanyUseCase(companyRepository)
+    val fetchCompanyUseCase = FetchCompanyUseCase(companyRepository)
     
     val syncDataUseCase = SyncDataUseCase(syncRepository)
     val syncMasterDataUseCase = SyncMasterDataUseCase(syncRepository)
@@ -139,14 +140,15 @@ class SalesAppContainer(
     val getTaxesUseCase = GetTaxesUseCase(taxRepository)
     
     // ViewModel Factories
-    fun createLoginViewModel() = LoginViewModel(loginUseCase, accountPreferences, apiService)
+    fun createLoginViewModel() = LoginViewModel(loginUseCase, companyPreferences, apiService)
     fun createRegisterViewModel() = RegisterViewModel(registerUseCase)
     fun createHomeViewModel() = HomeViewModel(
         logoutUseCase,
         getItemsUseCase,
         getPartiesUseCase,
         getQuotesUseCase,
-        getAccountUseCase
+        getCompanyUseCase,
+        moduleRepository
     )
     fun createItemsViewModel() = ItemsViewModel(getItemsUseCase, syncMasterDataUseCase, getUqcsUseCase)
     fun createItemFormViewModel() = ItemFormViewModel(
@@ -155,7 +157,7 @@ class SalesAppContainer(
         getItemByIdUseCase,
         getUqcsUseCase,
         getTaxesUseCase,
-        accountRepository
+        companyRepository
     )
     fun createPartiesViewModel() = PartiesViewModel(getPartiesUseCase, searchPartiesUseCase)
     fun createPartyFormViewModel() = PartyFormViewModel(
@@ -235,10 +237,10 @@ class SalesAppContainer(
         getItemsUseCase
     )
 
-    fun createAccountSettingsViewModel() = AccountSettingsViewModel(
-        getAccountUseCase,
-        updateAccountUseCase,
-        fetchAccountUseCase,
+    fun createCompanySettingsViewModel() = CompanySettingsViewModel(
+        getCompanyUseCase,
+        updateCompanyUseCase,
+        fetchCompanyUseCase,
         getTaxesUseCase
     )
 
@@ -269,4 +271,10 @@ class SalesAppContainer(
     val createGrnUseCase = CreateGrnUseCase(grnRepository)
     
     fun createGrnsViewModel() = GrnsViewModel(getGrnsUseCase, syncGrnsUseCase)
+
+    // Main
+    val getCompaniesUseCase = GetCompaniesUseCase(companyRepository)
+    val fetchCompaniesUseCase = FetchCompaniesUseCase(companyRepository)
+    
+    fun createMainViewModel() = com.sales.app.presentation.main.MainViewModel(getCompaniesUseCase, fetchCompaniesUseCase, authRepository)
 }

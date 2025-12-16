@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.sales.app.util.TimeProvider
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class SyncUiState(
     val isSyncing: Boolean = false,
@@ -32,11 +32,11 @@ class SyncViewModel(
     private val _uiState = MutableStateFlow(SyncUiState())
     val uiState: StateFlow<SyncUiState> = _uiState.asStateFlow()
     
-    fun syncData(accountId: Int, types: List<SyncType>) {
+    fun syncData(companyId: Int, types: List<SyncType>) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSyncing = true, error = null, successMessage = null) }
             
-            when (val result = syncDataUseCase(accountId, types)) {
+            when (val result = syncDataUseCase(companyId, types)) {
                 is Result.Success -> {
                     _uiState.update {
                         it.copy(
@@ -61,11 +61,11 @@ class SyncViewModel(
         }
     }
     
-    fun syncMasterData(accountId: Int) {
+    fun syncMasterData(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSyncing = true, error = null, successMessage = null) }
             
-            when (val result = syncMasterDataUseCase(accountId)) {
+            when (val result = syncMasterDataUseCase(companyId)) {
                 is Result.Success -> {
                     _uiState.update {
                         it.copy(
@@ -90,11 +90,11 @@ class SyncViewModel(
         }
     }
     
-    fun fullSync(accountId: Int) {
+    fun fullSync(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSyncing = true, error = null, successMessage = null) }
             
-            when (val result = fullSyncUseCase(accountId)) {
+            when (val result = fullSyncUseCase(companyId)) {
                 is Result.Success -> {
                     _uiState.update {
                         it.copy(

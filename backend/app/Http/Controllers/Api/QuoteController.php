@@ -15,12 +15,12 @@ class QuoteController extends Controller
      */
     public function index(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $query = Quote::with(['party', 'items.item']);
 
-        if ($accountId) {
-            $query->where('account_id', $accountId);
+        if ($companyId) {
+            $query->where('company_id', $companyId);
         }
 
         $quotes = $query->orderBy('date', 'desc')->get();
@@ -40,7 +40,7 @@ class QuoteController extends Controller
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',
             'quote_no' => 'nullable|string|max:255',
-            'account_id' => 'required|exists:accounts,id',
+            'company_id' => 'required|exists:companies,id',
             'items' => 'required|array|min:1',
             'items.*.item_id' => 'required|exists:items,id',
             'items.*.price' => 'required|numeric|min:0',
@@ -53,8 +53,8 @@ class QuoteController extends Controller
             $quote = Quote::create([
                 'party_id' => $validated['party_id'],
                 'date' => $validated['date'],
-                'quote_no' => $validated['quote_no'] ?? Quote::generateNumber($validated['account_id']),
-                'account_id' => $validated['account_id'],
+                'quote_no' => $validated['quote_no'] ?? Quote::generateNumber($validated['company_id']),
+                'company_id' => $validated['company_id'],
             ]);
 
             $quote->refresh(); // Refresh to get auto-generated log_id
@@ -66,7 +66,7 @@ class QuoteController extends Controller
                     'price' => $item['price'],
                     'qty' => $item['qty'],
                     'tax_id' => $item['tax_id'] ?? null,
-                    'account_id' => $validated['account_id'],
+                    'company_id' => $validated['company_id'],
                 ]);
             }
 

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sales.app.util.TimeProvider
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
@@ -22,14 +22,14 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompanySettingsScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     viewModel: CompanySettingsViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    LaunchedEffect(accountId) {
-        viewModel.loadAccount(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadCompany(companyId)
     }
     
     Scaffold(
@@ -37,7 +37,7 @@ fun CompanySettingsScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Account Settings",
+                        text = "Company Settings",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     ) 
                 },
@@ -60,15 +60,15 @@ fun CompanySettingsScreen(
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (uiState.account == null) {
+            } else if (uiState.company == null) {
                 Text(
-                    text = "No account data available",
+                    text = "No company data available",
                     modifier = Modifier.align(Alignment.Center),
                     style = MaterialTheme.typography.bodyLarge
                 )
             } else {
                 CompanySettingsContent(
-                    account = uiState.account!!,
+                    company = uiState.company!!,
                     isSaving = uiState.isSaving,
                     error = uiState.error,
                     successMessage = uiState.successMessage,
@@ -88,6 +88,7 @@ fun CompanySettingsScreen(
                     onSignatureChange = viewModel::updateSignature,
                     onEnableDeliveryNotesChange = viewModel::updateEnableDeliveryNotes,
                     onEnableGrnsChange = viewModel::updateEnableGrns,
+                    onDarkModeChange = viewModel::updateDarkMode,
                     onClearMessages = viewModel::clearMessages,
                     taxes = uiState.taxes
                 )
@@ -99,7 +100,7 @@ fun CompanySettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CompanySettingsContent(
-    account: com.sales.app.domain.model.Account,
+    company: com.sales.app.domain.model.Company,
     isSaving: Boolean,
     error: String?,
     successMessage: String?,
@@ -113,6 +114,7 @@ private fun CompanySettingsContent(
     onSignatureChange: (Boolean) -> Unit,
     onEnableDeliveryNotesChange: (Boolean) -> Unit,
     onEnableGrnsChange: (Boolean) -> Unit,
+    onDarkModeChange: (Boolean) -> Unit,
     onClearMessages: () -> Unit,
     taxes: List<com.sales.app.domain.model.Tax>
 ) {
@@ -138,20 +140,20 @@ private fun CompanySettingsContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Account Information",
+                    text = "Company Information",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 
-                InfoRow(label = "Name", value = account.name)
-                InfoRow(label = "Formatted Name", value = account.nameFormatted)
-                account.desc?.let { InfoRow(label = "Description", value = it) }
+                InfoRow(label = "Name", value = company.name)
+                InfoRow(label = "Formatted Name", value = company.nameFormatted)
+                company.desc?.let { InfoRow(label = "Description", value = it) }
                 
                 HorizontalDivider()
                 
                 // Contact Info
                 OutlinedTextField(
-                    value = account.address ?: "",
+                    value = company.address ?: "",
                     onValueChange = onAddressChange,
                     label = { Text("Address") },
                     modifier = Modifier.fillMaxWidth(),
@@ -161,7 +163,7 @@ private fun CompanySettingsContent(
                 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
-                        value = account.call ?: "",
+                        value = company.call ?: "",
                         onValueChange = onCallChange,
                         label = { Text("Phone") },
                         modifier = Modifier.weight(1f),
@@ -170,7 +172,7 @@ private fun CompanySettingsContent(
                     )
                     
                     OutlinedTextField(
-                        value = account.whatsapp ?: "",
+                        value = company.whatsapp ?: "",
                         onValueChange = onWhatsappChange,
                         label = { Text("WhatsApp") },
                         modifier = Modifier.weight(1f),
@@ -181,15 +183,15 @@ private fun CompanySettingsContent(
                 
                 HorizontalDivider()
                 
-                InfoRow(label = "Country", value = account.country ?: "India")
-                account.state?.let { InfoRow(label = "State", value = it) }
-                account.taxNumber?.let { 
-                    InfoRow(label = if (account.country == "India") "GST Number" else "Tax Number", value = it) 
+                InfoRow(label = "Country", value = company.country ?: "India")
+                company.state?.let { InfoRow(label = "State", value = it) }
+                company.taxNumber?.let { 
+                    InfoRow(label = if (company.country == "India") "GST Number" else "Tax Number", value = it) 
                 }
                 
                 // Footer Content
                 OutlinedTextField(
-                    value = account.footerContent ?: "",
+                    value = company.footerContent ?: "",
                     onValueChange = onFooterContentChange,
                     label = { Text("Footer Content (Invoice)") },
                     modifier = Modifier.fillMaxWidth(),
@@ -208,10 +210,87 @@ private fun CompanySettingsContent(
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Switch(
-                        checked = account.signature == "1" || account.signature == "true",
+                        checked = company.signature == "1" || company.signature == "true",
                         onCheckedChange = onSignatureChange,
                         enabled = !isSaving
                     )
+                }
+            }
+        }
+
+
+        // Contacts Section
+        if (company.contacts.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "People / Contacts",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    company.contacts.forEach { contact ->
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = contact.name,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                if (contact.isPrimary) {
+                                    Surface(
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                    ) {
+                                        Text(
+                                            text = "Primary",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
+                            }
+                            
+                            contact.designation?.takeIf { it.isNotBlank() }?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            
+                            val details = listOfNotNull(
+                                contact.phone?.takeIf { it.isNotBlank() }, 
+                                contact.email?.takeIf { it.isNotBlank() }
+                            ).joinToString(" • ")
+                            
+                            if (details.isNotEmpty()) {
+                                Text(
+                                    text = details,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            
+                            HorizontalDivider(modifier = Modifier.padding(top = 8.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        }
+                    }
                 }
             }
         }
@@ -251,7 +330,7 @@ private fun CompanySettingsContent(
                         )
                     }
                     Switch(
-                        checked = account.enableDeliveryNotes,
+                        checked = company.enableDeliveryNotes,
                         onCheckedChange = onEnableDeliveryNotesChange,
                         enabled = !isSaving
                     )
@@ -277,8 +356,34 @@ private fun CompanySettingsContent(
                         )
                     }
                     Switch(
-                        checked = account.enableGrns,
+                        checked = company.enableGrns,
                         onCheckedChange = onEnableGrnsChange,
+                        enabled = !isSaving
+                    )
+                }
+
+                HorizontalDivider()
+
+                // Dark Mode Toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Dark Mode",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "Enable dark theme for the application (Experimental)",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = company.darkMode,
+                        onCheckedChange = onDarkModeChange,
                         enabled = !isSaving
                     )
                 }
@@ -313,7 +418,7 @@ private fun CompanySettingsContent(
                     TaxationTypeOption(
                         label = "No Tax / Composition",
                         description = "No tax or composition scheme",
-                        selected = account.taxationType == 1,
+                        selected = company.taxationType == 1,
                         onClick = { onTaxationTypeChange(1) },
                         enabled = !isSaving
                     )
@@ -321,7 +426,7 @@ private fun CompanySettingsContent(
                     TaxationTypeOption(
                         label = "Inclusive Tax",
                         description = "Tax is included in the price",
-                        selected = account.taxationType == 2,
+                        selected = company.taxationType == 2,
                         onClick = { onTaxationTypeChange(2) },
                         enabled = !isSaving
                     )
@@ -329,26 +434,26 @@ private fun CompanySettingsContent(
                     TaxationTypeOption(
                         label = "Exclusive Tax",
                         description = "Tax is added on top of the price",
-                        selected = account.taxationType == 3,
+                        selected = company.taxationType == 3,
                         onClick = { onTaxationTypeChange(3) },
                         enabled = !isSaving
                     )
                 }
                 
                 // Default Tax Selection (only show if not "No Tax")
-                if (account.taxationType != 1) {
+                if (company.taxationType != 1) {
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     ExposedDropdownMenuBox(
                         expanded = showTaxDropdown,
                         onExpandedChange = { if (!isSaving) showTaxDropdown = !showTaxDropdown }
                     ) {
-                        val selectedTax = taxes.find { it.id == account.defaultTaxId }
+                        val selectedTax = taxes.find { it.id == company.defaultTaxId }
                         val displayText = selectedTax?.let { "${it.schemeName} (${(it.tax1Val ?: 0.0) + (it.tax2Val ?: 0.0) + (it.tax3Val ?: 0.0) + (it.tax4Val ?: 0.0)}%)" } ?: "Select Default Tax"
                         
                         // Filter taxes by account country
                         val filteredTaxes = taxes.filter { tax ->
-                            tax.country == null || tax.country == account.country
+                            tax.country == null || tax.country == company.country
                         }
                         
                         OutlinedTextField(
@@ -407,7 +512,7 @@ private fun CompanySettingsContent(
                 )
                 
                 // Display current financial year start
-                val displayDateTime = account.financialYearStart?.let { dateTimeStr ->
+                val displayDateTime = company.financialYearStart?.let { dateTimeStr ->
                     try {
                         // Parse ISO datetime and format for display
                         val parts = dateTimeStr.split(" ")
@@ -497,7 +602,7 @@ private fun CompanySettingsContent(
     
     if (showDateTimePicker) {
         DateTimePickerDialog(
-            initialDateTime = account.financialYearStart,
+            initialDateTime = company.financialYearStart,
             onDismiss = { showDateTimePicker = false },
             onConfirm = { dateTime ->
                 onFinancialYearStartChange(dateTime)
@@ -520,7 +625,7 @@ private fun TaxationTypeOption(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = if (selected) {
-                MaterialTheme.colorScheme.primaryContainer
+                MaterialTheme.colorScheme.secondaryContainer
             } else {
                 MaterialTheme.colorScheme.surface
             }
@@ -528,7 +633,7 @@ private fun TaxationTypeOption(
         border = if (selected) {
             androidx.compose.foundation.BorderStroke(
                 2.dp,
-                MaterialTheme.colorScheme.primary
+                MaterialTheme.colorScheme.secondary
             )
         } else null,
         enabled = enabled
@@ -554,7 +659,7 @@ private fun TaxationTypeOption(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AccountSelectionDto(
+data class CompanySelectionDto(
     val id: Int,
     val name: String,
     @SerialName("name_formatted") val nameFormatted: String,
@@ -13,17 +13,17 @@ data class AccountSelectionDto(
 )
 
 @Serializable
-data class AccountSelectionResponse(
-    val accounts: List<AccountSelectionDto>
+data class CompanySelectionResponse(
+    @SerialName("companies") val companies: List<CompanySelectionDto>
 )
 
 @Serializable
-data class SelectAccountRequest(
-    @SerialName("account_id") val accountId: Int
+data class SelectCompanyRequest(
+    @SerialName("company_id") val companyId: Int
 )
 
 @Serializable
-data class SelectAccountResponse(
+data class SelectCompanyResponse(
     val message: String,
-    @SerialName("account_id") val accountId: Int
+    @SerialName("company_id") val companyId: Int
 )

@@ -5,6 +5,6 @@ data class Purchase(
     val partyId: Int,
     val date: String,
     val invoiceNo: String? = null,
-    val accountId: Int,
+    val companyId: Int,
     val items: List<PurchaseItem> = emptyList()
 )

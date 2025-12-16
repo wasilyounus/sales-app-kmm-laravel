@@ -11,7 +11,7 @@ data class QuoteItemEntity(
     val price: Double,
     val qty: Double,
     val taxId: Int?,
-    val accountId: Int,
+    val companyId: Int,
     val logId: Int,
     val createdAt: String,
     val updatedAt: String,

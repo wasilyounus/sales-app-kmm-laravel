@@ -47,15 +47,15 @@ class PurchaseFormViewModel(
     
     private var currentPurchaseId: Int? = null
     
-    fun loadData(accountId: Int, purchaseId: Int? = null) {
+    fun loadData(companyId: Int, purchaseId: Int? = null) {
         currentPurchaseId = purchaseId
         _uiState.update { it.copy(isLoading = true) }
         
         viewModelScope.launch {
             // Load parties and items
             combine(
-                getPartiesUseCase(accountId),
-                getItemsUseCase(accountId)
+                getPartiesUseCase(companyId),
+                getItemsUseCase(companyId)
             ) { parties, items ->
                 Pair(parties, items)
             }.collect { (parties, items) ->
@@ -145,7 +145,7 @@ class PurchaseFormViewModel(
         }
     }
     
-    fun savePurchase(accountId: Int, onSuccess: () -> Unit) {
+    fun savePurchase(companyId: Int, onSuccess: () -> Unit) {
         val state = uiState.value
         
         // Validation
@@ -182,7 +182,7 @@ class PurchaseFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId,
+                    companyId = companyId,
                     invoiceNo = state.invoiceNo.takeIf { it.isNotBlank() }
                 )
             } else {
@@ -191,7 +191,7 @@ class PurchaseFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId,
+                    companyId = companyId,
                     invoiceNo = state.invoiceNo.takeIf { it.isNotBlank() }
                 )
             }

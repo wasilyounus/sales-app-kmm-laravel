@@ -9,7 +9,7 @@ data class SaleEntity(
     val partyId: Int,
     val date: String,
     val invoiceNo: String,
-    val accountId: Int,
+    val companyId: Int,
     val taxId: Int? = null,
     val createdAt: String,
     val updatedAt: String,

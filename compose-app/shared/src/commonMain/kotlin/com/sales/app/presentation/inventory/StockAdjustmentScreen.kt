@@ -25,7 +25,7 @@ import com.sales.app.domain.model.Item
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockAdjustmentDialog(
-    accountId: Int,
+    companyId: Int,
     onDismissRequest: () -> Unit,
     onAdjustmentSaved: () -> Unit,
     viewModel: StockAdjustmentViewModel
@@ -33,8 +33,8 @@ fun StockAdjustmentDialog(
     val uiState by viewModel.uiState.collectAsState()
     var showItemSelection by remember { mutableStateOf(false) }
 
-    LaunchedEffect(accountId) {
-        viewModel.loadItems(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadItems(companyId)
     }
     
     // Handle successful save (you might need to expose a simplified event for this in VM or check loading state transition)
@@ -184,7 +184,7 @@ fun StockAdjustmentDialog(
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
                             onClick = { 
-                                viewModel.saveAdjustment(accountId) {
+                                viewModel.saveAdjustment(companyId) {
                                     onAdjustmentSaved()
                                     onDismissRequest()
                                 } 

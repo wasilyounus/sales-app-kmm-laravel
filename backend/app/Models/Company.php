@@ -32,6 +32,7 @@ class Company extends Model
         'enable_delivery_notes',
         'enable_grns',
         'allow_negative_stock',
+        'dark_mode',
     ];
 
     public function defaultTax()
@@ -45,6 +46,7 @@ class Company extends Model
         'enable_delivery_notes' => 'boolean',
         'enable_grns' => 'boolean',
         'allow_negative_stock' => 'boolean',
+        'dark_mode' => 'boolean',
     ];
 
     public function users()

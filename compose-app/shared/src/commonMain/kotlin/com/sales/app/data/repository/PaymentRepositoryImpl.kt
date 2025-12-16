@@ -14,7 +14,7 @@ class PaymentRepositoryImpl(
     private val transactionDao: TransactionDao
 ) : PaymentRepository {
 
-    override fun getTransactions(accountId: Int, page: Int, search: String?): Flow<List<Transaction>> {
+    override fun getTransactions(companyId: Int, page: Int, search: String?): Flow<List<Transaction>> {
         // For now, we only support local caching for the main list without search
         // Ideally we should fetch from API and update DB, then observe DB
         // But for simplicity in this step, we'll just return DB flow and trigger a refresh separately
@@ -26,7 +26,7 @@ class PaymentRepositoryImpl(
         // Let's implement a simple fetch-and-cache strategy if needed, but for now just return DB.
         // Wait, the interface returns Flow.
         
-        return transactionDao.getTransactions(accountId).map { entities ->
+        return transactionDao.getTransactions(companyId).map { entities ->
             entities.map { it.toDomain() }
         }
     }

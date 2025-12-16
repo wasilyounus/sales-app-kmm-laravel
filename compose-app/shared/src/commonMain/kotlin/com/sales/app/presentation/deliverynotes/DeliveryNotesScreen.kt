@@ -18,14 +18,14 @@ import com.sales.app.domain.model.DeliveryNote
 @Composable
 fun DeliveryNotesScreen(
     viewModel: DeliveryNotesViewModel,
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToCreate: (Int?) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(accountId) {
-        viewModel.loadDeliveryNotes(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadDeliveryNotes(companyId)
     }
 
     Scaffold(

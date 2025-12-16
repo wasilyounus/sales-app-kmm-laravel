@@ -21,8 +21,8 @@ class SaleRepositoryImpl(
     private val saleDao: SaleDao,
     private val saleItemDao: SaleItemDao
 ) : SaleRepository {
-    override fun getSalesByAccount(accountId: Int): Flow<List<Sale>> {
-        return saleDao.getSalesByAccount(accountId).map { entities ->
+    override fun getSalesByAccount(companyId: Int): Flow<List<Sale>> {
+        return saleDao.getSalesByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -48,7 +48,7 @@ class SaleRepositoryImpl(
                         date = dto.date,
                         invoiceNo = dto.invoice_no,
                         taxId = dto.tax_id,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         createdAt = "",
                         updatedAt = "",
                         deletedAt = dto.deleted_at
@@ -81,7 +81,7 @@ class SaleRepositoryImpl(
                         price = dto.price,
                         qty = dto.qty,
                         taxId = dto.tax_id,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         logId = 0,
                         createdAt = "",
                         updatedAt = "",
@@ -109,7 +109,7 @@ class SaleRepositoryImpl(
                 date = date,
                 invoice_no = invoiceNo,
                 tax_id = taxId,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.createSale(request)
@@ -122,7 +122,7 @@ class SaleRepositoryImpl(
                     date = dto.date,
                     invoiceNo = dto.invoice_no,
                     taxId = dto.tax_id,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
@@ -139,7 +139,7 @@ class SaleRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = 0,
                             createdAt = "",
                             updatedAt = "",
@@ -173,48 +173,51 @@ class SaleRepositoryImpl(
                 date = date,
                 invoice_no = invoiceNo,
                 tax_id = taxId,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.updateSale(id, request)
             
-            if (response.success) {
-                val dto = response.data
-                val entity = SaleEntity(
-                    id = dto.id,
-                    partyId = dto.party_id,
-                    date = dto.date,
-                    invoiceNo = dto.invoice_no,
-                    taxId = dto.tax_id,
-                    accountId = dto.account_id,
-                    createdAt = "",
-                    updatedAt = "",
-                    deletedAt = dto.deleted_at
-                )
-                saleDao.updateSale(entity)
-                
-                // Save items from response if present
-                dto.items?.let { items ->
-                    val itemEntities = items.map { itemDto ->
-                        SaleItemEntity(
-                            id = itemDto.id,
-                            saleId = itemDto.sale_id,
-                            itemId = itemDto.item_id,
-                            price = itemDto.price,
-                            qty = itemDto.qty,
-                            taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
-                            logId = 0,
-                            createdAt = "",
-                            updatedAt = "",
-                            deletedAt = null
-                        )
+                if (response.success) {
+                    val dto = response.data
+                    val entity = SaleEntity(
+                        id = dto.id,
+                        partyId = dto.party_id,
+                        date = dto.date,
+                        invoiceNo = dto.invoice_no,
+                        companyId = dto.company_id,
+                        taxId = dto.tax_id,
+                        createdAt = dto.created_at ?: "",
+                        updatedAt = dto.updated_at ?: "",
+                        deletedAt = dto.deleted_at
+                    )
+                    saleDao.updateSale(entity)
+                    
+                    // Delete old items first to prevent ghosts
+                    saleItemDao.deleteSaleItemsBySaleId(dto.id)
+                    
+                    // Save items from response if present
+                    dto.items?.let { items ->
+                        val itemEntities = items.map { itemDto ->
+                            SaleItemEntity(
+                                id = itemDto.id,
+                                saleId = itemDto.sale_id,
+                                itemId = itemDto.item_id,
+                                price = itemDto.price,
+                                qty = itemDto.qty,
+                                taxId = itemDto.tax_id,
+                                companyId = itemDto.company_id,
+                                logId = itemDto.log_id,
+                                createdAt = dto.created_at ?: "",
+                                updatedAt = dto.updated_at ?: "",
+                                deletedAt = itemDto.deleted_at
+                            )
+                        }
+                        saleItemDao.insertSaleItems(itemEntities)
                     }
-                    saleItemDao.insertSaleItems(itemEntities)
-                }
-                
-                Result.Success(entity.toDomainModel())
-            } else {
+                    
+                    Result.Success(entity.toDomainModel())
+                } else {
                 Result.Error("Failed to update sale")
             }
         } catch (e: Exception) {
@@ -237,7 +240,7 @@ class SaleRepositoryImpl(
         date = date,
         invoiceNo = invoiceNo,
         taxId = taxId,
-        accountId = accountId,
+        companyId = companyId,
         items = items
     )
     
@@ -248,6 +251,6 @@ class SaleRepositoryImpl(
         price = price,
         qty = qty,
         taxId = taxId,
-        accountId = accountId
+        companyId = companyId
     )
 }

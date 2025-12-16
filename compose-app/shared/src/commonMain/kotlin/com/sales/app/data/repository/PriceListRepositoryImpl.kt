@@ -18,9 +18,9 @@ class PriceListRepositoryImpl(
     private val priceListDao: PriceListDao
 ) : PriceListRepository {
 
-    override fun getPriceLists(accountId: Int): Flow<List<PriceList>> {
+    override fun getPriceLists(companyId: Int): Flow<List<PriceList>> {
         // Data will be populated by centralized sync
-        return priceListDao.getPriceLists(accountId).map { entities ->
+        return priceListDao.getPriceLists(companyId).map { entities ->
             entities.map { it.toDomain() }
         }
     }
@@ -58,7 +58,7 @@ class PriceListRepositoryImpl(
         }
     }
 
-    override suspend fun createPriceList(name: String, accountId: Int): Result<Unit> {
+    override suspend fun createPriceList(name: String, companyId: Int): Result<Unit> {
         return try {
             apiService.createPriceList(PriceListRequest(name))
             Result.success(Unit)

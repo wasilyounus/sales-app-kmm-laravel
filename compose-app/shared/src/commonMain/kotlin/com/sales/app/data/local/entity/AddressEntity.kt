@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class AddressEntity(
     @PrimaryKey val id: Int,
     val partyId: Int,
-    val accountId: Int,
+    val companyId: Int,
     val line1: String,
     val line2: String?,
     val place: String,

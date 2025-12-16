@@ -12,7 +12,7 @@ data class DeliveryNoteEntity(
     val vehicleNo: String?,
     val lrNo: String?,
     val notes: String?,
-    val accountId: Int,
+    val companyId: Int,
     val createdAt: String,
     val updatedAt: String,
     val deletedAt: String?

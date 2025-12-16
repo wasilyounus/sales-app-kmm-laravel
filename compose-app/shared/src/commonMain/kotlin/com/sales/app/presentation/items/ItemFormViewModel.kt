@@ -52,7 +52,7 @@ class ItemFormViewModel(
     private val getItemByIdUseCase: GetItemByIdUseCase,
     private val getUqcsUseCase: GetUqcsUseCase,
     private val getTaxesUseCase: GetTaxesUseCase,
-    private val accountRepository: com.sales.app.domain.repository.AccountRepository
+    private val accountRepository: com.sales.app.domain.repository.CompanyRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ItemFormState())
@@ -77,17 +77,17 @@ class ItemFormViewModel(
         }
     }
     
-    private fun loadTaxes(accountId: Int? = null) {
+    private fun loadTaxes(companyId: Int? = null) {
         viewModelScope.launch {
-            if (accountId != null) {
-                // Load account and filter taxes by country
-                accountRepository.getAccountById(accountId).collect { account ->
-                    getTaxesUseCase(account?.country).collect { taxes ->
+            if (companyId != null) {
+                // Load company and filter taxes by country
+                accountRepository.getCompanyById(companyId).collect { company ->
+                    getTaxesUseCase(company?.country).collect { taxes ->
                         _uiState.update { it.copy(taxes = taxes) }
                     }
                 }
             } else {
-                // Load all active taxes if no account
+                // Load all active taxes if no company
                 getTaxesUseCase().collect { taxes ->
                     _uiState.update { it.copy(taxes = taxes) }
                 }
@@ -95,16 +95,16 @@ class ItemFormViewModel(
         }
     }
     
-    fun loadTaxesByAccount(accountId: Int) {
-        loadTaxes(accountId)
+    fun loadTaxesByCompany(companyId: Int) {
+        loadTaxes(companyId)
     }
 
-    fun loadItem(accountId: Int, itemId: Int) {
+    fun loadItem(companyId: Int, itemId: Int) {
         currentItemId = itemId
-        loadTaxes(accountId)  // Reload taxes with account filter
+        loadTaxes(companyId)  // Reload taxes with company filter
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, formUiState = FormUiState.Update) }
-            val item = getItemByIdUseCase(accountId, itemId)
+            val item = getItemByIdUseCase(companyId, itemId)
             
             if (item != null) {
                 _uiState.update {
@@ -125,6 +125,7 @@ class ItemFormViewModel(
             }
         }
     }
+
 
     fun onNameChange(name: String) {
         _uiState.update { 
@@ -158,7 +159,7 @@ class ItemFormViewModel(
         _uiState.update { it.copy(selectedTaxId = taxId) }
     }
 
-    fun saveItem(accountId: Int, onSuccess: () -> Unit) {
+    fun saveItem(companyId: Int, onSuccess: () -> Unit) {
         if (!validateForm()) return
         
         viewModelScope.launch {
@@ -166,7 +167,7 @@ class ItemFormViewModel(
             
             val result = if (_uiState.value.formUiState is FormUiState.Add) {
                 createItemUseCase(
-                    accountId = accountId,
+                    companyId = companyId,
                     name = _uiState.value.name,
                     altName = null,
                     brand = _uiState.value.brand.ifBlank { null },
@@ -185,7 +186,7 @@ class ItemFormViewModel(
                         size = _uiState.value.size.ifBlank { null },
                         uqc = _uiState.value.uqcId,
                         hsn = _uiState.value.hsn.toIntOrNull(),
-                        accountId = accountId,
+                        companyId = companyId,
                         taxId = _uiState.value.selectedTaxId
                     )
                 } ?: Result.Error("Item ID not found")
@@ -211,8 +212,8 @@ class ItemFormViewModel(
         }
     }
     
-    fun saveAndAdd(accountId: Int) {
-        saveItem(accountId) {
+    fun saveAndAdd(companyId: Int) {
+        saveItem(companyId) {
             resetForm()
         }
     }

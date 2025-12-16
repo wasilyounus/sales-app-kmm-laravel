@@ -43,13 +43,13 @@ class QuoteFormViewModel(
     private val _uiState = MutableStateFlow(QuoteFormUiState())
     val uiState: StateFlow<QuoteFormUiState> = _uiState.asStateFlow()
 
-    fun loadData(accountId: Int, quoteId: Int? = null) {
+    fun loadData(companyId: Int, quoteId: Int? = null) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             // Load Parties and Items
-            val partiesFlow = getPartiesUseCase(accountId)
-            val itemsFlow = getItemsUseCase(accountId)
+            val partiesFlow = getPartiesUseCase(companyId)
+            val itemsFlow = getItemsUseCase(companyId)
 
             combine(partiesFlow, itemsFlow) { parties, items ->
                 Pair(parties, items)
@@ -69,7 +69,7 @@ class QuoteFormViewModel(
             }
         }
     }
-    
+
     private fun loadQuoteDetails(quoteId: Int, items: List<Item>) {
         viewModelScope.launch {
             getQuoteByIdUseCase(quoteId).collect { quote ->
@@ -135,7 +135,7 @@ class QuoteFormViewModel(
         }
     }
 
-    fun saveQuote(accountId: Int, onSuccess: () -> Unit) {
+    fun saveQuote(companyId: Int, onSuccess: () -> Unit) {
         val state = _uiState.value
         if (state.partyId == null || state.date.isBlank() || state.items.isEmpty()) {
             _uiState.update { it.copy(error = "Please fill all required fields") }
@@ -162,7 +162,7 @@ class QuoteFormViewModel(
                     partyId = state.partyId,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId,
+                    companyId = companyId,
                     quoteNo = state.quoteNo.takeIf { it.isNotBlank() }
                 )
             }
@@ -177,7 +177,7 @@ class QuoteFormViewModel(
         }
     }
     
-    fun updateQuote(quoteId: Int, accountId: Int, onSuccess: () -> Unit) {
+    fun updateQuote(quoteId: Int, companyId: Int, onSuccess: () -> Unit) {
          val state = _uiState.value
         if (state.partyId == null || state.date.isBlank() || state.items.isEmpty()) {
             _uiState.update { it.copy(error = "Please fill all required fields") }
@@ -201,7 +201,7 @@ class QuoteFormViewModel(
                 partyId = state.partyId,
                 date = state.date,
                 items = itemsRequest,
-                accountId = accountId,
+                companyId = companyId,
                 quoteNo = state.quoteNo.takeIf { it.isNotBlank() }
             )
 

@@ -23,14 +23,14 @@ class SyncController extends Controller
      */
     public function masterData(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
         $data = [
-            'items' => Item::where('account_id', $accountId)
+            'items' => Item::where('company_id', $companyId)
                 ->where('updated_at', '>', $timestamp)
                 ->get(),
-            'parties' => Party::where('account_id', $accountId)
+            'parties' => Party::where('company_id', $companyId)
                 ->where('updated_at', '>', $timestamp)
                 ->with('addresses')
                 ->get(),
@@ -54,10 +54,10 @@ class SyncController extends Controller
      */
     public function quotes(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
-        $quotes = Quote::where('account_id', $accountId)
+        $quotes = Quote::where('company_id', $companyId)
             ->where('updated_at', '>', $timestamp)
             ->with(['party', 'items.item'])
             ->get();
@@ -74,10 +74,10 @@ class SyncController extends Controller
      */
     public function orders(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
-        $orders = Order::where('account_id', $accountId)
+        $orders = Order::where('company_id', $companyId)
             ->where('updated_at', '>', $timestamp)
             ->with(['party', 'items.item'])
             ->get();
@@ -94,10 +94,10 @@ class SyncController extends Controller
      */
     public function sales(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
-        $sales = Sale::where('account_id', $accountId)
+        $sales = Sale::where('company_id', $companyId)
             ->where('updated_at', '>', $timestamp)
             ->with(['party', 'items.item', 'items.tax', 'supply'])
             ->get();
@@ -114,10 +114,10 @@ class SyncController extends Controller
      */
     public function purchases(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
-        $purchases = Purchase::where('account_id', $accountId)
+        $purchases = Purchase::where('company_id', $companyId)
             ->where('updated_at', '>', $timestamp)
             ->with(['party', 'items.item', 'items.tax'])
             ->get();
@@ -134,10 +134,10 @@ class SyncController extends Controller
      */
     public function deliveryNotes(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
-        $deliveryNotes = DeliveryNote::where('account_id', $accountId)
+        $deliveryNotes = DeliveryNote::where('company_id', $companyId)
             ->where('updated_at', '>', $timestamp)
             ->with(['sale.party', 'items.item'])
             ->get();
@@ -154,10 +154,10 @@ class SyncController extends Controller
      */
     public function grns(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
-        $grns = Grn::where('account_id', $accountId)
+        $grns = Grn::where('company_id', $companyId)
             ->where('updated_at', '>', $timestamp)
             ->with(['purchase.party', 'items.item'])
             ->get();
@@ -174,15 +174,15 @@ class SyncController extends Controller
      */
     public function fullSync(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
         $timestamp = $request->input('timestamp', '1970-01-01 00:00:00');
 
         $data = [
             'master_data' => [
-                'items' => Item::where('account_id', $accountId)
+                'items' => Item::where('company_id', $companyId)
                     ->where('updated_at', '>', $timestamp)
                     ->get(),
-                'parties' => Party::where('account_id', $accountId)
+                'parties' => Party::where('company_id', $companyId)
                     ->where('updated_at', '>', $timestamp)
                     ->with('addresses')
                     ->get(),
@@ -190,19 +190,19 @@ class SyncController extends Controller
                 'taxes' => Tax::where('active', true)->get(),
             ],
             'transactions' => [
-                'quotes' => Quote::where('account_id', $accountId)
+                'quotes' => Quote::where('company_id', $companyId)
                     ->where('updated_at', '>', $timestamp)
                     ->with(['party', 'items.item'])
                     ->get(),
-                'orders' => Order::where('account_id', $accountId)
+                'orders' => Order::where('company_id', $companyId)
                     ->where('updated_at', '>', $timestamp)
                     ->with(['party', 'items.item'])
                     ->get(),
-                'sales' => Sale::where('account_id', $accountId)
+                'sales' => Sale::where('company_id', $companyId)
                     ->where('updated_at', '>', $timestamp)
                     ->with(['party', 'items.item', 'items.tax'])
                     ->get(),
-                'purchases' => Purchase::where('account_id', $accountId)
+                'purchases' => Purchase::where('company_id', $companyId)
                     ->where('updated_at', '>', $timestamp)
                     ->with(['party', 'items.item', 'items.tax'])
                     ->get(),
@@ -221,15 +221,15 @@ class SyncController extends Controller
      */
     public function status(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $status = [
-            'items_count' => Item::where('account_id', $accountId)->count(),
-            'parties_count' => Party::where('account_id', $accountId)->count(),
-            'quotes_count' => Quote::where('account_id', $accountId)->count(),
-            'orders_count' => Order::where('account_id', $accountId)->count(),
-            'sales_count' => Sale::where('account_id', $accountId)->count(),
-            'purchases_count' => Purchase::where('account_id', $accountId)->count(),
+            'items_count' => Item::where('company_id', $companyId)->count(),
+            'parties_count' => Party::where('company_id', $companyId)->count(),
+            'quotes_count' => Quote::where('company_id', $companyId)->count(),
+            'orders_count' => Order::where('company_id', $companyId)->count(),
+            'sales_count' => Sale::where('company_id', $companyId)->count(),
+            'purchases_count' => Purchase::where('company_id', $companyId)->count(),
             'last_updated' => now()->toDateTimeString(),
         ];
 

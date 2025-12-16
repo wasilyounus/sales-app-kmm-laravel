@@ -10,7 +10,7 @@ import com.sales.app.domain.usecase.*
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import com.sales.app.util.TimeProvider
@@ -53,15 +53,15 @@ class SaleFormViewModel(
     
     private var currentSaleId: Int? = null
     
-    fun loadData(accountId: Int, saleId: Int? = null) {
+    fun loadData(companyId: Int, saleId: Int? = null) {
         currentSaleId = saleId
         _uiState.update { it.copy(isLoading = true) }
         
         viewModelScope.launch {
             // Load parties and items
             combine(
-                getPartiesUseCase(accountId),
-                getItemsUseCase(accountId)
+                getPartiesUseCase(companyId),
+                getItemsUseCase(companyId)
             ) { parties, items ->
                 Pair(parties, items)
             }.collect { (parties, items) ->
@@ -152,15 +152,15 @@ class SaleFormViewModel(
         }
     }
     
-    fun saveSale(accountId: Int, onSuccess: () -> Unit) {
+    fun saveSale(companyId: Int, onSuccess: () -> Unit) {
         val state = uiState.value
         
-        // Validation
+        // Validation logic
         val isPartyValid = state.partyId != null
         val isDateValid = state.date.isNotBlank()
         val isInvoiceNoValid = state.invoiceNo.isNotBlank()
         val isItemsValid = state.selectedItems.isNotEmpty()
-        
+
         if (!isPartyValid || !isDateValid || !isInvoiceNoValid || !isItemsValid) {
             _uiState.update { 
                 it.copy(
@@ -177,7 +177,7 @@ class SaleFormViewModel(
         _uiState.update { it.copy(isSaving = true, error = null) }
         
         viewModelScope.launch {
-            val itemsRequest = state.selectedItems.map { 
+             val itemsRequest = state.selectedItems.map { 
                 SaleItemRequest(
                     item_id = it.itemId,
                     price = it.price.toDoubleOrNull() ?: 0.0,
@@ -188,22 +188,22 @@ class SaleFormViewModel(
             
             val result = if (currentSaleId == null) {
                 createSaleUseCase(
+                    companyId = companyId,
                     partyId = state.partyId!!,
                     date = state.date,
                     invoiceNo = state.invoiceNo,
                     taxId = state.taxId,
-                    items = itemsRequest,
-                    accountId = accountId
+                    items = itemsRequest
                 )
             } else {
                 updateSaleUseCase(
                     id = currentSaleId!!,
+                    companyId = companyId,
                     partyId = state.partyId!!,
                     date = state.date,
                     invoiceNo = state.invoiceNo,
                     taxId = state.taxId,
-                    items = itemsRequest,
-                    accountId = accountId
+                    items = itemsRequest
                 )
             }
             
@@ -215,13 +215,13 @@ class SaleFormViewModel(
                 is Result.Error -> {
                     _uiState.update { 
                         it.copy(
-                            isSaving = false,
+                            isSaving = false, 
                             error = result.message
-                        )
+                        ) 
                     }
                 }
                 is Result.Loading -> {
-                    // Loading state is already handled by isSaving flag
+                    _uiState.update { it.copy(isSaving = true) }
                 }
             }
         }

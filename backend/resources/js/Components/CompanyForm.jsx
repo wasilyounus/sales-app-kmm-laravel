@@ -283,7 +283,7 @@ export default function CompanyForm({ company = null, taxes = [], onSuccess, onC
 
             {/* Contact Information */}
             <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Contact Information</h4>
+                <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Company Contact Details</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <Label htmlFor="call">Phone Number</Label>
@@ -315,6 +315,93 @@ export default function CompanyForm({ company = null, taxes = [], onSuccess, onC
                         />
                     </div>
                 </div>
+            </div>
+
+            {/* Multiple Contacts (Persons) */}
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">People / Contacts</h4>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addContact}
+                        className="flex items-center gap-2"
+                    >
+                        <UserPlus className="w-4 h-4" />
+                        Add Person
+                    </Button>
+                </div>
+
+                {data.contacts.length === 0 ? (
+                    <div className="text-center py-6 text-gray-500 bg-white rounded-lg border border-dashed border-gray-300">
+                        <p>No contacts added yet.</p>
+                        <Button type="button" variant="link" onClick={addContact}>Add your first contact</Button>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {data.contacts.map((contact, index) => (
+                            <div key={index} className="bg-white p-4 rounded-lg border border-gray-200 relative group transition-all hover:shadow-sm">
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => removeContact(index)}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                                    <div className="lg:col-span-1">
+                                        <Label className="text-xs mb-1.5 block">Name</Label>
+                                        <Input
+                                            value={contact.name}
+                                            onChange={e => updateContact(index, 'name', e.target.value)}
+                                            placeholder="John Doe"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="lg:col-span-1">
+                                        <Label className="text-xs mb-1.5 block">Designation</Label>
+                                        <Input
+                                            value={contact.designation || ''}
+                                            onChange={e => updateContact(index, 'designation', e.target.value)}
+                                            placeholder="Manager"
+                                        />
+                                    </div>
+                                    <div className="lg:col-span-1">
+                                        <Label className="text-xs mb-1.5 block">Phone</Label>
+                                        <Input
+                                            value={contact.phone || ''}
+                                            onChange={e => updateContact(index, 'phone', e.target.value)}
+                                            placeholder="+123..."
+                                        />
+                                    </div>
+                                    <div className="lg:col-span-1">
+                                        <Label className="text-xs mb-1.5 block">Email</Label>
+                                        <Input
+                                            value={contact.email || ''}
+                                            onChange={e => updateContact(index, 'email', e.target.value)}
+                                            placeholder="john@example.com"
+                                            type="email"
+                                        />
+                                    </div>
+                                    <div className="lg:col-span-1 flex items-center pt-6">
+                                        <div className="flex items-center gap-2">
+                                            <Checkbox
+                                                id={`is_primary_${index}`}
+                                                checked={contact.is_primary}
+                                                onCheckedChange={(checked) => updateContact(index, 'is_primary', checked)}
+                                            />
+                                            <Label htmlFor={`is_primary_${index}`} className="cursor-pointer">Primary Contact</Label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Additional Settings */}

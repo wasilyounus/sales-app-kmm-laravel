@@ -9,8 +9,8 @@ interface AddressDao {
     @Query("SELECT * FROM addresses WHERE partyId = :partyId")
     fun getAddressesByPartyId(partyId: Int): Flow<List<AddressEntity>>
 
-    @Query("SELECT * FROM addresses WHERE accountId = :accountId")
-    fun getAddressesByAccount(accountId: Int): Flow<List<AddressEntity>>
+    @Query("SELECT * FROM addresses WHERE companyId = :companyId")
+    fun getAddressesByAccount(companyId: Int): Flow<List<AddressEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAddress(address: AddressEntity)

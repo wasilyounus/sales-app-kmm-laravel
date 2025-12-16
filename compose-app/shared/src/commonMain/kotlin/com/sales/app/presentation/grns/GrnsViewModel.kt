@@ -27,19 +27,19 @@ class GrnsViewModel(
     private val _uiState = MutableStateFlow(GrnsUiState())
     val uiState: StateFlow<GrnsUiState> = _uiState.asStateFlow()
     
-    fun loadGrns(accountId: Int) {
+    fun loadGrns(companyId: Int) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             // Sync in background
             launch {
                 try {
-                    syncGrnsUseCase(accountId)
+                    syncGrnsUseCase(companyId)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
             
-            getGrnsUseCase(accountId)
+            getGrnsUseCase(companyId)
                 .catch { e ->
                     _uiState.update { 
                         it.copy(isLoading = false, isRefreshing = false, error = e.message)
@@ -57,10 +57,10 @@ class GrnsViewModel(
         }
     }
     
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
-            loadGrns(accountId)
+            loadGrns(companyId)
         }
     }
     

@@ -6,7 +6,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface DeliveryNoteRepository {
-    fun getDeliveryNotesByAccount(accountId: Int): Flow<List<DeliveryNote>>
+    fun getDeliveryNotesByAccount(companyId: Int): Flow<List<DeliveryNote>>
     fun getDeliveryNotesBySale(saleId: Int): Flow<List<DeliveryNote>>
     fun getDeliveryNoteById(id: Int): Flow<DeliveryNote?>
     suspend fun syncDeliveryNotes(accountId: Int): Result<Unit>

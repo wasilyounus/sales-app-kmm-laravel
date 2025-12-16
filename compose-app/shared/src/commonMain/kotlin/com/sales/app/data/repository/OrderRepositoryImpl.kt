@@ -21,8 +21,8 @@ class OrderRepositoryImpl(
     private val orderDao: OrderDao,
     private val orderItemDao: OrderItemDao
 ) : OrderRepository {
-    override fun getOrdersByAccount(accountId: Int): Flow<List<Order>> {
-        return orderDao.getOrdersByAccount(accountId).map { entities ->
+    override fun getOrdersByAccount(companyId: Int): Flow<List<Order>> {
+        return orderDao.getOrdersByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -47,7 +47,7 @@ class OrderRepositoryImpl(
                         partyId = dto.party_id,
                         date = dto.date,
                         orderNo = dto.order_no,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         createdAt = dto.created_at ?: "",
                         updatedAt = dto.updated_at ?: "",
                         deletedAt = dto.deleted_at
@@ -80,7 +80,7 @@ class OrderRepositoryImpl(
                         price = dto.price,
                         qty = dto.qty,
                         taxId = dto.tax_id,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         logId = dto.log_id,
                         createdAt = dto.created_at ?: "",
                         updatedAt = dto.updated_at ?: "",
@@ -106,7 +106,7 @@ class OrderRepositoryImpl(
                 party_id = partyId,
                 date = date,
                 order_no = orderNo,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.createOrder(request)
@@ -118,7 +118,7 @@ class OrderRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     orderNo = dto.order_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
@@ -135,7 +135,7 @@ class OrderRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = itemDto.log_id,
                             createdAt = dto.created_at ?: "",
                             updatedAt = dto.updated_at ?: "",
@@ -167,7 +167,7 @@ class OrderRepositoryImpl(
                 party_id = partyId,
                 date = date,
                 order_no = orderNo,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.updateOrder(id, request)
@@ -179,12 +179,15 @@ class OrderRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     orderNo = dto.order_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
                 )
                 orderDao.updateOrder(entity)
+                
+                // Delete old items first to prevent ghosts
+                orderDao.deleteOrderItems(dto.id)
                 
                 // Save items from response if present
                 dto.items?.let { items ->
@@ -196,7 +199,7 @@ class OrderRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = itemDto.log_id,
                             createdAt = dto.created_at ?: "",
                             updatedAt = dto.updated_at ?: "",
@@ -229,7 +232,7 @@ class OrderRepositoryImpl(
         partyId = partyId,
         date = date,
         orderNo = orderNo,
-        accountId = accountId,
+        companyId = companyId,
         items = items
     )
     
@@ -239,6 +242,6 @@ class OrderRepositoryImpl(
         itemId = itemId,
         price = price,
         qty = qty,
-        accountId = accountId
+        companyId = companyId
     )
 }

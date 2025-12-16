@@ -6,7 +6,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface QuoteRepository {
-    fun getQuotesByAccount(accountId: Int): Flow<List<Quote>>
+    fun getQuotesByAccount(companyId: Int): Flow<List<Quote>>
     fun getQuoteById(quoteId: Int): Flow<Quote?>
     suspend fun syncQuotes(accountId: Int): Result<Unit>
     suspend fun createQuote(

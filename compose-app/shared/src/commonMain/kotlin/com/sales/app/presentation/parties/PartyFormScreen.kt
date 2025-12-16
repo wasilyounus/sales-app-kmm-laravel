@@ -22,7 +22,7 @@ import com.sales.app.util.isDesktop
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PartyFormScreen(
-    accountId: Int,
+    companyId: Int,
     partyId: Int? = null,
     onNavigateBack: () -> Unit,
     viewModel: PartyFormViewModel
@@ -31,7 +31,7 @@ fun PartyFormScreen(
     
     LaunchedEffect(partyId) {
         if (partyId != null) {
-            viewModel.loadParty(accountId, partyId)
+            viewModel.loadParty(companyId, partyId)
         }
     }
 
@@ -226,10 +226,11 @@ fun PartyFormScreen(
                     ) {
                         if (uiState.formUiState is PartyFormUiState.Add) {
                             Button(
-                                onClick = { viewModel.saveAndAdd(accountId) },
+                                onClick = { viewModel.saveAndAdd(companyId) },
                                 enabled = !uiState.isSaving,
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.secondary
+                                    containerColor = MaterialTheme.colorScheme.secondary,
+                                    contentColor = MaterialTheme.colorScheme.onSecondary
                                 )
                             ) {
                                 if (uiState.isSaving) {
@@ -246,8 +247,12 @@ fun PartyFormScreen(
                         }
                         
                         Button(
-                            onClick = { viewModel.saveParty(accountId, onSuccess = onNavigateBack) },
-                            enabled = !uiState.isSaving
+                            onClick = { viewModel.saveParty(companyId, onSuccess = onNavigateBack) },
+                            enabled = !uiState.isSaving,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         ) {
                             if (uiState.isSaving) {
                                 CircularProgressIndicator(

@@ -13,12 +13,12 @@ class PartyController extends Controller
      */
     public function index(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $query = Party::with('addresses');
 
-        if ($accountId) {
-            $query->where('account_id', $accountId);
+        if ($companyId) {
+            $query->where('company_id', $companyId);
         }
 
         $parties = $query->get();
@@ -42,7 +42,7 @@ class PartyController extends Controller
             'tax_number' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-            'account_id' => 'required|exists:accounts,id',
+            'company_id' => 'required|exists:companies,id',
             'addresses' => 'nullable|array',
             'addresses.*.line1' => 'required|string|max:255',
             'addresses.*.line2' => 'nullable|string|max:255',
@@ -59,13 +59,13 @@ class PartyController extends Controller
                 'tax_number' => $validated['tax_number'] ?? null,
                 'phone' => $validated['phone'] ?? null,
                 'email' => $validated['email'] ?? null,
-                'account_id' => $validated['account_id'],
+                'company_id' => $validated['company_id'],
             ]);
 
             if (isset($validated['addresses'])) {
                 foreach ($validated['addresses'] as $addr) {
                     $party->addresses()->create([
-                        'account_id' => $validated['account_id'],
+                        'company_id' => $validated['company_id'],
                         'line1' => $addr['line1'],
                         'line2' => $addr['line2'] ?? null,
                         'place' => $addr['place'] ?? null,
@@ -140,7 +140,7 @@ class PartyController extends Controller
 
                 foreach ($validated['addresses'] as $addr) {
                     $party->addresses()->create([
-                        'account_id' => $party->account_id,
+                        'company_id' => $party->company_id,
                         'line1' => $addr['line1'],
                         'line2' => $addr['line2'] ?? null,
                         'place' => $addr['place'] ?? null,

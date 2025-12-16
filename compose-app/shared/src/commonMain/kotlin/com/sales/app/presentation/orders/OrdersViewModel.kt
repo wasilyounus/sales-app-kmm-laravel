@@ -19,11 +19,11 @@ class OrdersViewModel(
     private val _uiState = MutableStateFlow(OrdersUiState())
     val uiState: StateFlow<OrdersUiState> = _uiState.asStateFlow()
     
-    fun loadOrders(accountId: Int) {
+    fun loadOrders(companyId: Int) {
         _uiState.update { it.copy(isLoading = true, error = null) }
         
         viewModelScope.launch {
-            getOrdersUseCase(accountId).collect { orders ->
+            getOrdersUseCase(companyId).collect { orders ->
                 val uiModels = orders.map { order ->
                     OrderUiModel(
                         id = order.id,
@@ -45,11 +45,11 @@ class OrdersViewModel(
         }
     }
     
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         _uiState.update { it.copy(isRefreshing = true) }
         
         viewModelScope.launch {
-            when (val result = syncOrdersUseCase(accountId)) {
+            when (val result = syncOrdersUseCase(companyId)) {
                 is Result.Success -> {
                     // Orders will be updated via flow
                 }
