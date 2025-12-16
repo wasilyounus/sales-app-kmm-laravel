@@ -47,6 +47,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('companies/{id}', [CompanyController::class, 'update']);
     Route::post('companies/{id}', [CompanyController::class, 'update']); // For mobile compatibility
 
+    // Modules
+    Route::get('modules', [\App\Http\Controllers\Api\ModuleController::class, 'index']);
+
     // Items
     Route::get('items', [ItemController::class, 'index']);
     Route::post('items', [ItemController::class, 'store']);

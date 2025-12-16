@@ -92,7 +92,7 @@ tasks.matching { it.name.startsWith("kspKotlin") }.configureEach {
 
 kotlin {
     androidTarget()
-    jvm("desktop")
+    jvm()
     listOf(
         iosX64(),
         iosArm64(),
@@ -124,7 +124,7 @@ kotlin {
                 implementation(libs.coroutines.core)
 
                 // DateTime
-                implementation(libs.datetime)
+                api(libs.datetime)
 
                 // Ktor
                 implementation(libs.ktor.client.core)
@@ -170,7 +170,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-darwin:3.0.0")
             }
         }
-        val desktopMain by getting {
+        val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation("io.ktor:ktor-client-cio:3.0.0")
@@ -181,7 +181,7 @@ kotlin {
     
     dependencies {
         add("kspAndroid", "androidx.room:room-compiler:2.7.0-alpha01")
-        add("kspDesktop", "androidx.room:room-compiler:2.7.0-alpha01")
+        add("kspJvm", "androidx.room:room-compiler:2.7.0-alpha01")
         add("kspIosX64", "androidx.room:room-compiler:2.7.0-alpha01")
         add("kspIosArm64", "androidx.room:room-compiler:2.7.0-alpha01")
         add("kspIosSimulatorArm64", "androidx.room:room-compiler:2.7.0-alpha01")

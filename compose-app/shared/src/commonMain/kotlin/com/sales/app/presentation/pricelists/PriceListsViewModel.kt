@@ -22,11 +22,11 @@ class PriceListsViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    fun loadPriceLists(accountId: Int) {
+    fun loadPriceLists(companyId: Int) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                priceListRepository.getPriceLists(accountId).collect {
+                priceListRepository.getPriceLists(companyId).collect {
                     _priceLists.value = it
                 }
             } catch (e: Exception) {
@@ -37,10 +37,10 @@ class PriceListsViewModel(
         }
     }
 
-    fun createPriceList(accountId: Int, name: String, onSuccess: () -> Unit) {
+    fun createPriceList(companyId: Int, name: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = priceListRepository.createPriceList(name, accountId)
+            val result = priceListRepository.createPriceList(name, companyId)
             result.onSuccess {
                 onSuccess()
                 // Refresh list? Flow should update if repo updates local DB

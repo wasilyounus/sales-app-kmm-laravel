@@ -22,14 +22,14 @@ class PartyRepositoryImpl(
     private val partyDao: PartyDao,
     private val addressDao: AddressDao
 ) : PartyRepository {
-    override fun getPartiesByAccount(accountId: Int): Flow<List<Party>> {
-        return partyDao.getPartiesByAccount(accountId).map { entities ->
+    override fun getPartiesByAccount(companyId: Int): Flow<List<Party>> {
+        return partyDao.getPartiesByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    override fun searchParties(accountId: Int, query: String): Flow<List<Party>> {
-        return partyDao.searchParties(accountId, query).map { entities ->
+    override fun searchParties(companyId: Int, query: String): Flow<List<Party>> {
+        return partyDao.searchParties(companyId, query).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -46,7 +46,7 @@ class PartyRepositoryImpl(
                         taxNumber = dto.taxNumber,
                         phone = dto.phone,
                         email = dto.email,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         createdAt = dto.created_at,
                         updatedAt = dto.updated_at,
                         deletedAt = dto.deleted_at
@@ -60,14 +60,14 @@ class PartyRepositoryImpl(
                         AddressEntity(
                             id = addr.id,
                             partyId = party.id,
-                            accountId = party.account_id,
-                            line1 = addr.line1,
+                            companyId = party.company_id ?: 0,
+                            line1 = addr.line1 ?: "",
                             line2 = addr.line2,
-                            place = addr.place,
+                            place = addr.place ?: "",
                             district = addr.district,
-                            state = addr.state,
-                            pincode = addr.pincode,
-                            country = addr.country,
+                            state = addr.state ?: "",
+                            pincode = addr.pincode ?: "",
+                            country = addr.country ?: "",
                             latitude = addr.latitude,
                             longitude = addr.longitude,
                             createdAt = addr.created_at ?: "",
@@ -100,7 +100,7 @@ class PartyRepositoryImpl(
                 taxNumber = taxNumber, 
                 phone = phone, 
                 email = email, 
-                account_id = accountId,
+                company_id = accountId,
                 addresses = addresses
             )
             val response = apiService.createParty(request)
@@ -113,7 +113,7 @@ class PartyRepositoryImpl(
                     taxNumber = dto.taxNumber,
                     phone = dto.phone,
                     email = dto.email,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at,
                     updatedAt = dto.updated_at,
                     deletedAt = dto.deleted_at
@@ -126,14 +126,14 @@ class PartyRepositoryImpl(
                         AddressEntity(
                             id = addr.id,
                             partyId = dto.id,
-                            accountId = dto.account_id,
-                            line1 = addr.line1,
+                            companyId = dto.company_id ?: 0,
+                            line1 = addr.line1 ?: "",
                             line2 = addr.line2,
-                            place = addr.place,
+                            place = addr.place ?: "",
                             district = addr.district,
-                            state = addr.state,
-                            pincode = addr.pincode,
-                            country = addr.country,
+                            state = addr.state ?: "",
+                            pincode = addr.pincode ?: "",
+                            country = addr.country ?: "",
                             latitude = addr.latitude,
                             longitude = addr.longitude,
                             createdAt = addr.created_at ?: "",
@@ -169,7 +169,7 @@ class PartyRepositoryImpl(
                 taxNumber = taxNumber, 
                 phone = phone, 
                 email = email, 
-                account_id = accountId,
+                company_id = accountId,
                 addresses = addresses
             )
             val response = apiService.updateParty(id, request)
@@ -182,7 +182,7 @@ class PartyRepositoryImpl(
                     taxNumber = dto.taxNumber,
                     phone = dto.phone,
                     email = dto.email,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at,
                     updatedAt = dto.updated_at,
                     deletedAt = dto.deleted_at
@@ -196,14 +196,14 @@ class PartyRepositoryImpl(
                         AddressEntity(
                             id = addr.id,
                             partyId = dto.id,
-                            accountId = dto.account_id,
-                            line1 = addr.line1,
+                            companyId = dto.company_id ?: 0,
+                            line1 = addr.line1 ?: "",
                             line2 = addr.line2,
-                            place = addr.place,
+                            place = addr.place ?: "",
                             district = addr.district,
-                            state = addr.state,
-                            pincode = addr.pincode,
-                            country = addr.country,
+                            state = addr.state ?: "",
+                            pincode = addr.pincode ?: "",
+                            country = addr.country ?: "",
                             latitude = addr.latitude,
                             longitude = addr.longitude,
                             createdAt = addr.created_at ?: "",
@@ -250,14 +250,14 @@ class PartyRepositoryImpl(
         taxNumber = taxNumber,
         phone = phone,
         email = email,
-        accountId = accountId,
+        companyId = companyId,
         addresses = addresses
     )
     
     private fun AddressEntity.toDomainModel() = Address(
         id = id,
         partyId = partyId,
-        accountId = accountId,
+        companyId = companyId,
         line1 = line1,
         line2 = line2,
         place = place,
@@ -272,14 +272,14 @@ class PartyRepositoryImpl(
     private fun AddressDto.toDomainModel() = Address(
         id = id,
         partyId = party_id,
-        accountId = account_id,
-        line1 = line1,
+        companyId = company_id ?: 0,
+        line1 = line1 ?: "",
         line2 = line2,
-        place = place,
+        place = place ?: "",
         district = district,
-        state = state,
-        pincode = pincode,
-        country = country,
+        state = state ?: "",
+        pincode = pincode ?: "",
+        country = country ?: "",
         latitude = latitude,
         longitude = longitude
     )

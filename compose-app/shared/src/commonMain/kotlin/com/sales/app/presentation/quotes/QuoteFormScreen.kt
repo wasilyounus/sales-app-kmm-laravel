@@ -32,7 +32,7 @@ import androidx.compose.material3.rememberDatePickerState
 import com.sales.app.domain.model.Item
 import com.sales.app.presentation.items.FormUiState
 import com.sales.app.util.isDesktop
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -41,7 +41,7 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class, kotlin.time.ExperimentalTime::class)
 @Composable
 fun QuoteFormScreen(
-    accountId: Int,
+    companyId: Int,
     quoteId: Int? = null,
     onNavigateBack: () -> Unit,
     viewModel: QuoteFormViewModel
@@ -49,8 +49,8 @@ fun QuoteFormScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showAddItemDialog by remember { mutableStateOf(false) }
     
-    LaunchedEffect(accountId, quoteId) {
-        viewModel.loadData(accountId, quoteId)
+    LaunchedEffect(companyId, quoteId) {
+        viewModel.loadData(companyId, quoteId)
     }
     
     Scaffold(
@@ -273,9 +273,9 @@ fun QuoteFormScreen(
                     Button(
                         onClick = { 
                             if (quoteId != null) {
-                                viewModel.updateQuote(quoteId, accountId, onNavigateBack)
+                                viewModel.updateQuote(quoteId, companyId, onNavigateBack)
                             } else {
-                                viewModel.saveQuote(accountId, onNavigateBack)
+                                viewModel.saveQuote(companyId, onNavigateBack)
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),

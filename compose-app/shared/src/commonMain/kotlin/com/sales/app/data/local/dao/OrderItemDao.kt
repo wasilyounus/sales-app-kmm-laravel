@@ -24,6 +24,6 @@ interface OrderItemDao { // DAO for order items
     @Query("DELETE FROM order_items WHERE orderId = :orderId")
     suspend fun deleteOrderItemsByOrderId(orderId: Int)
     
-    @Query("DELETE FROM order_items WHERE accountId = :accountId")
-    suspend fun deleteOrderItemsByAccount(accountId: Int)
+    @Query("DELETE FROM order_items WHERE companyId = :companyId")
+    suspend fun deleteOrderItemsByAccount(companyId: Int)
 }

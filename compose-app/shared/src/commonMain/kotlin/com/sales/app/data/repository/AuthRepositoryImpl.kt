@@ -12,8 +12,11 @@ import com.sales.app.data.remote.dto.RegisterRequest
 import com.sales.app.domain.model.User
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 
 import com.sales.app.domain.repository.AuthRepository
 
@@ -40,6 +43,7 @@ class AuthRepositoryImpl(
                     id = response.data.user.id,
                     name = response.data.user.name,
                     email = response.data.user.email,
+                    currentCompanyId = response.data.user.current_company_id,
                     createdAt = response.data.user.created_at,
                     updatedAt = response.data.user.updated_at
                 )
@@ -52,7 +56,8 @@ class AuthRepositoryImpl(
                     User(
                         id = response.data.user.id,
                         name = response.data.user.name,
-                        email = response.data.user.email
+                        email = response.data.user.email,
+                        currentCompanyId = response.data.user.current_company_id
                     )
                 )
             } else {
@@ -83,6 +88,7 @@ class AuthRepositoryImpl(
                     id = response.data.user.id,
                     name = response.data.user.name,
                     email = response.data.user.email,
+                    currentCompanyId = response.data.user.current_company_id,
                     createdAt = response.data.user.created_at,
                     updatedAt = response.data.user.updated_at
                 )
@@ -95,7 +101,8 @@ class AuthRepositoryImpl(
                     User(
                         id = response.data.user.id,
                         name = response.data.user.name,
-                        email = response.data.user.email
+                        email = response.data.user.email,
+                        currentCompanyId = response.data.user.current_company_id
                     )
                 )
             } else {
@@ -123,11 +130,51 @@ class AuthRepositoryImpl(
             preferences[AUTH_TOKEN_KEY]
         }
     }
+
+    @kotlinx.coroutines.ExperimentalCoroutinesApi
+    override fun currentUser(): Flow<User?> {
+        return dataStore.data.map { preferences ->
+            preferences[USER_ID_KEY]?.toIntOrNull()
+        }.distinctUntilChanged().flatMapLatest { userId ->
+            if (userId != null) {
+                userDao.getUserById(userId).map { entity ->
+                    entity?.let {
+                        User(
+                            id = it.id,
+                            name = it.name,
+                            email = it.email,
+                            currentCompanyId = it.currentCompanyId
+                        )
+                    }
+                }
+            } else {
+                flowOf(null)
+            }
+        }
+    }
     
     override suspend fun isLoggedIn(): Boolean {
         return getToken().first() != null
     }
     
+    override suspend fun selectCompany(companyId: Int): Result<Unit> {
+        return try {
+            apiService.selectCompany(companyId)
+            
+            // Update local user
+            val userId = dataStore.data.map { it[USER_ID_KEY] }.first()?.toIntOrNull()
+            if (userId != null) {
+                val userEntity = userDao.getUserById(userId).first()
+                if (userEntity != null) {
+                    userDao.insertUser(userEntity.copy(currentCompanyId = companyId))
+                }
+            }
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e.message ?: "Failed to select company")
+        }
+    }
+
     private suspend fun saveToken(token: String) {
         dataStore.edit { preferences ->
             preferences[AUTH_TOKEN_KEY] = token

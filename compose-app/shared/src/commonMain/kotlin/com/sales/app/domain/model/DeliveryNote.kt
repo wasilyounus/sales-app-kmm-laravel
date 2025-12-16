@@ -8,7 +8,7 @@ data class DeliveryNote(
     val vehicleNo: String?,
     val lrNo: String?,
     val notes: String?,
-    val accountId: Int,
+    val companyId: Int,
     val items: List<DeliveryNoteItem> = emptyList()
 )
 

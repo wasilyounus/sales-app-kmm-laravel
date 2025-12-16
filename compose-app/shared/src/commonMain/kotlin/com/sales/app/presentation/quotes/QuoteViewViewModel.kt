@@ -26,16 +26,16 @@ class QuoteViewViewModel(
     val uiState: StateFlow<QuoteViewUiState> = _uiState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadQuote(accountId: Int, quoteId: Int) {
+    fun loadQuote(companyId: Int, quoteId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             combine(
                 getQuoteByIdUseCase(quoteId),
-                getItemsUseCase(accountId)
+                getItemsUseCase(companyId)
             ) { quote, allItems ->
                 if (quote != null) {
-                    val party = getPartyByIdUseCase(accountId, quote.partyId).firstOrNull()
+                    val party = getPartyByIdUseCase(companyId, quote.partyId).firstOrNull()
                     Triple(quote, party, allItems)
                 } else {
                     null

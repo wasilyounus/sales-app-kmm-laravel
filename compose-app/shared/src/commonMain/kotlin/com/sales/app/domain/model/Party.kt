@@ -6,7 +6,7 @@ data class Party(
     val taxNumber: String?,
     val phone: String?,
     val email: String?,
-    val accountId: Int,
+    val companyId: Int,
     val addresses: List<Address> = emptyList()
 )
 

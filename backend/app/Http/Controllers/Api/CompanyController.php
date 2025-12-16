@@ -49,6 +49,7 @@ class CompanyController extends Controller
             'signature' => 'sometimes|boolean',
             'log_id' => 'required|integer',
             'financial_year_start' => 'nullable|date_format:Y-m-d H:i:s',
+            'dark_mode' => 'sometimes|boolean',
         ]);
 
         $company = Company::create($validated);
@@ -98,6 +99,7 @@ class CompanyController extends Controller
             'state' => 'nullable|string|max:255',
             'enable_delivery_notes' => 'sometimes|boolean',
             'enable_grns' => 'sometimes|boolean',
+            'dark_mode' => 'sometimes|boolean',
         ]);
 
         $company->update($validated);

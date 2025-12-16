@@ -19,11 +19,11 @@ class PurchasesViewModel(
     private val _uiState = MutableStateFlow(PurchasesUiState())
     val uiState: StateFlow<PurchasesUiState> = _uiState.asStateFlow()
     
-    fun loadPurchases(accountId: Int) {
+    fun loadPurchases(companyId: Int) {
         _uiState.update { it.copy(isLoading = true, error = null) }
         
         viewModelScope.launch {
-            getPurchasesUseCase(accountId).collect { purchases ->
+            getPurchasesUseCase(companyId).collect { purchases ->
                 val uiModels = purchases.map { purchase ->
                     PurchaseUiModel(
                         id = purchase.id,
@@ -45,11 +45,11 @@ class PurchasesViewModel(
         }
     }
     
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         _uiState.update { it.copy(isRefreshing = true) }
         
         viewModelScope.launch {
-            when (val result = syncPurchasesUseCase(accountId)) {
+            when (val result = syncPurchasesUseCase(companyId)) {
                 is Result.Success -> {
                     // Purchases will be updated via flow
                 }

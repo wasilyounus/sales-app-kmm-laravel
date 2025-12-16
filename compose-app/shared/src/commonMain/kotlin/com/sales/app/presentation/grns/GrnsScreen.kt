@@ -18,14 +18,14 @@ import com.sales.app.domain.model.Grn
 @Composable
 fun GrnsScreen(
     viewModel: GrnsViewModel,
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToCreate: (Int?) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(accountId) {
-        viewModel.loadGrns(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadGrns(companyId)
     }
 
     Scaffold(

@@ -24,13 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.sales.app.presentation.components.SalesAppExtendedFab
 import com.sales.app.domain.model.Party
 import com.sales.app.util.isDesktop
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PartiesScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToPartyEdit: (Int) -> Unit,
     onNavigateToCreateParty: () -> Unit,
@@ -38,8 +39,8 @@ fun PartiesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    LaunchedEffect(accountId) {
-        viewModel.loadParties(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadParties(companyId)
     }
     
     Scaffold(
@@ -65,10 +66,10 @@ fun PartiesScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            SalesAppExtendedFab(
                 onClick = onNavigateToCreateParty,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text(if (isDesktop()) "Add Party" else "Add") }
+                icon = Icons.Default.Add,
+                text = if (isDesktop()) "Add Party" else "Add"
             )
         }
     ) { paddingValues ->
@@ -112,7 +113,7 @@ fun PartiesScreen(
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyLarge
                             )
-                            TextButton(onClick = { viewModel.loadParties(accountId) }) {
+                            TextButton(onClick = { viewModel.loadParties(companyId) }) {
                                 Text("Retry")
                             }
                         }

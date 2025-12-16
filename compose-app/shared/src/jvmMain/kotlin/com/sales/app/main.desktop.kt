@@ -19,6 +19,16 @@ actual fun getPlatformName(): String = "Desktop"
         )
     }
     App(appContainer)
+    
+    // Initialize UnauthorizedHandler
+    com.sales.app.di.unauthorizedHandler = com.sales.app.data.remote.UnauthorizedHandler(
+        dataStore = appContainer.dataStore,
+        userDao = appContainer.database.userDao(),
+        onUnauthorized = {
+            // Logic to handle navigation to login if needed, or just rely on state observers
+            println("Unauthorized! Clearing session...")
+        }
+    )
 }
 
 @Preview

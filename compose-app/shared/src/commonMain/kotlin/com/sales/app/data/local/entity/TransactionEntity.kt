@@ -13,7 +13,7 @@ data class TransactionEntity(
     val debitCode: Int,
     val creditCode: Int,
     val comment: String?,
-    val accountId: Int,
+    val companyId: Int,
     val partyName: String? = null,
     val isReceived: Boolean = false
 )

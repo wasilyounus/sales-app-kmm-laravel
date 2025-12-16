@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
-import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2, PackageOpen, ClipboardList, Wallet, Tags, Truck, Archive } from 'lucide-react';
+import { Menu, Bell, Settings, LayoutDashboard, Users, Package, ShoppingCart, FileText, LogOut, Search, ChevronRight, Layers, Building2, PackageOpen, ClipboardList, Wallet, Tags, Truck, Archive, Warehouse } from 'lucide-react';
 import CompanySwitcher from '@/Components/CompanySwitcher';
 import CompanySelectionModal from '@/Components/CompanySelectionModal';
 
@@ -46,7 +46,7 @@ export default function AdminLayout({ children, title }) {
         { name: 'Orders', href: '/admin/orders', icon: ClipboardList },
         { name: 'Payments', href: '/admin/payments', icon: Wallet },
         { name: 'Price Lists', href: '/admin/price-lists', icon: Tags },
-        { name: 'Inventory', href: '/admin/inventory', icon: Package },
+        { name: 'Inventory', href: '/admin/inventory', icon: Warehouse },
         { name: 'Items', href: '/admin/items', icon: Package },
         { name: 'Parties', href: '/admin/parties', icon: Users },
         { name: 'Companies', href: '/admin/companies', icon: Building2 },
@@ -58,16 +58,12 @@ export default function AdminLayout({ children, title }) {
     };
 
     const SidebarContent = () => (
-        <div className="flex flex-col h-full bg-white border-r border-gray-100">
-            {/* Logo Section */}
-            <div className="p-6 flex items-center gap-3">
-                <div className="w-8 h-8 bg-lime-500 rounded-lg flex items-center justify-center text-white shadow-lg shadow-lime-500/30">
-                    <Layers className="w-5 h-5" />
-                </div>
-                <span className="text-xl font-bold text-gray-900 tracking-tight">Acme Inc.</span>
+        <div className="flex flex-col h-full bg-background border-r border-border">
+            {/* Company Section */}
+            <div className="p-4 border-b border-border mb-4">
+                <CompanySwitcher currentCompany={currentCompany} />
             </div>
 
-            {/* Navigation */}
             <nav className="flex-1 px-4 space-y-1 mt-4">
                 {navigation.map((item) => {
                     const isActive = window.location.pathname === item.href;
@@ -77,22 +73,22 @@ export default function AdminLayout({ children, title }) {
                             key={item.name}
                             href={item.href}
                             className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                                ? 'bg-lime-50 text-lime-600 font-semibold'
-                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-primary/10 text-primary font-bold'
+                                : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                                 }`}
                         >
-                            <Icon className={`w-5 h-5 ${isActive ? 'text-lime-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
-                            <span>{item.name}</span>
+                            <Icon className={`w-5 h-5 ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
+                            <span className="font-medium">{item.name}</span>
                         </Link>
                     );
                 })}
             </nav>
 
             {/* User Profile */}
-            <div className="p-4 border-t border-gray-100">
+            <div className="p-4 border-t border-border">
                 <Link
                     href="/admin/settings"
-                    className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all duration-200 mb-2"
+                    className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-xl transition-all duration-200 mb-2"
                 >
                     <Settings className="w-5 h-5" />
                     <span className="font-medium">Settings</span>
@@ -100,21 +96,23 @@ export default function AdminLayout({ children, title }) {
 
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200 mb-4"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-xl transition-all duration-200 mb-4"
                 >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">Log Out</span>
                 </button>
 
-                <div className="border-t border-gray-100 pt-4">
+                <div className="border-t border-border pt-4">
                     <div className="flex items-center gap-3 px-2">
-                        <Avatar className="h-10 w-10 border-2 border-white shadow-sm bg-lime-100">
-                            <AvatarImage src="" />
-                            <AvatarFallback className="text-lime-700 font-bold">AD</AvatarFallback>
+                        <Avatar className="h-10 w-10 border-2 border-background shadow-sm bg-primary/10">
+                            <AvatarImage src={auth?.user?.avatar_url} />
+                            <AvatarFallback className="text-primary font-bold">
+                                {auth?.user?.name ? auth.user.name.substring(0, 2).toUpperCase() : 'AD'}
+                            </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-900 truncate">Admin User</p>
-                            <p className="text-xs text-gray-400 truncate">superadmin@mail.com</p>
+                            <p className="text-sm font-bold text-foreground truncate">{auth?.user?.name || 'Admin User'}</p>
+                            <p className="text-xs text-muted-foreground truncate">{auth?.user?.email || 'admin@example.com'}</p>
                         </div>
                     </div>
                 </div>
@@ -123,7 +121,7 @@ export default function AdminLayout({ children, title }) {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50/50 flex">
+        <div className="min-h-screen bg-muted/20 flex">
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block fixed top-0 left-0 z-40 h-screen w-64">
                 <SidebarContent />
@@ -136,7 +134,7 @@ export default function AdminLayout({ children, title }) {
                     <div className="flex items-center gap-4 lg:hidden">
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="bg-white rounded-xl shadow-sm">
+                                <Button variant="ghost" size="icon" className="bg-background rounded-xl shadow-sm border border-border">
                                     <Menu className="h-6 w-6" />
                                 </Button>
                             </SheetTrigger>
@@ -146,22 +144,18 @@ export default function AdminLayout({ children, title }) {
                         </Sheet>
                     </div>
 
-                    <div className="hidden lg:block">
-                        <CompanySwitcher currentCompany={currentCompany} />
-                    </div>
-
                     <div className="flex items-center gap-4 ml-auto">
-                        <div className="hidden md:flex items-center bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-100 w-80">
-                            <Search className="w-4 h-4 text-gray-400 mr-2" />
+                        <div className="hidden md:flex items-center bg-background px-4 py-2.5 rounded-full shadow-sm border border-border w-80 focus-within:ring-2 focus-within:ring-ring">
+                            <Search className="w-4 h-4 text-muted-foreground mr-2" />
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="bg-transparent border-0 focus:ring-0 text-sm w-full p-0 placeholder:text-gray-400"
+                                className="bg-transparent border-0 focus:ring-0 text-sm w-full p-0 placeholder:text-muted-foreground focus:outline-none"
                             />
                         </div>
-                        <Button variant="ghost" size="icon" className="bg-white rounded-full h-10 w-10 shadow-sm border border-gray-100 relative">
-                            <Bell className="h-5 w-5 text-gray-600" />
-                            <span className="absolute top-2.5 right-3 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>
+                        <Button variant="ghost" size="icon" className="bg-background rounded-full h-10 w-10 shadow-sm border border-border relative">
+                            <Bell className="h-5 w-5 text-muted-foreground" />
+                            <span className="absolute top-2.5 right-3 h-2 w-2 bg-destructive rounded-full border-2 border-background"></span>
                         </Button>
                     </div>
                 </header>

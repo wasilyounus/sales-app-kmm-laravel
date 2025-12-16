@@ -29,13 +29,13 @@ class PartiesViewModel(
     
     private val _searchQuery = MutableStateFlow("")
     
-    fun loadParties(accountId: Int) {
+    fun loadParties(companyId: Int) {
         viewModelScope.launch {
             _searchQuery
                 .debounce(300)
                 .flatMapLatest { query ->
                     _uiState.update { it.copy(isLoading = true, searchQuery = query) }
-                    searchPartiesUseCase(accountId, query)
+                    searchPartiesUseCase(companyId, query)
                 }
                 .catch { e ->
                     _uiState.update { 

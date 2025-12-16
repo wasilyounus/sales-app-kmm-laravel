@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PriceListDao {
-    @Query("SELECT * FROM price_lists WHERE accountId = :accountId ORDER BY name ASC")
-    fun getPriceLists(accountId: Int): Flow<List<PriceListEntity>>
+    @Query("SELECT * FROM price_lists WHERE companyId = :companyId ORDER BY name ASC")
+    fun getPriceLists(companyId: Int): Flow<List<PriceListEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPriceLists(priceLists: List<PriceListEntity>)

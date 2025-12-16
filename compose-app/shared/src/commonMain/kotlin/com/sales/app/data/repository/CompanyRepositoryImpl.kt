@@ -9,6 +9,7 @@ import com.sales.app.domain.repository.CompanyRepository
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.firstOrNull
 
 class CompanyRepositoryImpl(
     private val apiService: ApiService,
@@ -18,9 +19,9 @@ class CompanyRepositoryImpl(
     
     override fun getCompany(): Flow<Company?> {
         return companyDao.getAllCompanies().map { companies ->
+            // For now, return the first company as default if no ID is specified
             val companyEntity = companies.firstOrNull()
             if (companyEntity != null) {
-                // Merge in query logic: Fetch contacts for this company
                 val contacts = contactDao.getContactsForCompany(companyEntity.id)
                 companyEntity.toCompany(contacts)
             } else {
@@ -28,7 +29,19 @@ class CompanyRepositoryImpl(
             }
         }
     }
-    
+
+    override fun getCompanies(): Flow<List<Company>> {
+        return companyDao.getAllCompanies().map { entities ->
+            entities.map { entity ->
+                // We might want to load contacts for all companies, or maybe just basic info is enough for list
+                // Loading contacts for list might be N+1 query issue if not careful, 
+                // but with Room it's locally fast.
+                // For switcher, names are enough.
+                entity.toCompany()
+            }
+        }
+    }
+
     override fun getCompanyById(id: Int): Flow<Company?> {
         return companyDao.getCompanyById(id).map { entity ->
             if (entity != null) {
@@ -40,26 +53,10 @@ class CompanyRepositoryImpl(
         }
     }
     
-    override suspend fun fetchCompany(id: Int) {
-        try {
-            val response = apiService.getAccount(id)
-            if (response.success && response.data != null) {
-                val entity = response.data.toEntity()
-                companyDao.insertCompany(entity)
-                
-                // Sync in isolation: Save contacts separately
-                val contactEntities = response.data.contacts.map { it.toEntity(entity.id) }
-                contactDao.syncContacts(entity.id, contactEntities)
-            }
-        } catch (e: Exception) {
-            // Handle error silently or log
-        }
-    }
-    
     override suspend fun updateCompany(company: Company): Result<Company> {
         return try {
             val dto = company.toDto()
-            val response = apiService.updateAccount(company.id, dto)
+            val response = apiService.updateCompany(company.id, dto)
             
             if (response.success && response.data != null) {
                 val entity = response.data.toEntity()
@@ -77,6 +74,77 @@ class CompanyRepositoryImpl(
             }
         } catch (e: Exception) {
             Result.Error(e.message ?: "Unknown error")
+        }
+    }
+
+    override suspend fun fetchCompany(id: Int) {
+        try {
+            val response = apiService.getCompany(id)
+            if (response.success && response.data != null) {
+                val entity = response.data.toEntity()
+                companyDao.insertCompany(entity)
+                
+                // Sync in isolation: Save contacts separately
+                val contactEntities = response.data.contacts.map { it.toEntity(entity.id) }
+                contactDao.syncContacts(entity.id, contactEntities)
+            }
+        } catch (e: Exception) {
+            // Handle error silently or log
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun fetchCompanies() {
+        println("CompanyRepositoryImpl: fetchCompanies called")
+        try {
+            val response = apiService.getCompanies()
+            println("CompanyRepositoryImpl: getCompanies response received, count: ${response.companies.size}")
+            response.companies.forEach { dto ->
+                // Check if company exists to avoid overwriting detailed data with partial data
+                val existing = companyDao.getCompanyById(dto.id).firstOrNull()
+                
+                if (existing == null) {
+                    // Insert new with defaults
+                    val newEntity = com.sales.app.data.local.entity.CompanyEntity(
+                         id = dto.id,
+                         name = dto.name,
+                         nameFormatted = dto.nameFormatted,
+                         desc = "",
+                         taxationType = 0, // Default Int
+                         taxRate = 0, // Default Int
+                         address = "",
+                         call = "",
+                         whatsapp = "",
+                         footerContent = "",
+                         signature = null,
+                         financialYearStart = com.sales.app.util.TimeProvider.now().toString(),
+                         country = "India",
+                         state = "",
+                         taxNumber = "",
+                         defaultTaxId = null,
+                         createdAt = com.sales.app.util.TimeProvider.now().toString(),
+                         updatedAt = com.sales.app.util.TimeProvider.now().toString(),
+                         deletedAt = null,
+                         enableDeliveryNotes = true,
+                         enableGrns = true,
+                         darkMode = false,
+                         taxApplicationLevel = "item"
+                    )
+                    companyDao.insertCompany(newEntity)
+                } else {
+                    // Update only name if changed, preserve other details
+                    if (existing.name != dto.name || existing.nameFormatted != dto.nameFormatted) {
+                        companyDao.updateCompany(existing.copy(
+                            name = dto.name, 
+                            nameFormatted = dto.nameFormatted
+                        ))
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Error handling for fetchCompanies
+            println("CompanyRepositoryImpl: fetchCompanies error: ${e.message}")
+            e.printStackTrace()
         }
     }
 }
@@ -105,6 +173,7 @@ private fun com.sales.app.data.remote.dto.CompanyDto.toEntity(): CompanyEntity {
         deletedAt = deletedAt,
         enableDeliveryNotes = enableDeliveryNotes,
         enableGrns = enableGrns,
+        darkMode = darkMode,
         taxApplicationLevel = taxApplicationLevel
     )
 }
@@ -130,6 +199,7 @@ private fun CompanyEntity.toCompany(contacts: List<com.sales.app.data.local.enti
         defaultTaxId = defaultTaxId,
         enableDeliveryNotes = enableDeliveryNotes,
         enableGrns = enableGrns,
+        darkMode = darkMode,
         taxApplicationLevel = taxApplicationLevel,
         createdAt = createdAt,
         updatedAt = updatedAt,
@@ -180,6 +250,7 @@ private fun Company.toDto(): com.sales.app.data.remote.dto.CompanyDto {
         defaultTaxId = defaultTaxId,
         enableDeliveryNotes = enableDeliveryNotes,
         enableGrns = enableGrns,
+        darkMode = darkMode,
         taxApplicationLevel = taxApplicationLevel,
         createdAt = createdAt,
         updatedAt = updatedAt,

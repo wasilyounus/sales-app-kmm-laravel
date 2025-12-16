@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
+import com.sales.app.presentation.components.SalesAppFab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,7 +24,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     viewModel: InventoryViewModel,
     stockAdjustmentViewModel: StockAdjustmentViewModel
@@ -31,8 +32,8 @@ fun InventoryScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showAdjustmentDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(accountId) {
-        viewModel.loadInventory(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadInventory(companyId)
     }
 
     Scaffold(
@@ -47,9 +48,7 @@ fun InventoryScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAdjustmentDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Adjust Stock")
-            }
+            SalesAppFab(onClick = { showAdjustmentDialog = true }, contentDescription = "Adjust Stock")
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -115,10 +114,10 @@ fun InventoryScreen(
 
     if (showAdjustmentDialog) {
         StockAdjustmentDialog(
-            accountId = accountId,
+            companyId = companyId,
             onDismissRequest = { showAdjustmentDialog = false },
             onAdjustmentSaved = {
-                viewModel.loadInventory(accountId) // Refresh inventory
+                viewModel.loadInventory(companyId) // Refresh inventory
             },
             viewModel = stockAdjustmentViewModel
         )

@@ -20,12 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.sales.app.presentation.components.SalesAppExtendedFab
 import com.sales.app.util.isDesktop
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun SalesScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToCreateSale: () -> Unit,
     onNavigateToSaleDetails: (Int) -> Unit,
@@ -33,13 +34,13 @@ fun SalesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    LaunchedEffect(accountId) {
-        viewModel.loadSales(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadSales(companyId)
     }
     
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isRefreshing,
-        onRefresh = { viewModel.onRefresh(accountId) }
+        onRefresh = { viewModel.onRefresh(companyId) }
     )
     
     Scaffold(
@@ -65,10 +66,10 @@ fun SalesScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            SalesAppExtendedFab(
                 onClick = onNavigateToCreateSale,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text(if (isDesktop()) "Create Sale" else "Create") }
+                icon = Icons.Default.Add,
+                text = if (isDesktop()) "Create Sale" else "Create"
             )
         }
     ) { paddingValues ->
@@ -89,7 +90,7 @@ fun SalesScreen(
                             text = uiState.error ?: "Unknown error",
                             color = MaterialTheme.colorScheme.error
                         )
-                        Button(onClick = { viewModel.loadSales(accountId) }) {
+                        Button(onClick = { viewModel.loadSales(companyId) }) {
                             Text("Retry")
                         }
                     }

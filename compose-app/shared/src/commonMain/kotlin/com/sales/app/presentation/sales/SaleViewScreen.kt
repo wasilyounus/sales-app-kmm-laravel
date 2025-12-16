@@ -23,7 +23,7 @@ import com.sales.app.util.getPlatformShare
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SaleViewScreen(
-    accountId: Int,
+    companyId: Int,
     saleId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToEdit: (Int) -> Unit,
@@ -32,8 +32,8 @@ fun SaleViewScreen(
     val uiState by viewModel.uiState.collectAsState()
     var isPrintPreview by remember { mutableStateOf(false) }
     
-    LaunchedEffect(accountId, saleId) {
-        viewModel.loadSale(accountId, saleId)
+    LaunchedEffect(companyId, saleId) {
+        viewModel.loadSale(companyId, saleId)
     }
     
     Scaffold(

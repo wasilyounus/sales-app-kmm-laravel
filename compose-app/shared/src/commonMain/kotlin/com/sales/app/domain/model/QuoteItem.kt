@@ -6,5 +6,5 @@ data class QuoteItem(
     val itemId: Int,
     val price: Double,
     val qty: Double,
-    val accountId: Int
+    val companyId: Int
 )

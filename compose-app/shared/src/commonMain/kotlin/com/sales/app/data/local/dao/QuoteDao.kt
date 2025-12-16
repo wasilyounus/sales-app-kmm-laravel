@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuoteDao {
-    @Query("SELECT * FROM quotes WHERE accountId = :accountId AND deletedAt IS NULL ORDER BY date DESC")
-    fun getQuotesByAccount(accountId: Int): Flow<List<QuoteEntity>>
+    @Query("SELECT * FROM quotes WHERE companyId = :companyId AND deletedAt IS NULL ORDER BY date DESC")
+    fun getQuotesByAccount(companyId: Int): Flow<List<QuoteEntity>>
     
     @Query("SELECT * FROM quotes WHERE id = :id")
     fun getQuoteById(id: Int): Flow<QuoteEntity?>
@@ -24,6 +24,6 @@ interface QuoteDao {
     @Delete
     suspend fun deleteQuote(quote: QuoteEntity)
     
-    @Query("DELETE FROM quotes WHERE accountId = :accountId")
-    suspend fun deleteQuotesByAccount(accountId: Int)
+    @Query("DELETE FROM quotes WHERE companyId = :companyId")
+    suspend fun deleteQuotesByAccount(companyId: Int)
 }

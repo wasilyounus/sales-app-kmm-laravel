@@ -23,7 +23,7 @@ import com.sales.app.util.getPlatformShare
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuoteViewScreen(
-    accountId: Int,
+    companyId: Int,
     quoteId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToEdit: (Int) -> Unit,
@@ -32,8 +32,8 @@ fun QuoteViewScreen(
     val uiState by viewModel.uiState.collectAsState()
     var isPrintPreview by remember { mutableStateOf(false) }
     
-    LaunchedEffect(accountId, quoteId) {
-        viewModel.loadQuote(accountId, quoteId)
+    LaunchedEffect(companyId, quoteId) {
+        viewModel.loadQuote(companyId, quoteId)
     }
     
     Scaffold(

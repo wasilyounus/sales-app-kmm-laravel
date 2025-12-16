@@ -10,7 +10,7 @@ data class OrderEntity(
     val date: String,
 
     val orderNo: String? = null,
-    val accountId: Int,
+    val companyId: Int,
     val createdAt: String,
     val updatedAt: String,
     val deletedAt: String?

@@ -6,7 +6,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface GrnRepository {
-    fun getGrnsByAccount(accountId: Int): Flow<List<Grn>>
+    fun getGrnsByAccount(companyId: Int): Flow<List<Grn>>
     fun getGrnsByPurchase(purchaseId: Int): Flow<List<Grn>>
     fun getGrnById(id: Int): Flow<Grn?>
     suspend fun syncGrns(accountId: Int): Result<Unit>

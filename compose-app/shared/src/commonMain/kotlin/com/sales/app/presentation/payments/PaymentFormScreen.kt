@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentFormScreen(
-    accountId: Int,
+    companyId: Int,
     paymentId: Int? = null,
     onNavigateBack: () -> Unit,
     viewModel: PaymentFormViewModel
@@ -29,8 +29,8 @@ fun PaymentFormScreen(
     var comment by remember { mutableStateOf("") }
     var partyExpanded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(accountId) {
-        viewModel.loadParties(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadParties(companyId)
     }
 
     Scaffold(
@@ -124,7 +124,7 @@ fun PaymentFormScreen(
                 onClick = {
                     if (selectedPartyId != null && amount.isNotEmpty()) {
                         viewModel.createPayment(
-                            accountId = accountId,
+                            companyId = companyId,
                             partyId = selectedPartyId!!,
                             amount = amount.toDoubleOrNull() ?: 0.0,
                             isReceived = isReceived,

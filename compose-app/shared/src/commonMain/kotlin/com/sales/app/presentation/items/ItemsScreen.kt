@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.sales.app.presentation.components.SalesAppExtendedFab
 import com.sales.app.presentation.items.components.ItemCardComponent
 import com.sales.app.presentation.items.model.ItemUiModel
 import com.sales.app.util.isDesktop
@@ -29,8 +30,9 @@ import com.sales.app.util.isDesktop
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, 
     ExperimentalFoundationApi::class)
 @Composable
+
 fun ItemsScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToItemEdit: (Int) -> Unit,
     onNavigateToCreateItem: () -> Unit,
@@ -40,14 +42,14 @@ fun ItemsScreen(
     var showDeleteDialog by remember { mutableStateOf<ItemUiModel?>(null) }
     var showContextMenu by remember { mutableStateOf<ItemUiModel?>(null) }
     
-    LaunchedEffect(accountId) {
-        viewModel.loadItems(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadItems(companyId)
     }
     
     // Pull to refresh state
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isRefreshing,
-        onRefresh = { viewModel.onRefresh(accountId) }
+        onRefresh = { viewModel.onRefresh(companyId) }
     )
     
     Scaffold(
@@ -73,10 +75,10 @@ fun ItemsScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            SalesAppExtendedFab(
                 onClick = onNavigateToCreateItem,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text(if (isDesktop()) "Add Item" else "Add") }
+                icon = Icons.Default.Add,
+                text = if (isDesktop()) "Add Item" else "Add"
             )
         }
     ) { paddingValues ->
@@ -124,7 +126,7 @@ fun ItemsScreen(
                                     color = MaterialTheme.colorScheme.error,
                                     style = MaterialTheme.typography.bodyLarge
                                 )
-                                TextButton(onClick = { viewModel.onRefresh(accountId) }) {
+                                TextButton(onClick = { viewModel.onRefresh(companyId) }) {
                                     Text("Retry")
                                 }
                             }
@@ -177,13 +179,10 @@ fun ItemsScreen(
                                     )
                                 ) {
                                     ItemCardComponent(
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onClick = { onNavigateToItemEdit(item.itemId) },
-                                                onLongClick = { showContextMenu = item }
-                                            ),
+                                        modifier = Modifier,
                                         itemUiModel = item,
-                                        onClick = { onNavigateToItemEdit(item.itemId) }
+                                        onClick = { onNavigateToItemEdit(item.itemId) },
+                                        onLongClick = { showContextMenu = item }
                                     )
                                 }
                             }

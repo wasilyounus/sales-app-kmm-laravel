@@ -2,7 +2,7 @@ package com.sales.app.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sales.app.data.local.AccountPreferences
+import com.sales.app.data.local.CompanyPreferences
 import com.sales.app.data.remote.ApiService
 import com.sales.app.data.remote.dto.CompanySelectionDto
 import com.sales.app.domain.model.User
@@ -26,7 +26,7 @@ data class LoginUiState(
 
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
-    private val accountPreferences: AccountPreferences,
+    private val companyPreferences: CompanyPreferences,
     private val apiService: ApiService
 ) : ViewModel() {
     
@@ -35,7 +35,7 @@ class LoginViewModel(
     
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update { it.copy(isLoading = true, error = null, isSuccess = false) }
             
             when (val result = loginUseCase(email, password)) {
                 is Result.Success -> {
@@ -45,11 +45,12 @@ class LoginViewModel(
                         it.copy(
                             isLoading = false,
                             user = result.data,
-                            error = null
+                            error = null,
+                            isSuccess = true
                         )
                     }
-                    // Fetch accounts after successful login
-                    fetchAccounts()
+                    // Fetch accounts logic moved to MainViewModel/CompanySwitcher
+                    // fetchAccounts()
                 }
                 is Result.Error -> {
                     _uiState.update {
@@ -67,71 +68,7 @@ class LoginViewModel(
         }
     }
     
-    private fun fetchAccounts() {
-        viewModelScope.launch {
-            try {
-                // Call API to fetch user's accounts
-                val response = apiService.getUserAccounts()
-                val accounts = response.accounts
-                
-                if (accounts.isEmpty()) {
-                    _uiState.update {
-                        it.copy(
-                            noAccountsError = true,
-                            error = "No accounts assigned. Contact your administrator."
-                        )
-                    }
-                } else if (accounts.size == 1) {
-                    // Auto-select single account
-                    selectAccount(accounts[0].id)
-                } else {
-                    _uiState.update {
-                        it.copy(
-                            showCompanySelection = true,
-                            accounts = accounts
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        error = "Failed to load accounts: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
-    
-    fun selectAccount(accountId: Int) {
-        viewModelScope.launch {
-            try {
-                // Call API to set account
-                apiService.selectAccount(accountId)
-                
-                // Save to DataStore
-                accountPreferences.saveCurrentAccount(accountId)
-                
-                _uiState.update {
-                    it.copy(
-                        showCompanySelection = false,
-                        isSuccess = true
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        error = "Failed to select account: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
-    
     fun clearError() {
         _uiState.update { it.copy(error = null) }
-    }
-    
-    fun dismissCompanySelection() {
-        _uiState.update { it.copy(showCompanySelection = false) }
     }
 }

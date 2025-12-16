@@ -24,6 +24,6 @@ interface QuoteItemDao {
     @Query("DELETE FROM quote_items WHERE quoteId = :quoteId")
     suspend fun deleteQuoteItemsByQuoteId(quoteId: Int)
     
-    @Query("DELETE FROM quote_items WHERE accountId = :accountId")
-    suspend fun deleteQuoteItemsByAccount(accountId: Int)
+    @Query("DELETE FROM quote_items WHERE companyId = :companyId")
+    suspend fun deleteQuoteItemsByAccount(companyId: Int)
 }

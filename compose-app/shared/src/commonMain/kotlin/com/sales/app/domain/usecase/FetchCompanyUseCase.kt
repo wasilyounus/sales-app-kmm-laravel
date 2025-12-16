@@ -1,11 +1,11 @@
 package com.sales.app.domain.usecase
 
-import com.sales.app.domain.repository.AccountRepository
+import com.sales.app.domain.repository.CompanyRepository
 
-class FetchAccountUseCase(
-    private val companyRepository: AccountRepository
+class FetchCompanyUseCase(
+    private val companyRepository: CompanyRepository
 ) {
     suspend operator fun invoke(companyId: Int) {
-        companyRepository.fetchAccount(companyId)
+        companyRepository.fetchCompany(companyId)
     }
 }

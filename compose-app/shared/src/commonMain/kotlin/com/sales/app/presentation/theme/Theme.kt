@@ -5,17 +5,55 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryDark,
-    secondary = SecondaryDark,
-    tertiary = Pink80
+    primary = Gold,
+    secondary = NavyBlueLight,
+    tertiary = GoldDark,
+    background = DarkGrey,
+    surface = NavyBlue,
+    onPrimary = Color.Black,
+    onSecondary = White,
+    onBackground = LightGrey,
+    onSurface = LightGrey,
+    error = ErrorRed,
+    
+    // Fix for "Purple" default container
+    primaryContainer = NavyBlueLight, 
+    onPrimaryContainer = White,
+    
+    surfaceVariant = NavyBlueLight, // Card backgrounds in settings
+    onSurfaceVariant = LightGrey
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
+    onPrimary = White,
+    primaryContainer = NavyBlueLight,
+    onPrimaryContainer = White,
+    
     secondary = Secondary,
-    tertiary = Pink40
+    onSecondary = NavyBlue,
+    secondaryContainer = Gold, // or a lighter gold if available
+    onSecondaryContainer = NavyBlue,
+    
+    tertiary = GoldDark,
+    onTertiary = White,
+    tertiaryContainer = LightGrey,
+    onTertiaryContainer = NavyBlue,
+    
+    background = LightGrey,
+    onBackground = NavyBlue,
+    
+    surface = White,
+    onSurface = NavyBlue,
+    
+    surfaceVariant = LightGrey,
+    onSurfaceVariant = NavyBlueLight,
+    
+    error = ErrorRed,
+    onError = White
 )
 
 @Composable

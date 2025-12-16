@@ -14,7 +14,7 @@ data class StockMovementEntity(
     val referenceId: Int?,
     val referenceType: String?,
     val reason: String?,
-    val accountId: Int,
+    val companyId: Int,
     val createdAt: String,
     val updatedAt: String
 )

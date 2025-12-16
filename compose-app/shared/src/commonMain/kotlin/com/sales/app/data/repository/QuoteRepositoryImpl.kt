@@ -21,8 +21,8 @@ class QuoteRepositoryImpl(
     private val quoteDao: QuoteDao,
     private val quoteItemDao: QuoteItemDao
 ) : QuoteRepository {
-    override fun getQuotesByAccount(accountId: Int): Flow<List<Quote>> {
-        return quoteDao.getQuotesByAccount(accountId).map { entities ->
+    override fun getQuotesByAccount(companyId: Int): Flow<List<Quote>> {
+        return quoteDao.getQuotesByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -47,7 +47,7 @@ class QuoteRepositoryImpl(
                         partyId = dto.party_id,
                         date = dto.date,
                         quoteNo = dto.quote_no,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         logId = dto.log_id,
                         createdAt = dto.created_at ?: "", // Missing in DTO
                         updatedAt = dto.updated_at ?: "", // Missing in DTO
@@ -81,7 +81,7 @@ class QuoteRepositoryImpl(
                         price = dto.price,
                         qty = dto.qty,
                         taxId = dto.tax_id,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         logId = dto.log_id,
                         createdAt = dto.created_at ?: "", // Missing in DTO
                         updatedAt = dto.updated_at ?: "", // Missing in DTO
@@ -107,7 +107,7 @@ class QuoteRepositoryImpl(
                 party_id = partyId,
                 date = date,
                 quote_no = quoteNo,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.createQuote(request)
@@ -119,7 +119,7 @@ class QuoteRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     quoteNo = dto.quote_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -137,7 +137,7 @@ class QuoteRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = itemDto.log_id,
                             createdAt = dto.created_at ?: "",
                             updatedAt = dto.updated_at ?: "",
@@ -170,7 +170,7 @@ class QuoteRepositoryImpl(
                 party_id = partyId,
                 date = date,
                 quote_no = quoteNo,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.updateQuote(id, request)
@@ -182,7 +182,7 @@ class QuoteRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     quoteNo = dto.quote_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -209,7 +209,7 @@ class QuoteRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = itemDto.log_id,
                             createdAt = dto.created_at ?: "",
                             updatedAt = dto.updated_at ?: "",
@@ -247,7 +247,7 @@ class QuoteRepositoryImpl(
         partyId = partyId,
         date = date,
         quoteNo = quoteNo,
-        accountId = accountId,
+        companyId = companyId,
         items = items
     )
     
@@ -257,6 +257,6 @@ class QuoteRepositoryImpl(
         itemId = itemId,
         price = price,
         qty = qty,
-        accountId = accountId
+        companyId = companyId
     )
 }

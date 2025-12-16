@@ -9,5 +9,5 @@ data class StockMovement(
     val referenceId: Int?, // Sale ID, Purchase ID, etc.
     val referenceType: String?, // "SALE", "PURCHASE", "ADJUSTMENT"
     val reason: String?,
-    val accountId: Int
+    val companyId: Int
 )

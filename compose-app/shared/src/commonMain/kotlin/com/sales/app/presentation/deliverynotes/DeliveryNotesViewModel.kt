@@ -27,19 +27,19 @@ class DeliveryNotesViewModel(
     private val _uiState = MutableStateFlow(DeliveryNotesUiState())
     val uiState: StateFlow<DeliveryNotesUiState> = _uiState.asStateFlow()
     
-    fun loadDeliveryNotes(accountId: Int) {
+    fun loadDeliveryNotes(companyId: Int) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             // Sync in background
             launch {
                 try {
-                    syncDeliveryNotesUseCase(accountId)
+                    syncDeliveryNotesUseCase(companyId)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
             
-            getDeliveryNotesUseCase(accountId)
+            getDeliveryNotesUseCase(companyId)
                 .catch { e ->
                     _uiState.update { 
                         it.copy(isLoading = false, isRefreshing = false, error = e.message)
@@ -57,10 +57,10 @@ class DeliveryNotesViewModel(
         }
     }
     
-    fun onRefresh(accountId: Int) {
+    fun onRefresh(companyId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
-            loadDeliveryNotes(accountId)
+            loadDeliveryNotes(companyId)
         }
     }
     

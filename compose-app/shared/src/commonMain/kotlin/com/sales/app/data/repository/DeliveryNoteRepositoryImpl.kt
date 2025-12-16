@@ -19,8 +19,8 @@ class DeliveryNoteRepositoryImpl(
     private val deliveryNoteDao: DeliveryNoteDao
 ) : DeliveryNoteRepository {
     
-    override fun getDeliveryNotesByAccount(accountId: Int): Flow<List<DeliveryNote>> {
-        return deliveryNoteDao.getDeliveryNotesByAccount(accountId).map { entities ->
+    override fun getDeliveryNotesByAccount(companyId: Int): Flow<List<DeliveryNote>> {
+        return deliveryNoteDao.getDeliveryNotesByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -53,7 +53,7 @@ class DeliveryNoteRepositoryImpl(
                     vehicleNo = dto.vehicle_no,
                     lrNo = dto.lr_no,
                     notes = dto.notes,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
@@ -114,7 +114,7 @@ class DeliveryNoteRepositoryImpl(
                 vehicleNo = dto.vehicle_no,
                 lrNo = dto.lr_no,
                 notes = dto.notes,
-                accountId = dto.account_id,
+                companyId = dto.company_id,
                 createdAt = dto.created_at ?: "",
                 updatedAt = dto.updated_at ?: "",
                 deletedAt = dto.deleted_at
@@ -173,7 +173,7 @@ class DeliveryNoteRepositoryImpl(
                 vehicleNo = dto.vehicle_no,
                 lrNo = dto.lr_no,
                 notes = dto.notes,
-                accountId = dto.account_id,
+                companyId = dto.company_id,
                 createdAt = dto.created_at ?: "",
                 updatedAt = dto.updated_at ?: "",
                 deletedAt = dto.deleted_at
@@ -222,7 +222,7 @@ class DeliveryNoteRepositoryImpl(
         vehicleNo = vehicleNo,
         lrNo = lrNo,
         notes = notes,
-        accountId = accountId,
+        companyId = companyId,
         items = items
     )
     

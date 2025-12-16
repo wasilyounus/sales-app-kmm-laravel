@@ -7,7 +7,7 @@ data class PurchaseDto(
     val id: Int,
     val party_id: Int,
     val date: String,
-    val account_id: Int,
+    val company_id: Int,
     val log_id: Int,
     val invoice_no: String? = null,
     val created_at: String? = null,
@@ -24,7 +24,7 @@ data class PurchaseItemDto(
     val price: Double,
     val qty: Double,
     val tax_id: Int? = null,
-    val account_id: Int,
+    val company_id: Int,
     val log_id: Int,
     val created_at: String? = null,
     val updated_at: String? = null,
@@ -36,7 +36,7 @@ data class PurchaseRequest(
     val party_id: Int,
     val date: String,
     val invoice_no: String? = null,
-    val account_id: Int,
+    val company_id: Int,
     val items: List<PurchaseItemRequest>
 )
 

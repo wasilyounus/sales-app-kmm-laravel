@@ -7,5 +7,5 @@ data class SaleItem(
     val price: Double,
     val qty: Double,
     val taxId: Int?,
-    val accountId: Int
+    val companyId: Int
 )

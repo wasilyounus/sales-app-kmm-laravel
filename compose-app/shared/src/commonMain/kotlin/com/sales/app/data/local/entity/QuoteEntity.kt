@@ -10,7 +10,7 @@ data class QuoteEntity(
     val date: String,
 
     val quoteNo: String? = null,
-    val accountId: Int,
+    val companyId: Int,
     val logId: Int,
     val createdAt: String,
     val updatedAt: String,

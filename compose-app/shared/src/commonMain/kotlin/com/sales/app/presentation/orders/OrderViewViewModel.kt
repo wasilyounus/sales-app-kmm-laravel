@@ -24,16 +24,16 @@ class OrderViewViewModel(
     private val _uiState = MutableStateFlow(OrderViewUiState())
     val uiState: StateFlow<OrderViewUiState> = _uiState.asStateFlow()
 
-    fun loadOrder(accountId: Int, orderId: Int) {
+    fun loadOrder(companyId: Int, orderId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
             combine(
                 getOrderByIdUseCase(orderId),
-                getItemsUseCase(accountId)
+                getItemsUseCase(companyId)
             ) { order, allItems ->
                 if (order != null) {
-                    val party = getPartyByIdUseCase(accountId, order.partyId).firstOrNull()
+                    val party = getPartyByIdUseCase(companyId, order.partyId).firstOrNull()
                     Triple(order, party, allItems)
                 } else {
                     null

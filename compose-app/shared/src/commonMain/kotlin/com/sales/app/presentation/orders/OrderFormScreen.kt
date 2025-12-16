@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.sales.app.domain.model.Item
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -32,7 +32,7 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class, kotlin.time.ExperimentalTime::class)
 @Composable
 fun OrderFormScreen(
-    accountId: Int,
+    companyId: Int,
     orderId: Int? = null,
     onNavigateBack: () -> Unit,
     viewModel: OrderFormViewModel
@@ -40,8 +40,8 @@ fun OrderFormScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showAddItemDialog by remember { mutableStateOf(false) }
     
-    LaunchedEffect(accountId, orderId) {
-        viewModel.loadData(accountId, orderId)
+    LaunchedEffect(companyId, orderId) {
+        viewModel.loadData(companyId, orderId)
     }
     
     Scaffold(
@@ -280,7 +280,7 @@ fun OrderFormScreen(
                     // Save Button
                     Button(
                         onClick = { 
-                            viewModel.saveOrder(accountId, onNavigateBack)
+                            viewModel.saveOrder(companyId, onNavigateBack)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !uiState.isSaving

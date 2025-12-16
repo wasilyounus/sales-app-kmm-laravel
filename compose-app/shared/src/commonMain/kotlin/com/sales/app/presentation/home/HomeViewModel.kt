@@ -25,29 +25,41 @@ class HomeViewModel(
     private val getItemsUseCase: GetItemsUseCase,
     private val getPartiesUseCase: GetPartiesUseCase,
     private val getQuotesUseCase: GetQuotesUseCase,
-    private val getAccountUseCase: GetCompanyUseCase
+    private val getCompanyUseCase: GetCompanyUseCase,
+    private val moduleRepository: com.sales.app.domain.repository.ModuleRepository
 ) : ViewModel() {
     
     private val _stats = MutableStateFlow(HomeStats())
     val stats: StateFlow<HomeStats> = _stats.asStateFlow()
     
-    // We need to expose account settings to the UI
-    private val _account = MutableStateFlow<com.sales.app.domain.model.Account?>(null)
-    val account: StateFlow<com.sales.app.domain.model.Account?> = _account.asStateFlow()
+    // We need to expose company settings to the UI
+    private val _company = MutableStateFlow<com.sales.app.domain.model.Company?>(null)
+    val company: StateFlow<com.sales.app.domain.model.Company?> = _company.asStateFlow()
     
-    fun loadStats(accountId: Int) {
+    private val _modules = MutableStateFlow<List<com.sales.app.domain.model.Module>>(emptyList())
+    val modules: StateFlow<List<com.sales.app.domain.model.Module>> = _modules.asStateFlow()
+    
+    fun loadStats(companyId: Int) {
         viewModelScope.launch {
-            // Load Account for settings
+            // Fetch Modules
+            try {
+                _modules.value = moduleRepository.getModules()
+            } catch (e: Exception) {
+                // Handle error or use defaults (not ideal, but keeps app running)
+                println("Failed to fetch modules: ${e.message}")
+            }
+        
+            // Load Company for settings
             launch {
-                getAccountUseCase(accountId).collect {
-                    _account.value = it
+                getCompanyUseCase(companyId).collect {
+                    _company.value = it
                 }
             }
 
             combine(
-                getItemsUseCase(accountId),
-                getPartiesUseCase(accountId),
-                getQuotesUseCase(accountId)
+                getItemsUseCase(companyId),
+                getPartiesUseCase(companyId),
+                getQuotesUseCase(companyId)
             ) { items, parties, quotes ->
                 HomeStats(
                     itemsCount = items.size,

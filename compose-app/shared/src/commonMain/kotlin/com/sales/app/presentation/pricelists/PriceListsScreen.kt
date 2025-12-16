@@ -20,7 +20,7 @@ import com.sales.app.domain.model.PriceList
 @Composable
 fun PriceListsScreen(
     viewModel: PriceListsViewModel,
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToDetail: (Long) -> Unit
 ) {
@@ -29,8 +29,8 @@ fun PriceListsScreen(
     var showCreateDialog by remember { mutableStateOf(false) }
     var newListName by remember { mutableStateOf("") }
 
-    LaunchedEffect(accountId) {
-        viewModel.loadPriceLists(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadPriceLists(companyId)
     }
 
     Scaffold(
@@ -85,7 +85,7 @@ fun PriceListsScreen(
                     TextButton(
                         onClick = {
                             if (newListName.isNotBlank()) {
-                                viewModel.createPriceList(accountId, newListName) {
+                                viewModel.createPriceList(companyId, newListName) {
                                     showCreateDialog = false
                                     newListName = ""
                                 }

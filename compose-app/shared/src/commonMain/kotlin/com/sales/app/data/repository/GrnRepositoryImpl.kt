@@ -19,8 +19,8 @@ class GrnRepositoryImpl(
     private val grnDao: GrnDao
 ) : GrnRepository {
     
-    override fun getGrnsByAccount(accountId: Int): Flow<List<Grn>> {
-        return grnDao.getGrnsByAccount(accountId).map { entities ->
+    override fun getGrnsByAccount(companyId: Int): Flow<List<Grn>> {
+        return grnDao.getGrnsByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -53,7 +53,7 @@ class GrnRepositoryImpl(
                     vehicleNo = dto.vehicle_no,
                     invoiceNo = dto.invoice_no,
                     notes = dto.notes,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
@@ -114,7 +114,7 @@ class GrnRepositoryImpl(
                 vehicleNo = dto.vehicle_no,
                 invoiceNo = dto.invoice_no,
                 notes = dto.notes,
-                accountId = dto.account_id,
+                companyId = dto.company_id,
                 createdAt = dto.created_at ?: "",
                 updatedAt = dto.updated_at ?: "",
                 deletedAt = dto.deleted_at
@@ -173,7 +173,7 @@ class GrnRepositoryImpl(
                 vehicleNo = dto.vehicle_no,
                 invoiceNo = dto.invoice_no,
                 notes = dto.notes,
-                accountId = dto.account_id,
+                companyId = dto.company_id,
                 createdAt = dto.created_at ?: "",
                 updatedAt = dto.updated_at ?: "",
                 deletedAt = dto.deleted_at
@@ -222,7 +222,7 @@ class GrnRepositoryImpl(
         vehicleNo = vehicleNo,
         invoiceNo = invoiceNo,
         notes = notes,
-        accountId = accountId,
+        companyId = companyId,
         items = items
     )
     

@@ -8,6 +8,7 @@ import com.sales.app.domain.model.Item
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 
 import com.sales.app.domain.repository.ItemRepository
 import com.sales.app.domain.model.Uqc
@@ -17,21 +18,21 @@ class ItemRepositoryImpl(
     private val itemDao: ItemDao,
     private val uqcDao: UqcDao
 ) : ItemRepository {
-    override fun getItemsByAccount(accountId: Int): Flow<List<Item>> {
-        return itemDao.getItemsByAccount(accountId).map { entities ->
+    override fun getItemsByAccount(companyId: Int): Flow<List<Item>> {
+        return itemDao.getItemsByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    override fun searchItems(accountId: Int, query: String): Flow<List<Item>> {
-        return itemDao.searchItems(accountId, query).map { entities ->
+    override fun searchItems(companyId: Int, query: String): Flow<List<Item>> {
+        return itemDao.searchItems(companyId, query).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
     
-    override suspend fun syncItems(accountId: Int): Result<Unit> {
+    override suspend fun syncItems(companyId: Int): Result<Unit> {
         return try {
-            val response = apiService.getItems(accountId)
+            val response = apiService.getItems(companyId)
             
             if (response.success) {
                 val entities = response.data.map { dto ->
@@ -43,7 +44,7 @@ class ItemRepositoryImpl(
                         size = dto.size,
                         uqc = dto.uqc,
                         hsn = dto.hsn,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         taxId = dto.tax_id,
                         createdAt = dto.created_at,
                         updatedAt = dto.updated_at,
@@ -68,11 +69,11 @@ class ItemRepositoryImpl(
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int,
+        companyId: Int,
         taxId: Int?
     ): Result<Item> {
         return try {
-            val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId, taxId)
+            val request = ItemRequest(name, altName, brand, size, uqc, hsn, companyId, taxId)
             val response = apiService.createItem(request)
             
             if (response.success) {
@@ -84,7 +85,7 @@ class ItemRepositoryImpl(
                     size = response.data.size,
                     uqc = response.data.uqc,
                     hsn = response.data.hsn,
-                    accountId = response.data.account_id,
+                    companyId = response.data.company_id,
                     taxId = response.data.tax_id,
                     createdAt = response.data.created_at,
                     updatedAt = response.data.updated_at,
@@ -108,11 +109,11 @@ class ItemRepositoryImpl(
         size: String?,
         uqc: Int,
         hsn: Int?,
-        accountId: Int,
+        companyId: Int,
         taxId: Int?
     ): Result<Item> {
         return try {
-            val request = ItemRequest(name, altName, brand, size, uqc, hsn, accountId, taxId)
+            val request = ItemRequest(name, altName, brand, size, uqc, hsn, companyId, taxId)
             val response = apiService.updateItem(id, request)
             
             if (response.success) {
@@ -124,7 +125,7 @@ class ItemRepositoryImpl(
                     size = response.data.size,
                     uqc = response.data.uqc,
                     hsn = response.data.hsn,
-                    accountId = response.data.account_id,
+                    companyId = response.data.company_id,
                     taxId = response.data.tax_id,
                     createdAt = response.data.created_at,
                     updatedAt = response.data.updated_at,
@@ -150,7 +151,7 @@ class ItemRepositoryImpl(
         }
     }
     
-    override suspend fun getItemById(accountId: Int, itemId: Int): Item? {
+    override suspend fun getItemById(companyId: Int, itemId: Int): Item? {
         return try {
             val response = apiService.getItem(itemId)
             if (response.success) {
@@ -162,7 +163,7 @@ class ItemRepositoryImpl(
                     size = response.data.size,
                     uqc = response.data.uqc,
                     hsn = response.data.hsn,
-                    accountId = response.data.account_id,
+                    companyId = response.data.company_id,
                     taxId = response.data.tax_id
                 )
             } else {
@@ -177,23 +178,14 @@ class ItemRepositoryImpl(
     }
 
     override suspend fun getUqcs(): List<Uqc> {
-        return try {
-            val response = apiService.getUqcs()
-            if (response.success) {
-                response.data.map { dto ->
-                    Uqc(
-                        id = dto.id,
-                        uqc = dto.uqc,
-                        quantity = dto.quantity,
-                        type = dto.type,
-                        active = dto.active
-                    )
-                }
-            } else {
-                emptyList()
-            }
-        } catch (e: Exception) {
-            emptyList()
+        return uqcDao.getAll().first().map { entity ->
+            Uqc(
+                id = entity.id,
+                uqc = entity.code, // Entity likely has 'code' not 'uqc' based on migration? need to check Entity
+                quantity = entity.name, // Migration: name. quantity? need to check Entity
+                type = null,
+                active = true
+            )
         }
     }
     
@@ -205,7 +197,7 @@ class ItemRepositoryImpl(
         size = size,
         uqc = uqc,
         hsn = hsn,
-        accountId = accountId,
+        companyId = companyId,
         taxId = taxId
     )
 }

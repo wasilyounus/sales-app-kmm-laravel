@@ -24,6 +24,6 @@ interface PurchaseItemDao {
     @Query("DELETE FROM purchase_items WHERE purchaseId = :purchaseId")
     suspend fun deletePurchaseItemsByPurchaseId(purchaseId: Int)
     
-    @Query("DELETE FROM purchase_items WHERE accountId = :accountId")
-    suspend fun deletePurchaseItemsByAccount(accountId: Int)
+    @Query("DELETE FROM purchase_items WHERE companyId = :companyId")
+    suspend fun deletePurchaseItemsByAccount(companyId: Int)
 }

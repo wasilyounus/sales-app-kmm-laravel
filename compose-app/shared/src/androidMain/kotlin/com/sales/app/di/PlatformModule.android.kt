@@ -60,6 +60,7 @@ actual fun createHttpClient(): HttpClient {
                 prettyPrint = true
                 isLenient = true
                 ignoreUnknownKeys = true
+                encodeDefaults = true
             })
         }
         

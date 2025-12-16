@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GrnDao {
-    @Query("SELECT * FROM grns WHERE accountId = :accountId AND deletedAt IS NULL ORDER BY date DESC")
-    fun getGrnsByAccount(accountId: Int): Flow<List<GrnEntity>>
+    @Query("SELECT * FROM grns WHERE companyId = :companyId AND deletedAt IS NULL ORDER BY date DESC")
+    fun getGrnsByAccount(companyId: Int): Flow<List<GrnEntity>>
     
     @Query("SELECT * FROM grns WHERE purchaseId = :purchaseId AND deletedAt IS NULL ORDER BY date DESC")
     fun getGrnsByPurchase(purchaseId: Int): Flow<List<GrnEntity>>

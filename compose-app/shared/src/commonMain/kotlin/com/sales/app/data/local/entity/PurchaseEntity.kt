@@ -10,7 +10,7 @@ data class PurchaseEntity(
     val date: String,
 
     val invoiceNo: String? = null,
-    val accountId: Int,
+    val companyId: Int,
     val createdAt: String,
     val updatedAt: String,
     val deletedAt: String?

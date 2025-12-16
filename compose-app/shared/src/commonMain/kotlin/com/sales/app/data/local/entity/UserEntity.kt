@@ -8,6 +8,7 @@ data class UserEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val email: String,
+    val currentCompanyId: Int? = null,
     val createdAt: String,
     val updatedAt: String
 )

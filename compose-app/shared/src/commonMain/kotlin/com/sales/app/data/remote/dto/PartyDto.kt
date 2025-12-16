@@ -10,7 +10,7 @@ data class PartyDto(
     @SerialName("tax_number") val taxNumber: String?,
     val phone: String?,
     val email: String?,
-    val account_id: Int,
+    val company_id: Int,
     val created_at: String,
     val updated_at: String,
     val deleted_at: String?,
@@ -23,7 +23,7 @@ data class PartyRequest(
     @SerialName("tax_number") val taxNumber: String? = null,
     val phone: String? = null,
     val email: String? = null,
-    val account_id: Int,
+    val company_id: Int,
     val addresses: List<AddressRequest>? = null
 )
 

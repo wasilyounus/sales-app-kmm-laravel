@@ -18,6 +18,12 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okio.Path.Companion.toPath
 import java.io.File
+import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.statement.bodyAsText
+import com.sales.app.data.remote.UnauthorizedHandler
 
 actual fun createDatabase(context: Any?): AppDatabase {
     val dbFile = File(System.getProperty("java.io.tmpdir"), "sales_app.db")
@@ -37,6 +43,11 @@ actual fun createDataStore(context: Any?): DataStore<Preferences> {
     )
 }
 
+
+
+// Global unauthorized handler - will be set by App
+var unauthorizedHandler: UnauthorizedHandler? = null
+
 actual fun createHttpClient(): HttpClient {
     return HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -44,7 +55,18 @@ actual fun createHttpClient(): HttpClient {
                 prettyPrint = true
                 isLenient = true
                 ignoreUnknownKeys = true
+                encodeDefaults = true
             })
+        }
+        
+        // Handle 401 Unauthorized responses
+        HttpResponseValidator {
+            validateResponse { response: HttpResponse ->
+                if (response.status == HttpStatusCode.Unauthorized) {
+                    unauthorizedHandler?.handle()
+                    throw io.ktor.client.plugins.ClientRequestException(response, response.bodyAsText())
+                }
+            }
         }
         
         // Configure base URL from BuildConfig (generated from root .env)

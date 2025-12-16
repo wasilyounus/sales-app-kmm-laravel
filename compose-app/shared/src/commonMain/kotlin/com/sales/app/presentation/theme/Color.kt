@@ -2,20 +2,24 @@ package com.sales.app.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// VTC Brand Colors
+val NavyBlue = Color(0xFF0F2044)
+val NavyBlueLight = Color(0xFF324670)
+val Gold = Color(0xFFE0C068)
+val GoldDark = Color(0xFFAD9038)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Neutral Colors
+val White = Color(0xFFFFFFFF)
+val LightGrey = Color(0xFFF5F5F7)
+val DarkGrey = Color(0xFF0F1419)
 
-// Sales App Colors
-val Primary = Color(0xFF1976D2)
-val PrimaryVariant = Color(0xFF004BA0)
-val Secondary = Color(0xFF388E3C)
-val SecondaryVariant = Color(0xFF00600F)
+// Status Colors
+val SuccessGreen = Color(0xFF4CAF50)
+val PendingOrange = Color(0xFFFF9800)
+val ErrorRed = Color(0xFFE53935)
 
-// Dark Theme Colors
-val PrimaryDark = Color(0xFF90CAF9)
-val SecondaryDark = Color(0xFFA5D6A7)
+// Aliases for backward compatibility
+val Primary = NavyBlue
+val PrimaryVariant = NavyBlueLight
+val Secondary = Gold
+val SecondaryVariant = GoldDark

@@ -33,12 +33,12 @@ import com.sales.app.data.local.entity.*
         GrnEntity::class,
         GrnItemEntity::class
     ],
-    version = 15,
+    version = 18,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-    abstract fun accountDao(): CompanyDao
+    abstract fun companyDao(): CompanyDao
     abstract fun contactDao(): ContactDao
     abstract fun itemDao(): ItemDao
     abstract fun partyDao(): PartyDao

@@ -15,12 +15,12 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $accountId = $request->header('X-Account-ID');
-        if (!$accountId) {
-            return response()->json(['error' => 'Account ID header missing'], 400);
+        $companyId = $request->header('X-Company-ID');
+        if (!$companyId) {
+            return response()->json(['error' => 'Company ID header missing'], 400);
         }
 
-        $query = Transaction::where('account_id', $accountId);
+        $query = Transaction::where('company_id', $companyId);
 
         // Filter by Type (e.g. Sales, Purchases, Payments)
         if ($request->has('type')) {
@@ -41,9 +41,9 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $accountId = $request->header('X-Account-ID');
-        if (!$accountId) {
-            return response()->json(['error' => 'Account ID header missing'], 400);
+        $companyId = $request->header('X-Company-ID');
+        if (!$companyId) {
+            return response()->json(['error' => 'Company ID header missing'], 400);
         }
 
         $validator = Validator::make($request->all(), [
@@ -69,7 +69,7 @@ class TransactionController extends Controller
                     'log_id' => null,
                 ],
                 $request->all(),
-                ['account_id' => $accountId]
+                ['company_id' => $companyId]
             ));
 
             return response()->json($transaction, 201);

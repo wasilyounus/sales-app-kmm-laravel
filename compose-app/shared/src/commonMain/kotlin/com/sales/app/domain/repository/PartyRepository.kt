@@ -6,8 +6,8 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface PartyRepository {
-    fun getPartiesByAccount(accountId: Int): Flow<List<Party>>
-    fun searchParties(accountId: Int, query: String): Flow<List<Party>>
+    fun getPartiesByAccount(companyId: Int): Flow<List<Party>>
+    fun searchParties(companyId: Int, query: String): Flow<List<Party>>
     suspend fun syncParties(accountId: Int): Result<Unit>
     suspend fun createParty(
         name: String,

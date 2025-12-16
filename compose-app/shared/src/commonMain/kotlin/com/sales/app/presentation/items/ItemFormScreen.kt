@@ -28,21 +28,21 @@ import com.sales.app.util.isDesktop
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ItemFormScreen(
-    accountId: Int,
+    companyId: Int,
     itemId: Int? = null,
     onNavigateBack: () -> Unit,
     viewModel: ItemFormViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    LaunchedEffect(accountId) {
+    LaunchedEffect(companyId) {
         // Load taxes filtered by account country
-        viewModel.loadTaxesByAccount(accountId)
+        viewModel.loadTaxesByCompany(companyId)
     }
     
     LaunchedEffect(itemId) {
         if (itemId != null) {
-            viewModel.loadItem(accountId, itemId)
+            viewModel.loadItem(companyId, itemId)
         }
     }
 
@@ -286,10 +286,11 @@ fun ItemFormScreen(
                     ) {
                         if (uiState.formUiState is FormUiState.Add) {
                             Button(
-                                onClick = { viewModel.saveAndAdd(accountId) },
+                                onClick = { viewModel.saveAndAdd(companyId) },
                                 enabled = !uiState.isSaving,
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.secondary
+                                    containerColor = MaterialTheme.colorScheme.secondary,
+                                    contentColor = MaterialTheme.colorScheme.onSecondary
                                 )
                             ) {
                                 if (uiState.isSaving) {
@@ -306,8 +307,12 @@ fun ItemFormScreen(
                         }
                         
                         Button(
-                            onClick = { viewModel.saveItem(accountId, onSuccess = onNavigateBack) },
-                            enabled = !uiState.isSaving
+                            onClick = { viewModel.saveItem(companyId, onSuccess = onNavigateBack) },
+                            enabled = !uiState.isSaving,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         ) {
                             if (uiState.isSaving) {
                                 CircularProgressIndicator(

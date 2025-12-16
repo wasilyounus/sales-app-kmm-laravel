@@ -6,7 +6,7 @@ import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface OrderRepository {
-    fun getOrdersByAccount(accountId: Int): Flow<List<Order>>
+    fun getOrdersByAccount(companyId: Int): Flow<List<Order>>
     fun getOrderById(orderId: Int): Flow<Order?>
     suspend fun syncOrders(accountId: Int): Result<Unit>
     suspend fun createOrder(

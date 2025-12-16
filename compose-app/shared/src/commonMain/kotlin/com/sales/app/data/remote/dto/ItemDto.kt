@@ -11,7 +11,7 @@ data class ItemDto(
     val size: String? = null,
     val uqc: Int,
     val hsn: Int? = null,
-    val account_id: Int,
+    val company_id: Int,
     val tax_id: Int? = null,
     val created_at: String,
     val updated_at: String,
@@ -26,7 +26,7 @@ data class ItemRequest(
     val size: String? = null,
     val uqc: Int,
     val hsn: Int? = null,
-    val account_id: Int,
+    val company_id: Int,
     val tax_id: Int? = null,
     val log_id: Int = 0 // Default to 0 or handle in repository
 )
@@ -79,4 +79,10 @@ data class TaxDto(
     val created_at: String? = null,
     val updated_at: String? = null,
     val deleted_at: String? = null
+)
+
+@Serializable
+data class TaxesResponse(
+    val success: Boolean,
+    val data: List<TaxDto>
 )

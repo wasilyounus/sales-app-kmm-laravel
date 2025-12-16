@@ -8,7 +8,7 @@ import com.sales.app.domain.model.SyncType
 import com.sales.app.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import com.sales.app.domain.repository.SyncRepository
 
 class SyncRepositoryImpl(
@@ -29,7 +29,7 @@ class SyncRepositoryImpl(
     private val syncDao: SyncDao
 ) : SyncRepository {
     
-    override suspend fun sync(accountId: Int, types: List<SyncType>): Result<Unit> {
+    override suspend fun sync(companyId: Int, types: List<SyncType>): Result<Unit> {
         return try {
             // Expand grouped types into individual types
             val expandedTypes = SyncType.expand(types)
@@ -37,16 +37,16 @@ class SyncRepositoryImpl(
             // Sync each type
             expandedTypes.forEach { type ->
                 when (type) {
-                    is SyncType.Items -> syncItems(accountId)
-                    is SyncType.Parties -> syncParties(accountId)
-                    is SyncType.Taxes -> syncTaxes(accountId)
-                    is SyncType.Uqcs -> syncUqcs(accountId)
-                    is SyncType.Sales -> syncSales(accountId)
-                    is SyncType.Quotes -> syncQuotes(accountId)
-                    is SyncType.Purchases -> syncPurchases(accountId)
-                    is SyncType.Orders -> syncOrders(accountId)
-                    is SyncType.Payments -> syncPayments(accountId)
-                    is SyncType.PriceLists -> syncPriceLists(accountId)
+                    is SyncType.Items -> syncItems(companyId)
+                    is SyncType.Parties -> syncParties(companyId)
+                    is SyncType.Taxes -> syncTaxes(companyId)
+                    is SyncType.Uqcs -> syncUqcs(companyId)
+                    is SyncType.Sales -> syncSales(companyId)
+                    is SyncType.Quotes -> syncQuotes(companyId)
+                    is SyncType.Purchases -> syncPurchases(companyId)
+                    is SyncType.Orders -> syncOrders(companyId)
+                    is SyncType.Payments -> syncPayments(companyId)
+                    is SyncType.PriceLists -> syncPriceLists(companyId)
                     // Grouped types should already be expanded
                     else -> {}
                 }
@@ -59,8 +59,8 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncItems(accountId: Int) {
-        val response = apiService.getItems(accountId)
+    private suspend fun syncItems(companyId: Int) {
+        val response = apiService.getItems(companyId)
         if (response.success) {
             val entities = response.data.map { dto ->
                 ItemEntity(
@@ -71,7 +71,7 @@ class SyncRepositoryImpl(
                     size = dto.size,
                     uqc = dto.uqc,
                     hsn = dto.hsn,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     taxId = dto.tax_id,
                     createdAt = dto.created_at,
                     updatedAt = dto.updated_at,
@@ -82,8 +82,8 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncParties(accountId: Int) {
-        val response = apiService.getParties(accountId)
+    private suspend fun syncParties(companyId: Int) {
+        val response = apiService.getParties(companyId)
         if (response.success) {
             val parties = response.data
             val partyEntities = parties.map { dto ->
@@ -93,7 +93,7 @@ class SyncRepositoryImpl(
                     taxNumber = dto.taxNumber,
                     phone = dto.phone,
                     email = dto.email,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at,
                     updatedAt = dto.updated_at,
                     deletedAt = dto.deleted_at
@@ -107,14 +107,14 @@ class SyncRepositoryImpl(
                     AddressEntity(
                         id = addr.id,
                         partyId = party.id,
-                        accountId = party.account_id,
-                        line1 = addr.line1,
+                        companyId = party.company_id ?: 0,
+                        line1 = addr.line1 ?: "",
                         line2 = addr.line2,
-                        place = addr.place,
+                        place = addr.place ?: "",
                         district = addr.district,
-                        state = addr.state,
-                        pincode = addr.pincode,
-                        country = addr.country,
+                        state = addr.state ?: "",
+                        pincode = addr.pincode ?: "",
+                        country = addr.country ?: "",
                         latitude = addr.latitude,
                         longitude = addr.longitude,
                         createdAt = addr.created_at ?: "",
@@ -126,11 +126,11 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncTaxes(accountId: Int) {
+    private suspend fun syncTaxes(companyId: Int) {
         // Using existing sync logic from syncMasterData
         val lastSync = syncDao.getSyncTimestamp("master_data")
         val timestamp = lastSync?.timestamp ?: "1970-01-01 00:00:00"
-        val response = apiService.syncMasterData(accountId, timestamp)
+        val response = apiService.syncMasterData(companyId, timestamp)
         
         if (response.success) {
             response.data.taxes?.let { taxes ->
@@ -157,7 +157,7 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncUqcs(accountId: Int) {
+    private suspend fun syncUqcs(companyId: Int) {
         val response = apiService.getUqcs()
         if (response.success) {
             val entities = response.data.map { dto ->
@@ -174,8 +174,8 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncSales(accountId: Int) {
-        val salesResponse = apiService.getSales(accountId)
+    private suspend fun syncSales(companyId: Int) {
+        val salesResponse = apiService.getSales(companyId)
         if (salesResponse.success) {
             val saleEntities = salesResponse.data.map { dto ->
                 SaleEntity(
@@ -183,7 +183,7 @@ class SyncRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     invoiceNo = dto.invoice_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     taxId = dto.tax_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -194,7 +194,7 @@ class SyncRepositoryImpl(
         }
         
         // Sync sale items
-        val itemsResponse = apiService.getSaleItems(accountId)
+        val itemsResponse = apiService.getSaleItems(companyId)
         if (itemsResponse.success) {
             val itemEntities = itemsResponse.data.map { dto ->
                 SaleItemEntity(
@@ -204,7 +204,7 @@ class SyncRepositoryImpl(
                     price = dto.price,
                     qty = dto.qty,
                     taxId = dto.tax_id,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -215,15 +215,15 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncQuotes(accountId: Int) {
-        val quotesResponse = apiService.getQuotes(accountId)
+    private suspend fun syncQuotes(companyId: Int) {
+        val quotesResponse = apiService.getQuotes(companyId)
         if (quotesResponse.success) {
             val quoteEntities = quotesResponse.data.map { dto ->
                 QuoteEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -234,7 +234,7 @@ class SyncRepositoryImpl(
         }
         
         // Sync quote items
-        val itemsResponse = apiService.getQuoteItems(accountId)
+        val itemsResponse = apiService.getQuoteItems(companyId)
         if (itemsResponse.success) {
             val itemEntities = itemsResponse.data.map { dto ->
                 QuoteItemEntity(
@@ -244,7 +244,7 @@ class SyncRepositoryImpl(
                     price = dto.price,
                     qty = dto.qty,
                     taxId = dto.tax_id,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -255,15 +255,15 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncPurchases(accountId: Int) {
-        val purchasesResponse = apiService.getPurchases(accountId)
+    private suspend fun syncPurchases(companyId: Int) {
+        val purchasesResponse = apiService.getPurchases(companyId)
         if (purchasesResponse.success) {
             val purchaseEntities = purchasesResponse.data.map { dto ->
                 PurchaseEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
@@ -274,7 +274,7 @@ class SyncRepositoryImpl(
         
         // Sync purchase items - check if API exists
         try {
-            val itemsResponse = apiService.getPurchaseItems(accountId)
+            val itemsResponse = apiService.getPurchaseItems(companyId)
             if (itemsResponse.success) {
                 val itemEntities = itemsResponse.data.map { dto ->
                     PurchaseItemEntity(
@@ -284,7 +284,7 @@ class SyncRepositoryImpl(
                         price = dto.price,
                         qty = dto.qty,
                         taxId = dto.tax_id,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         logId = dto.log_id,
                         createdAt = dto.created_at ?: "",
                         updatedAt = dto.updated_at ?: "",
@@ -298,15 +298,15 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncOrders(accountId: Int) {
-        val ordersResponse = apiService.getOrders(accountId)
+    private suspend fun syncOrders(companyId: Int) {
+        val ordersResponse = apiService.getOrders(companyId)
         if (ordersResponse.success) {
             val orderEntities = ordersResponse.data.map { dto ->
                 OrderEntity(
                     id = dto.id,
                     partyId = dto.party_id,
                     date = dto.date,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
                     deletedAt = dto.deleted_at
@@ -316,7 +316,7 @@ class SyncRepositoryImpl(
         }
         
         // Sync order items
-        val itemsResponse = apiService.getOrderItems(accountId)
+        val itemsResponse = apiService.getOrderItems(companyId)
         if (itemsResponse.success) {
             val itemEntities = itemsResponse.data.map { dto ->
                 OrderItemEntity(
@@ -326,7 +326,7 @@ class SyncRepositoryImpl(
                     price = dto.price,
                     qty = dto.qty,
                     taxId = dto.tax_id,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     logId = dto.log_id,
                     createdAt = dto.created_at ?: "",
                     updatedAt = dto.updated_at ?: "",
@@ -337,8 +337,8 @@ class SyncRepositoryImpl(
         }
     }
     
-    private suspend fun syncPayments(accountId: Int) {
-        val response = apiService.getTransactions(accountId)
+    private suspend fun syncPayments(companyId: Int) {
+        val response = apiService.getTransactions(companyId)
         val entities = response.data.map { dto ->
             TransactionEntity(
                 id = dto.id,
@@ -348,7 +348,7 @@ class SyncRepositoryImpl(
                 debitCode = dto.debitCode,
                 creditCode = dto.creditCode,
                 comment = dto.comment,
-                accountId = accountId,
+                companyId = companyId,
                 partyName = dto.partyName,
                 isReceived = dto.isReceived
             )
@@ -356,29 +356,29 @@ class SyncRepositoryImpl(
         transactionDao.insertTransactions(entities)
     }
     
-    private suspend fun syncPriceLists(accountId: Int) {
-        val response = apiService.getPriceLists(accountId)
+    private suspend fun syncPriceLists(companyId: Int) {
+        val response = apiService.getPriceLists(companyId)
         val entities = response.data.map { dto ->
             PriceListEntity(
                 id = dto.id,
                 name = dto.name,
                 itemsCount = dto.itemsCount,
-                accountId = accountId
+                companyId = companyId
             )
         }
         priceListDao.insertPriceLists(entities)
     }
     
-    override suspend fun syncMasterData(accountId: Int): Result<Unit> {
-        return sync(accountId, listOf(SyncType.AllMasterData))
+    override suspend fun syncMasterData(companyId: Int): Result<Unit> {
+        return sync(companyId, listOf(SyncType.AllMasterData))
     }
     
-    override suspend fun fullSync(accountId: Int): Result<Unit> {
+    override suspend fun fullSync(companyId: Int): Result<Unit> {
         return try {
             val lastSync = syncDao.getSyncTimestamp("master_data")
             val timestamp = lastSync?.timestamp ?: "1970-01-01 00:00:00"
             
-            val response = apiService.syncMasterData(accountId, timestamp)
+            val response = apiService.syncMasterData(companyId, timestamp)
             
             if (response.success) {
                 // Save items
@@ -392,7 +392,7 @@ class SyncRepositoryImpl(
                             size = dto.size,
                             uqc = dto.uqc,
                             hsn = dto.hsn,
-                            accountId = dto.account_id,
+                            companyId = dto.company_id,
                             createdAt = dto.created_at,
                             updatedAt = dto.updated_at,
                             deletedAt = dto.deleted_at
@@ -410,7 +410,7 @@ class SyncRepositoryImpl(
                             taxNumber = dto.taxNumber,
                             phone = dto.phone,
                             email = dto.email,
-                            accountId = dto.account_id,
+                            companyId = dto.company_id,
                             createdAt = dto.created_at,
                             updatedAt = dto.updated_at,
                             deletedAt = dto.deleted_at

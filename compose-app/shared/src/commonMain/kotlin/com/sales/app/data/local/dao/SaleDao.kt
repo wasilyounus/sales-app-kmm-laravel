@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SaleDao {
-    @Query("SELECT * FROM sales WHERE accountId = :accountId AND deletedAt IS NULL ORDER BY date DESC")
-    fun getSalesByAccount(accountId: Int): Flow<List<SaleEntity>>
+    @Query("SELECT * FROM sales WHERE companyId = :companyId AND deletedAt IS NULL ORDER BY date DESC")
+    fun getSalesByAccount(companyId: Int): Flow<List<SaleEntity>>
     
     @Query("SELECT * FROM sales WHERE id = :id")
     fun getSaleById(id: Int): Flow<SaleEntity?>

@@ -6,5 +6,5 @@ data class OrderItem(
     val itemId: Int,
     val price: Double,
     val qty: Double,
-    val accountId: Int
+    val companyId: Int
 )

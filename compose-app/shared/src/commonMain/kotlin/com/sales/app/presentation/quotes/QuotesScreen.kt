@@ -20,12 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.sales.app.presentation.components.SalesAppExtendedFab
 import com.sales.app.util.isDesktop
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun QuotesScreen(
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToCreateQuote: () -> Unit,
     onNavigateToQuoteDetails: (Int) -> Unit,
@@ -33,13 +34,13 @@ fun QuotesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
-    LaunchedEffect(accountId) {
-        viewModel.loadQuotes(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadQuotes(companyId)
     }
     
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isRefreshing,
-        onRefresh = { viewModel.onRefresh(accountId) }
+        onRefresh = { viewModel.onRefresh(companyId) }
     )
     
     Scaffold(
@@ -65,10 +66,10 @@ fun QuotesScreen(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            SalesAppExtendedFab(
                 onClick = onNavigateToCreateQuote,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text(if (isDesktop()) "Create Quote" else "Create") }
+                icon = Icons.Default.Add,
+                text = if (isDesktop()) "Create Quote" else "Create"
             )
         }
     ) { paddingValues ->
@@ -89,7 +90,7 @@ fun QuotesScreen(
                             text = uiState.error ?: "Unknown error",
                             color = MaterialTheme.colorScheme.error
                         )
-                        Button(onClick = { viewModel.loadQuotes(accountId) }) {
+                        Button(onClick = { viewModel.loadQuotes(companyId) }) {
                             Text("Retry")
                         }
                     }

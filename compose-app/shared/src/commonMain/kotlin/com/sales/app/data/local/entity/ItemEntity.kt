@@ -12,7 +12,7 @@ data class ItemEntity(
     val size: String?,
     val uqc: Int,
     val hsn: Int?,
-    val accountId: Int,
+    val companyId: Int,
     val taxId: Int? = null,
     val createdAt: String,
     val updatedAt: String,

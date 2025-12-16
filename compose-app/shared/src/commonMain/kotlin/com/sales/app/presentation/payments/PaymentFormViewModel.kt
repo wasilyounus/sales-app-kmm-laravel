@@ -29,16 +29,16 @@ class PaymentFormViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    fun loadParties(accountId: Int) {
+    fun loadParties(companyId: Int) {
         viewModelScope.launch {
-            partyRepository.getPartiesByAccount(accountId).collect {
+            partyRepository.getPartiesByAccount(companyId).collect {
                 _parties.value = it
             }
         }
     }
 
     fun createPayment(
-        accountId: Int,
+        companyId: Int,
         partyId: Int,
         amount: Double,
         isReceived: Boolean,

@@ -12,12 +12,12 @@ class PurchaseController extends Controller
 {
     public function index(Request $request)
     {
-        $accountId = $request->input('account_id');
+        $companyId = $request->input('company_id');
 
         $query = Purchase::with(['party', 'items.item', 'items.tax']);
 
-        if ($accountId) {
-            $query->where('account_id', $accountId);
+        if ($companyId) {
+            $query->where('company_id', $companyId);
         }
 
         $purchases = $query->orderBy('date', 'desc')->get();
@@ -34,7 +34,7 @@ class PurchaseController extends Controller
             'party_id' => 'required|exists:parties,id',
             'date' => 'required|date',
             'invoice_no' => 'nullable|string|max:255',
-            'account_id' => 'required|exists:accounts,id',
+            'company_id' => 'required|exists:companies,id',
             'log_id' => 'required|integer',
             'items' => 'required|array|min:1',
             'items.*.item_id' => 'required|exists:items,id',
@@ -49,7 +49,7 @@ class PurchaseController extends Controller
                 'party_id' => $validated['party_id'],
                 'date' => $validated['date'],
                 'invoice_no' => $validated['invoice_no'] ?? null,
-                'account_id' => $validated['account_id'],
+                'company_id' => $validated['company_id'],
                 'log_id' => $validated['log_id'],
             ]);
 
@@ -60,7 +60,7 @@ class PurchaseController extends Controller
                     'price' => $item['price'],
                     'qty' => $item['qty'],
                     'tax_id' => $item['tax_id'] ?? null,
-                    'account_id' => $validated['account_id'],
+                    'company_id' => $validated['company_id'],
                     'log_id' => $validated['log_id'],
                 ]);
             }

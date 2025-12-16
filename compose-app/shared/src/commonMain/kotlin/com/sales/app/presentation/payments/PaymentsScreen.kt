@@ -19,15 +19,15 @@ import com.sales.app.domain.model.Transaction
 @Composable
 fun PaymentsScreen(
     viewModel: PaymentsViewModel,
-    accountId: Int,
+    companyId: Int,
     onNavigateBack: () -> Unit,
     onNavigateToCreatePayment: () -> Unit
 ) {
     val transactions by viewModel.transactions.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    LaunchedEffect(accountId) {
-        viewModel.loadTransactions(accountId)
+    LaunchedEffect(companyId) {
+        viewModel.loadTransactions(companyId)
     }
 
     Scaffold(

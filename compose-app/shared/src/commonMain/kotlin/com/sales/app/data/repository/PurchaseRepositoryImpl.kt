@@ -21,8 +21,8 @@ class PurchaseRepositoryImpl(
     private val purchaseDao: PurchaseDao,
     private val purchaseItemDao: PurchaseItemDao
 ) : PurchaseRepository {
-    override fun getPurchasesByAccount(accountId: Int): Flow<List<Purchase>> {
-        return purchaseDao.getPurchasesByAccount(accountId).map { entities ->
+    override fun getPurchasesByAccount(companyId: Int): Flow<List<Purchase>> {
+        return purchaseDao.getPurchasesByAccount(companyId).map { entities ->
             entities.map { it.toDomainModel() }
         }
     }
@@ -47,7 +47,7 @@ class PurchaseRepositoryImpl(
                         partyId = dto.party_id,
                         date = dto.date,
                         invoiceNo = dto.invoice_no,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         createdAt = "",
                         updatedAt = "",
                         deletedAt = dto.deleted_at
@@ -80,7 +80,7 @@ class PurchaseRepositoryImpl(
                         price = dto.price,
                         qty = dto.qty,
                         taxId = dto.tax_id,
-                        accountId = dto.account_id,
+                        companyId = dto.company_id,
                         logId = 0,
                         createdAt = "",
                         updatedAt = "",
@@ -106,7 +106,7 @@ class PurchaseRepositoryImpl(
                 party_id = partyId,
                 date = date,
                 invoice_no = invoiceNo,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.createPurchase(request)
@@ -118,7 +118,7 @@ class PurchaseRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     invoiceNo = dto.invoice_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
@@ -135,7 +135,7 @@ class PurchaseRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = 0,
                             createdAt = "",
                             updatedAt = "",
@@ -167,7 +167,7 @@ class PurchaseRepositoryImpl(
                 party_id = partyId,
                 date = date,
                 invoice_no = invoiceNo,
-                account_id = accountId,
+                company_id = accountId,
                 items = items
             )
             val response = apiService.updatePurchase(id, request)
@@ -179,7 +179,7 @@ class PurchaseRepositoryImpl(
                     partyId = dto.party_id,
                     date = dto.date,
                     invoiceNo = dto.invoice_no,
-                    accountId = dto.account_id,
+                    companyId = dto.company_id,
                     createdAt = "",
                     updatedAt = "",
                     deletedAt = dto.deleted_at
@@ -199,7 +199,7 @@ class PurchaseRepositoryImpl(
                             price = itemDto.price,
                             qty = itemDto.qty,
                             taxId = itemDto.tax_id,
-                            accountId = itemDto.account_id,
+                            companyId = itemDto.company_id,
                             logId = 0,
                             createdAt = "",
                             updatedAt = "",
@@ -232,7 +232,7 @@ class PurchaseRepositoryImpl(
         partyId = partyId,
         date = date,
         invoiceNo = invoiceNo,
-        accountId = accountId,
+        companyId = companyId,
         items = items
     )
     
@@ -243,6 +243,6 @@ class PurchaseRepositoryImpl(
         price = price,
         qty = qty,
         taxId = taxId,
-        accountId = accountId
+        companyId = companyId
     )
 }

@@ -47,15 +47,15 @@ class OrderFormViewModel(
     
     private var currentOrderId: Int? = null
     
-    fun loadData(accountId: Int, orderId: Int? = null) {
+    fun loadData(companyId: Int, orderId: Int? = null) {
         currentOrderId = orderId
         _uiState.update { it.copy(isLoading = true) }
         
         viewModelScope.launch {
             // Load parties and items
             combine(
-                getPartiesUseCase(accountId),
-                getItemsUseCase(accountId)
+                getPartiesUseCase(companyId),
+                getItemsUseCase(companyId)
             ) { parties, items ->
                 Pair(parties, items)
             }.collect { (parties, items) ->
@@ -143,7 +143,7 @@ class OrderFormViewModel(
         }
     }
     
-    fun saveOrder(accountId: Int, onSuccess: () -> Unit) {
+    fun saveOrder(companyId: Int, onSuccess: () -> Unit) {
         val state = uiState.value
         
         // Validation
@@ -179,7 +179,7 @@ class OrderFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId,
+                    companyId = companyId,
                     orderNo = state.orderNo.takeIf { it.isNotBlank() }
                 )
             } else {
@@ -188,7 +188,7 @@ class OrderFormViewModel(
                     partyId = state.partyId!!,
                     date = state.date,
                     items = itemsRequest,
-                    accountId = accountId,
+                    companyId = companyId,
                     orderNo = state.orderNo.takeIf { it.isNotBlank() }
                 )
             }
